@@ -1,0 +1,74 @@
+{
+  "name": "@bitfiber/rx",
+  "description": "Reactive State and Async Workflow Management Library based on RxJS",
+  "version": "1.0.0",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "es2015": "./dist/esm/index.js",
+  "types": "index.d.ts",
+  "typesVersions": {
+    ">=4.8.2": {
+      "*": ["dist/types/*"]
+    }
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "node": "./dist/cjs/index.js",
+      "require": "./dist/cjs/index.js",
+      "es2015": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./operators": {
+      "types": "./dist/types/operators/index.d.ts",
+      "node": "./dist/cjs/operators/index.js",
+      "require": "./dist/cjs/operators/index.js",
+      "es2015": "./dist/esm/operators/index.js",
+      "default": "./dist/esm/operators/index.js"
+    },
+    "./source": {
+      "types": "./dist/types/source/index.d.ts",
+      "node": "./dist/cjs/source/index.js",
+      "require": "./dist/cjs/source/index.js",
+      "es2015": "./dist/esm/source/index.js",
+      "default": "./dist/esm/source/index.js"
+    },
+    "./store": {
+      "types": "./dist/types/store/index.d.ts",
+      "node": "./dist/cjs/store/index.js",
+      "require": "./dist/cjs/store/index.js",
+      "es2015": "./dist/esm/store/index.js",
+      "default": "./dist/esm/store/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitfiber/rx.git",
+    "directory": "rx"
+  },
+  "keywords": [
+    "Javascript",
+    "Typescript",
+    "RxJS",
+    "Store",
+    "State"
+  ],
+  "author": {
+    "name": "Oleksandr Zmanovskyi",
+    "email": "bitfiber.web@gmail.com"
+  },
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/bitfiber/rx/issues"
+  },
+  "homepage": "https://github.com/bitfiber/rx",
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@bitfiber/utils": "^1.1.1",
+    "rxjs": "^7.4.0"
+  }
+}

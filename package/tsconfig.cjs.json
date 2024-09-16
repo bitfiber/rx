@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../dist/out-tsc/cjs",
+    "module": "commonjs",
+    "sourceMap": true,
+    "downlevelIteration": true,
+    "removeComments": true,
+    "declaration": false
+  }
+}

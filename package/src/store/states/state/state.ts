@@ -156,24 +156,6 @@ export class State<T> extends AbstractState<T> {
   }
 
   /**
-   * Mutates the current state using an updater function that takes the current state
-   * as its argument and mutates it directly.
-   * After the mutation, the new state is immediately emitted to subscribers
-   *
-   * @param updater - A function that takes the current state as its argument
-   * and mutates it in place
-   *
-   * @returns the instance of the current state, allowing for method chaining
-   */
-  mutate(updater: (state: T) => void): this {
-    this.throwIfCompleted('mutate');
-    updater(this.value);
-    this.subject.next(this.value);
-    this.setValueForSource(this.value);
-    return this;
-  }
-
-  /**
    * Updates the current state value and encapsulates the logic for managing state updates.
    * This method includes an optional `fromSource` flag that indicates whether the update
    * is originating from an external data source.

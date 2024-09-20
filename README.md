@@ -1099,30 +1099,6 @@ data.update(state => state + 1);
 
 ---
 
-`@method mutate(updater: (state: T) => void): this`  
-Mutates the current state using an updater function that takes the current state
-as its argument and mutates it directly.
-After the mutation, the new state is immediately emitted to subscribers
-
-`@param updater: (state: T) => T` - A function that takes the current state as its argument
-and mutates it in place
-
-`@returns this` the instance of the current state, allowing for method chaining
-
-```ts
-import {state} from '@bitfiber/rx';
-
-const data = state<{count: number}>({count: 0});
-
-// Mutates the current state and emits the mutated state to its subscribers
-data.mutate(state => {
-  ++state.count;
-});
-
-```
-
----
-
 `@method reset(): this`  
 Resets the state to its original value that was set during initialization.
 This is useful for reverting the state back to its starting condition, discarding any changes

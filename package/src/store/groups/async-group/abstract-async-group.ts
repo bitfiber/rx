@@ -7,7 +7,7 @@ import {AbstractState} from '../../states/abstract-state/abstract-state';
 import {AbstractGroup} from '../abstract-group/abstract-group';
 
 /**
- * Represents the state and counters of an asynchronous action within an `AsyncGroup`
+ * Represents the state and counters of an asynchronous action within an `AbstractAsyncGroup`
  */
 export interface AsyncData {
   /**

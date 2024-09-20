@@ -1,8 +1,8 @@
-import {AsyncGroup} from '@bitfiber/rx';
 import {catchError, EMPTY, OperatorFunction, Subject, tap} from 'rxjs';
 
 import {operator} from '../../../operators';
 import {AbstractEmitter} from '../../emitters/abstract-emitter/abstract-emitter';
+import {AbstractAsyncGroup} from '../../groups/async-group/abstract-async-group';
 
 /**
  * Transmits the result of the asynchronous action to the provided emitter
@@ -25,7 +25,7 @@ import {AbstractEmitter} from '../../emitters/abstract-emitter/abstract-emitter'
  * @returns An RxJS operator that transmits the data to the corresponding emitter
  */
 export function transmit<L, S, F>(
-  emitterOrGroup: AbstractEmitter<S> | Subject<S> | AsyncGroup<L, S, F>,
+  emitterOrGroup: AbstractEmitter<S> | Subject<S> | AbstractAsyncGroup<L, S, F>,
   failEmitter?: AbstractEmitter<F> | Subject<F> | null,
   finishEmitter?: AbstractEmitter<void> | Subject<void>,
 ): OperatorFunction<S, S> {
@@ -33,7 +33,7 @@ export function transmit<L, S, F>(
     return source
       .pipe(
         tap(data => {
-          if (emitterOrGroup instanceof AsyncGroup) {
+          if (emitterOrGroup instanceof AbstractAsyncGroup) {
             emitterOrGroup.success.emit(data);
           } else if (emitterOrGroup instanceof AbstractEmitter) {
             emitterOrGroup._emit(data);
@@ -50,7 +50,7 @@ export function transmit<L, S, F>(
           }
         }),
         catchError(error => {
-          if (emitterOrGroup instanceof AsyncGroup) {
+          if (emitterOrGroup instanceof AbstractAsyncGroup) {
             emitterOrGroup.fail.emit(error);
           }
 

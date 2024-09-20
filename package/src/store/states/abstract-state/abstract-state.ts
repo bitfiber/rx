@@ -154,24 +154,6 @@ export abstract class AbstractState<T> extends AbstractEmitter<T> {
   abstract update(updater: (state: T) => T): this;
 
   /**
-   * Mutates the current state using an updater function.
-   *
-   * This abstract method must be implemented by subclasses to allow direct mutation of the state
-   * through an updater function. Unlike the `update` method, which returns a new state, the `mutate`
-   * method provides a way to directly modify the current state. The `updater` function is passed the
-   * current state, which it can modify in place. This method is useful when the state needs to be
-   * altered directly without returning a new state object
-   *
-   * @abstract
-   *
-   * @param updater - A function that takes the current state as its argument
-   * and mutates it in place
-   *
-   * @returns the instance of the current state, allowing for method chaining
-   */
-  abstract mutate(updater: (state: T) => void): this;
-
-  /**
    * Receives values from one or more emitters, states, or observables
    * and emits them to all subscribers of this state.
    *

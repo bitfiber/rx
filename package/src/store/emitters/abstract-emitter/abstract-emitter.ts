@@ -180,7 +180,7 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
     const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
     const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
     combineLatest(inputs.map(input => (isObservable(input) ? input : input.$)))
-      .pipe(completeWith(this.$))
+      .pipe(completeWith(this.subject))
       .subscribe(values => this._emit(selector(...<I>values)));
     return this;
   }
@@ -211,7 +211,7 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
     const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
     const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
     zip(inputs.map(input => (isObservable(input) ? input : input.$)))
-      .pipe(completeWith(this.$))
+      .pipe(completeWith(this.subject))
       .subscribe(values => this._emit(selector(...<I>values)));
     return this;
   }
@@ -252,11 +252,12 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
     if (!(inputs[1] instanceof AbstractEmitter) && isFunction(inputs[1])) {
       const [input, reducer] = inputs;
       const input$ = isObservable(input) ? input : (<AbstractEmitter<any>>input).$;
-      input$.pipe(completeWith(this.$)).subscribe(value => this._emit(reducer(value, this._get())));
+      input$.pipe(completeWith(this.subject))
+        .subscribe(value => this._emit(reducer(value, this._get())));
     } else {
       inputs.forEach(input => {
         const input$ = isObservable(input) ? input : (<AbstractEmitter<any>>input).$;
-        input$.pipe(completeWith(this.$)).subscribe(value => this._emit(<T>value));
+        input$.pipe(completeWith(this.subject)).subscribe(value => this._emit(<T>value));
       });
     }
     return this;
@@ -308,7 +309,7 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
     if (!(outputs[1] instanceof AbstractEmitter) && isFunction(outputs[1])) {
       if (outputs[0] instanceof AbstractEmitter) {
         const [outputEmitter, reducer] = outputs;
-        this.$.pipe(completeWith(outputEmitter.$))
+        this.$.pipe(completeWith((outputEmitter as any).subject))
           .subscribe(value => outputEmitter._emit(reducer(value, outputEmitter._get())));
       } else if (outputs[0] instanceof Subject) {
         const [outputSubject, reducer] = outputs;
@@ -318,7 +319,8 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
     } else {
       outputs.forEach(output => {
         if (output instanceof AbstractEmitter) {
-          this.$.pipe(completeWith(output.$)).subscribe(value => output._emit(value));
+          this.$.pipe(completeWith((output as any).subject))
+            .subscribe(value => output._emit(value));
         } else if (output instanceof Subject) {
           this.$.pipe(completeWith(output)).subscribe(value => output.next(value));
         }

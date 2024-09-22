@@ -1,5 +1,5 @@
 import {copy} from '@bitfiber/utils';
-import {Observable, share, Subject} from 'rxjs';
+import {Observable, of, share, Subject} from 'rxjs';
 
 import {startWithDefined} from '../../../operators';
 import {StateGetter} from '../../types';
@@ -84,6 +84,34 @@ export class State<T> extends AbstractState<T> {
   protected isPrevValueFromSource = false;
 
   /**
+   * Indicates whether the state uses lazy emission.
+   *
+   * When `hasLazyEmission` is set to `true`, the state will defer emitting its initial value
+   * until an explicit trigger occurs. This can be useful in scenarios where immediate emission
+   * is not desired, and you want more control over when the state is first emitted to subscribers.
+   *
+   * By default, `hasLazyEmission` is set to `false`, meaning the state will emit its initial value
+   * as soon as it is available
+   */
+  protected hasLazyEmission = false;
+
+  /**
+   * Indicates whether the state uses a one-time lazy emission for the next created stream.
+   *
+   * When `hasLazyEmissionOnce` is set to `true`, the state will defer emitting its initial value
+   * until an explicit trigger occurs. This lazy emission behavior will apply only once for the next
+   * stream that is created. After this initial deferred emission, subsequent streams will emit
+   * values immediately as changes occur.
+   *
+   * This property can be toggled multiple times before creating streams, allowing you
+   * to control when the lazy emission behavior is applied.
+   *
+   * By default, `hasLazyEmissionOnce` is set to `false`, meaning that streams will emit their
+   * initial values immediately upon creation unless this behavior is explicitly overridden
+   */
+  protected hasLazyEmissionOnce = false;
+
+  /**
    * Creates a new instance that combines the functionality of both the `State` class
    * and the `StateGetter` function, allowing you to manage and retrieve the state value easily.
    * The constructor initializes the state with the provided `initialValue`,
@@ -107,7 +135,7 @@ export class State<T> extends AbstractState<T> {
         stateAndGetter.hasLazyEmissionOnce = false;
         return (hasLazyEmission || hasLazyEmissionOnce
           ? undefined
-          : deferredValue$ || stateAndGetter()) as T;
+          : (deferredValue$ || of(stateAndGetter())).pipe(stateAndGetter.manager())) as T;
       }),
     );
 
@@ -156,6 +184,42 @@ export class State<T> extends AbstractState<T> {
   }
 
   /**
+   * Enables lazy emission for the state, meaning that the state will defer emitting its initial value
+   * to subscribers until an explicit trigger occurs. This can be useful in scenarios where you want
+   * more control over when the state emits its value, rather than emitting immediately
+   *
+   * @returns the instance of the current state, allowing for method chaining
+   */
+  useLazyEmission(): this {
+    this.throwIfInitialized('useLazyEmission');
+    this.throwIfCompleted('useLazyEmission');
+    this.hasLazyEmission = true;
+    return this;
+  }
+
+  /**
+   * Enables one-time lazy emission for the next created stream.
+   *
+   * Once the `useLazyEmissionOnce` method is called, the state will defer emitting its initial value
+   * until an explicit trigger occurs. This lazy emission behavior will apply only once for the next
+   * stream that is created. After this initial deferred emission, subsequent streams will emit values
+   * immediately as changes occur.
+   *
+   * This method can be called multiple times before creating streams, allowing you to control
+   * when the lazy emission behavior is applied.
+   *
+   * By default, one-time lazy emission is disabled, meaning that streams will emit their initial
+   * values immediately upon creation unless this behavior is explicitly overridden.
+   *
+   * @returns the instance of the current state, allowing for method chaining
+   */
+  useLazyEmissionOnce(): this {
+    this.throwIfCompleted('useLazyEmissionOnce');
+    this.hasLazyEmissionOnce = true;
+    return this;
+  }
+
+  /**
    * Updates the current state value and encapsulates the logic for managing state updates.
    * This method includes an optional `fromSource` flag that indicates whether the update
    * is originating from an external data source.
@@ -178,7 +242,7 @@ export class State<T> extends AbstractState<T> {
       setTimeout(() => {
         if (!this.compare(this.startValue as T, this.value)) {
           this.subject.next(this.value);
-          if (!this.isValueFromSource) {
+          if (this.source && !this.isValueFromSource) {
             this.setValueForSource(this.value);
           }
         } else {
@@ -186,8 +250,8 @@ export class State<T> extends AbstractState<T> {
           this.deferredValue$?.next(this.value);
 
           // if a source value emits before other values, the source may need to be changed
-          if (!this.isValueFromSource && this.isPrevValueFromSource) {
-            const sourceValue = this.source?.get() as T;
+          if (this.source && !this.isValueFromSource && this.isPrevValueFromSource) {
+            const sourceValue = this.source.get() as T;
             if (!this.compare(this.value, sourceValue)) {
               this.setValueForSource(this.value);
             }

@@ -10,7 +10,7 @@ describe('@bitfiber/rx/store/state/manage', () => {
   });
 
   it('State manages all own streams', done => {
-    const reference = ['initialValue', 'initialValue', 'value12', 'value12'];
+    const reference = ['initialValue2', 'initialValue2', 'value12', 'value12'];
     const result: string[] = [];
     let passed = false;
     testState

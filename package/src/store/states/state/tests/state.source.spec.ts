@@ -1,11 +1,11 @@
-import {memoryStoragePart, MemoryStoragePart, State, state} from '@bitfiber/rx';
+import {MemoryStorage, MemoryStoragePart, State, state} from '@bitfiber/rx';
 
 describe('@bitfiber/rx/store/state/source', () => {
   let testSource: MemoryStoragePart;
   let testState: State<string | undefined>;
 
   beforeEach(() => {
-    testSource = memoryStoragePart('someKey');
+    testSource = new MemoryStoragePart('someKey', new MemoryStorage());
     testState = state<string | undefined>(undefined);
   });
 

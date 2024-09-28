@@ -59,7 +59,7 @@ class EntitiesStore extends Store {
   }
 }
 
-describe('@bitfiber/rx/store/abstractStore', () => {
+describe('@bitfiber/rx/Store', () => {
   let testStore: EntitiesStore;
 
   beforeEach(() => {

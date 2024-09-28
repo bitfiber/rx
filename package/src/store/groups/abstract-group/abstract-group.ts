@@ -75,6 +75,7 @@ export abstract class AbstractGroup extends AbstractItem {
 
     if (!this.isInitStarted()) {
       this.startInitialization();
+      this.executeInnerDeferredActions();
       this.#items.forEach(item => !item.isInitialized() && item.initialize());
       this.executeDeferredActions();
       this.#items.forEach(item => !item.isInitialized() && item.finishInitialization());
@@ -104,11 +105,19 @@ export abstract class AbstractGroup extends AbstractItem {
   }
 
   /**
-   * Executes actions that were deferred until the initialization of the group.
-   * This method is typically called just before the group is fully initialized.
-   * It serves as a stub that will be replaced by the actual function provided to the `onInit` method
+   * Executes actions that were deferred until the initialization of the group. This method is called
+   * just before the group is fully initialized. It serves as a stub that will be replaced by
+   * the actual function provided to the `onInit` method
    */
   protected executeDeferredActions(): void { // stub
+  }
+
+  /**
+   * Executes inner group actions that were deferred until the initialization of the group.
+   * This method is called just before the group is fully initialized. It serves as a stub
+   * that subclasses should override to implement specific deferred actions for their group items
+   */
+  protected executeInnerDeferredActions(): void { // stub
   }
 
   /**

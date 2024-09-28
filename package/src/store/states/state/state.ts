@@ -168,14 +168,14 @@ export class State<T> extends AbstractState<T> {
   }
 
   /**
-   * Updates the current state using an updater function that takes the current state as its argument
-   * and returns the new state. The state is updated immediately, but the emission of this new value
-   * to subscribers will occur asynchronously. This means that if multiple synchronous updates
-   * are made in quick succession, only the last update will be emitted,
+   * Updates the current state using an updater function that takes the current state value as its
+   * argument and returns the new state value. The state is updated immediately, but the emission
+   * of this new value to subscribers will occur asynchronously. This means that if multiple
+   * synchronous updates are made in quick succession, only the last update will be emitted,
    * optimizing the emission process to prevent unnecessary updates
    *
-   * @param updater - A function that takes the current state as its argument
-   * and returns the new state
+   * @param updater - A function that takes the current state value as its argument
+   * and returns the new state value
    *
    * @returns the instance of the current state, allowing for method chaining
    */

@@ -48,7 +48,7 @@ export class AsyncGroup<L, S, F> extends AbstractAsyncGroup<L, S, F> {
    * is in progress, has completed successfully, or has failed
    * @readonly
    */
-  readonly state = state<AsyncData>(this.initialState, state => this.onStateInit(state));
+  readonly state = state<AsyncData>(this.initialState);
 
   /**
    * Creates the instance and optionally accepts a `fallbackValue`, which serves as

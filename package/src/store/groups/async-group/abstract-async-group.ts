@@ -88,31 +88,7 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
    * with the successful completion of the action
    * @readonly
    */
-  readonly success = emitter<S>(success => {
-    if (isDefined(this.#fallbackValue)) {
-      const fail$ = this.fail.$.pipe(take(1), filter(() => this.state().successCounter === 0));
-      success.receive(fail$, () => {
-        this.#needSuccessState = false;
-        this.#needSuccessFinish = false;
-        return copy(this.#fallbackValue as S);
-      });
-    }
-
-    if (this.#hasCache) {
-      success.tap(data => {
-        if (this.#cacheKey) {
-          if (this.#cacheSize && this.#cacheQueue.length === this.#cacheSize) {
-            const firstCacheKey = this.#cacheQueue.shift() as string;
-            delete this.#cacheIndex[firstCacheKey];
-          }
-          this.#cacheQueue.push(this.#cacheKey);
-          this.#cacheIndex[this.#cacheKey] = {
-            data, expiresAt: isNumber(this.#secOrFn) ? (Date.now() + (this.#secOrFn * 1000)) : 0,
-          };
-        }
-      });
-    }
-  });
+  readonly success = emitter<S>();
 
   /**
    * An emitter that triggers when an asynchronous action fails.
@@ -128,13 +104,7 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
    * as it simply serves as a notification that the process is fully complete
    * @readonly
    */
-  readonly finish = emitter<void>(finish => finish
-    .receive(this.success.$.pipe(filter(() => {
-      const needSuccessFinish = this.#needSuccessFinish;
-      this.#needSuccessFinish = true;
-      return needSuccessFinish;
-    })))
-    .receive(this.fail));
+  readonly finish = emitter<void>();
 
   /**
    * The state that tracks the status of an asynchronous action,
@@ -262,11 +232,53 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
   }
 
   /**
-   * The 'onInit' callback for this group state
-   * @param state - The group state
+   * Executes inner group actions that were deferred until the initialization of the group.
+   * This method is called just before the group is fully initialized
    */
-  protected onStateInit(state: AbstractState<AsyncData>): void {
-    state
+  protected override executeInnerDeferredActions(): void {
+    this.initializeSuccess();
+    this.initializeFinish();
+    this.initializeState();
+  }
+
+  protected initializeSuccess(): void {
+    if (isDefined(this.#fallbackValue)) {
+      const fail$ = this.fail.$.pipe(take(1), filter(() => this.state().successCounter === 0));
+      this.success.receive(fail$, () => {
+        this.#needSuccessState = false;
+        this.#needSuccessFinish = false;
+        return copy(this.#fallbackValue as S);
+      });
+    }
+
+    if (this.#hasCache) {
+      this.success.tap(data => {
+        if (this.#cacheKey) {
+          if (this.#cacheSize && this.#cacheQueue.length === this.#cacheSize) {
+            const firstCacheKey = this.#cacheQueue.shift() as string;
+            delete this.#cacheIndex[firstCacheKey];
+          }
+          this.#cacheQueue.push(this.#cacheKey);
+          this.#cacheIndex[this.#cacheKey] = {
+            data, expiresAt: isNumber(this.#secOrFn) ? (Date.now() + (this.#secOrFn * 1000)) : 0,
+          };
+        }
+      });
+    }
+  }
+
+  protected initializeFinish(): void {
+    this.finish
+      .receive(this.success.$.pipe(filter(() => {
+        const needSuccessFinish = this.#needSuccessFinish;
+        this.#needSuccessFinish = true;
+        return needSuccessFinish;
+      })), () => undefined)
+      .receive(this.fail, () => undefined);
+  }
+
+  protected initializeState(): void {
+    this.state
       .receive(this.launch, (_, {successCounter, failCounter}) => ({
         successCounter,
         failCounter,

@@ -129,6 +129,7 @@ describe('@bitfiber/rx/store/operators/transmit', () => {
   });
 
   it('Transmits data to the async group finish emitter', done => {
+    group.initialize();
     starter
       .pipe(switchMap(() => of(1).pipe(transmit(group))))
       .subscribe();
@@ -248,6 +249,7 @@ describe('@bitfiber/rx/store/operators/transmit', () => {
   });
 
   it('Transmits error to the async group finish emitter', done => {
+    group.initialize();
     starter
       .pipe(switchMap(() => throwError(() => new Error())
         .pipe(transmit(group))))

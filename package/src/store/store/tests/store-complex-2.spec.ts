@@ -24,7 +24,7 @@ class EntitiesStore extends Store {
   dict1Req = asyncGroup<void, string[], Error>(dict1Req => {
     dict1Req.launch
       .receive(this.start)
-      .receive(this.filters)
+      .receive(this.filters, () => undefined)
       .effect(
         switchMap((_, index) => of(
           ['dict1a', 'dict1b', ...(index === 1 ? ['dict1c'] : [])],
@@ -35,7 +35,7 @@ class EntitiesStore extends Store {
   dict2Req = asyncGroup<void, string[], Error>(dict2Req => {
     dict2Req.launch
       .receive(this.start)
-      .receive(this.filters)
+      .receive(this.filters, () => undefined)
       .effect(
         switchMap((_, index) => of(
           ['dict2a', 'dict2b', ...(index === 1 ? ['dict2c'] : [])],

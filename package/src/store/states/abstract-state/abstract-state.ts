@@ -118,8 +118,8 @@ export abstract class AbstractState<T> extends AbstractEmitter<T> {
    *
    * @abstract
    *
-   * @param updater - A function that takes the current state as its argument
-   * and returns the new state
+   * @param updater - A function that takes the current state value as its argument
+   * and returns the new state value
    *
    * @returns the instance of the current state, allowing for method chaining
    */
@@ -137,7 +137,7 @@ export abstract class AbstractState<T> extends AbstractEmitter<T> {
    *
    * @returns the instance of the current state, allowing for method chaining
    */
-  override receive(...inputs: EmitterOrObservable<T extends void ? T : T>[]): this;
+  override receive(...inputs: EmitterOrObservable<T>[]): this;
 
   /**
    * Receives a value from an emitter, state, or observable, applies a reducer function to convert

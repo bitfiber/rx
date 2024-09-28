@@ -171,11 +171,7 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  select<I extends any[]>(
-    ...data: T extends void
-      ? [...EmitterOrObservableTuple<I>]
-      : [...EmitterOrObservableTuple<I>, (...values: I) => T]
-  ): this {
+  select<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]): this {
     this.throwIfCompleted('select');
     const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
     const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
@@ -202,11 +198,7 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  zip<I extends any[]>(
-    ...data: T extends void
-      ? [...EmitterOrObservableTuple<I>]
-      : [...EmitterOrObservableTuple<I>, (...values: I) => T]
-  ): this {
+  zip<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]): this {
     this.throwIfCompleted('zip');
     const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
     const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
@@ -228,7 +220,7 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  receive(...inputs: EmitterOrObservable<T extends void ? any : T>[]): this;
+  receive(...inputs: EmitterOrObservable<T>[]): this;
 
   /**
    * Receives a value from an emitter, state, or observable, applies a reducer function to convert

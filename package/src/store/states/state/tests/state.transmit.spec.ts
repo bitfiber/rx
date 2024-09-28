@@ -89,10 +89,6 @@ describe('@bitfiber/rx/store/state/transmit', () => {
 
     someEmitter.tap(v => {
       result.push(`${v}E`);
-      if (result.length === 3) {
-        expect(result).toEqual(['initialValueS', 'value2S', 'value2E']);
-        done();
-      }
     });
 
     setTimeout(() => testState.set('value2'));

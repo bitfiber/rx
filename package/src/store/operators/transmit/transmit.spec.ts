@@ -1,6 +1,6 @@
 import {of, Subject, switchMap, throwError} from 'rxjs';
 import {BfError} from '@bitfiber/utils';
-import {asyncGroup, AsyncGroup, emitter, Emitter, State, state, StateGetter} from '@bitfiber/rx';
+import {asyncGroup, AsyncGroup, emitter, Emitter, state, StateType} from '@bitfiber/rx';
 
 import {transmit} from './transmit';
 
@@ -12,9 +12,9 @@ describe('@bitfiber/rx/store/operators/transmit', () => {
   let dataEmitter: Emitter<number>;
   let errorEmitter: Emitter<Error>;
   let finishEmitter: Emitter<void>;
-  let dataState: State<number> & StateGetter<number>;
-  let errorState: State<Error> & StateGetter<Error>;
-  let finishState: State<any> & StateGetter<any>;
+  let dataState: StateType<number>;
+  let errorState: StateType<Error>;
+  let finishState: StateType<any>;
   let group: AsyncGroup<string, number, Error>;
 
   beforeEach(() => {

@@ -3,7 +3,9 @@ import {Observable, share} from 'rxjs';
 import {AbstractEmitter} from '../abstract-emitter/abstract-emitter';
 
 /**
- * Creates and returns a new `Emitter` instance in a convenient way.
+ * Creates and returns a new `Emitter` instance in a convenient way that provides functionality
+ * to create streams, handle subscriptions, emit values to subscribers, and integrate with
+ * other reactive sources such as emitters, states, subjects, observables.
  *
  * You can optionally provide an `onInit` callback that will be invoked just before
  * the emitter's initialization, allowing you to perform setup tasks or configure the emitter

@@ -5,6 +5,8 @@ import {startWithDefined} from '../../../operators';
 import {StateGetter} from '../../types';
 import {AbstractState} from '../abstract-state/abstract-state';
 
+export type StateType<T> = State<T> & StateGetter<T>;
+
 /**
  * Creates an instance that combines the functionality of both the `State` class
  * and the `StateGetter` function, initialized with the provided `initialValue`.
@@ -22,11 +24,8 @@ import {AbstractState} from '../abstract-state/abstract-state';
  * @returns - A new `State` instance that also acts as the `StateGetter` function
  * to get the current state value
  */
-export function state<T>(
-  initialValue: T,
-  onInit?: (state: State<T> & StateGetter<T>) => void,
-): State<T> & StateGetter<T> {
-  const state = new State<T>(initialValue) as State<T> & StateGetter<T>;
+export function state<T>(initialValue: T, onInit?: (state: StateType<T>) => void): StateType<T> {
+  const state = new State<T>(initialValue) as StateType<T>;
   return onInit ? state.onInit(onInit) : state;
 }
 
@@ -84,34 +83,6 @@ export class State<T> extends AbstractState<T> {
   protected isPrevValueFromSource = false;
 
   /**
-   * Indicates whether the state uses lazy emission.
-   *
-   * When `hasLazyEmission` is set to `true`, the state will defer emitting its initial value
-   * until an explicit trigger occurs. This can be useful in scenarios where immediate emission
-   * is not desired, and you want more control over when the state is first emitted to subscribers.
-   *
-   * By default, `hasLazyEmission` is set to `false`, meaning the state will emit its initial value
-   * as soon as it is available
-   */
-  protected hasLazyEmission = false;
-
-  /**
-   * Indicates whether the state uses a one-time lazy emission for the next created stream.
-   *
-   * When `hasLazyEmissionOnce` is set to `true`, the state will defer emitting its initial value
-   * until an explicit trigger occurs. This lazy emission behavior will apply only once for the next
-   * stream that is created. After this initial deferred emission, subsequent streams will emit
-   * values immediately as changes occur.
-   *
-   * This property can be toggled multiple times before creating streams, allowing you
-   * to control when the lazy emission behavior is applied.
-   *
-   * By default, `hasLazyEmissionOnce` is set to `false`, meaning that streams will emit their
-   * initial values immediately upon creation unless this behavior is explicitly overridden
-   */
-  protected hasLazyEmissionOnce = false;
-
-  /**
    * Creates a new instance that combines the functionality of both the `State` class
    * and the `StateGetter` function, allowing you to manage and retrieve the state value easily.
    * The constructor initializes the state with the provided `initialValue`,
@@ -121,25 +92,25 @@ export class State<T> extends AbstractState<T> {
    */
   constructor(initialValue: T) {
     super(initialValue);
-    const stateAndGetter = ((): T => stateAndGetter.get()) as State<T> & StateGetter<T>;
+    const state = ((): T => state.get()) as StateType<T>;
     this.value = copy(initialValue);
 
-    Object.setPrototypeOf(stateAndGetter, new.target.prototype);
-    Object.assign(stateAndGetter, this);
+    Object.setPrototypeOf(state, new.target.prototype);
+    Object.assign(state, this);
 
-    this.$ = (stateAndGetter as any).$ = this.subject.pipe(
-      stateAndGetter.manager(),
+    this.$ = (state as any).$ = state.subject.pipe(
+      state.manager(),
       share(),
       startWithDefined(() => {
-        const {hasLazyEmission, hasLazyEmissionOnce, deferredValue$} = stateAndGetter;
-        stateAndGetter.hasLazyEmissionOnce = false;
+        const {hasLazyEmission, hasLazyEmissionOnce, deferredValue$} = state;
+        state.hasLazyEmissionOnce = false;
         return (hasLazyEmission || hasLazyEmissionOnce
           ? undefined
-          : (deferredValue$ || of(stateAndGetter())).pipe(stateAndGetter.manager())) as T;
+          : (deferredValue$ || of(state())).pipe(state.manager())) as T;
       }),
     );
 
-    return stateAndGetter;
+    return state;
   }
 
   /**
@@ -181,42 +152,6 @@ export class State<T> extends AbstractState<T> {
    */
   update(updater: (state: T) => T): this {
     return this.set(updater(this.get()));
-  }
-
-  /**
-   * Enables lazy emission for the state, meaning that the state will defer emitting its initial value
-   * to subscribers until an explicit trigger occurs. This can be useful in scenarios where you want
-   * more control over when the state emits its value, rather than emitting immediately
-   *
-   * @returns the instance of the current state, allowing for method chaining
-   */
-  useLazyEmission(): this {
-    this.throwIfInitialized('useLazyEmission');
-    this.throwIfCompleted('useLazyEmission');
-    this.hasLazyEmission = true;
-    return this;
-  }
-
-  /**
-   * Enables one-time lazy emission for the next created stream.
-   *
-   * Once the `useLazyEmissionOnce` method is called, the state will defer emitting its initial value
-   * until an explicit trigger occurs. This lazy emission behavior will apply only once for the next
-   * stream that is created. After this initial deferred emission, subsequent streams will emit values
-   * immediately as changes occur.
-   *
-   * This method can be called multiple times before creating streams, allowing you to control
-   * when the lazy emission behavior is applied.
-   *
-   * By default, one-time lazy emission is disabled, meaning that streams will emit their initial
-   * values immediately upon creation unless this behavior is explicitly overridden.
-   *
-   * @returns the instance of the current state, allowing for method chaining
-   */
-  useLazyEmissionOnce(): this {
-    this.throwIfCompleted('useLazyEmissionOnce');
-    this.hasLazyEmissionOnce = true;
-    return this;
   }
 
   /**

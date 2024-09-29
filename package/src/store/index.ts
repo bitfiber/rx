@@ -7,7 +7,7 @@ export {emitter, Emitter} from './emitters/emitter/emitter';
 export {
   changeDefaultComparison, AbstractState, Comparison,
 } from './states/abstract-state/abstract-state';
-export {state, State} from './states/state/state';
+export {state, State, StateType} from './states/state/state';
 export {AbstractGroup} from './groups/abstract-group/abstract-group';
 export {namedGroup, NamedGroup} from './groups/named-group/named-group';
 export {AbstractAsyncGroup, AsyncData} from './groups/async-group/abstract-async-group';

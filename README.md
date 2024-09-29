@@ -435,7 +435,9 @@ An optional hook that runs after the store has been completed
 ### `@function emitter<T>`
 
 <a id="id-emitter-fn"></a>
-Creates and returns a new `Emitter` instance in a convenient way.
+Creates and returns a new `Emitter` instance in a convenient way that provides functionality
+to create streams, handle subscriptions, emit values to subscribers, and integrate with
+other reactive sources such as emitters, states, subjects, observables.
 
 You can optionally provide an `onInit` callback that will be invoked just before
 the emitter's initialization, allowing you to perform setup tasks or configure the emitter
@@ -686,7 +688,7 @@ and emits them to all subscribers of this emitter.
 This method allows the current emitter to listen to external sources and relay their
 emitted values to its own subscribers, effectively linking multiple data streams together
 
-`@param ...inputs: EmitterOrObservable<T extends void ? any : T>[]` - One or more emitters, states,
+`@param ...inputs: EmitterOrObservable<T>[]` - One or more emitters, states,
 or observables that provide values to be emitted by this emitter
 
 `@returns` the instance of the current emitter, allowing for method chaining
@@ -886,11 +888,11 @@ it starts emitting values
 
 `@param initialValue: T` - The initial value of the state
 
-`@param onInit?: (state: State<T> & StateGetter<T>) => void` - An optional callback function
+`@param onInit?: (state: StateType<T>) => void` - An optional callback function
 that is executed just before the initialization of the state, allowing you to perform setup tasks
 or configure the state before it starts emitting values
 
-`@returns` a new `State` instance that also acts as the `StateGetter` function
+`@returns StateType<T>` a new `State` instance that also acts as the `StateGetter` function
 to get the current state value
 
 **Example:**
@@ -1310,7 +1312,7 @@ and emits them to all subscribers of this state.
 This method allows this state to listen to external sources and relay their
 emitted values to its own subscribers, effectively linking multiple data streams together
 
-`@param ...inputs: EmitterOrObservable<T extends void ? any : T>[]` - One or more emitters, states,
+`@param ...inputs: EmitterOrObservable<T>[]` - One or more emitters, states,
 or observables that provide values to be emitted by this state
 
 `@returns` the instance of the current state, allowing for method chaining
@@ -1775,7 +1777,7 @@ as it simply serves as a notification that the process is fully complete
 
 ---
 
-`@property state: State<AsyncData> & StateGetter<AsyncData>`  
+`@property state: StateType<AsyncData>`  
 The state that tracks the status of an asynchronous action,
 including counters for successes and failures, as well as flags indicating whether the action
 is in progress, has completed successfully, or has failed  

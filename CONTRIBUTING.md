@@ -2,7 +2,8 @@
 
 Thank you for considering contributing to our "@bitfiber/rx" library!
 We welcome contributions from the community to help improve and expand the functionality of our library.
-By contributing, you can help make our library more useful for developers across different projects and domains.
+By contributing, you can help make our library more useful for developers across different projects
+and domains.
 
 ## Code of Conduct
 
@@ -80,31 +81,33 @@ To contribute to our "@bitfiber/rx" library, follow these steps:
 
 ## Guidelines and Best Practices
 
-To ensure that your contributions are accepted and integrated smoothly, please adhere to the following guidelines and
-best practices:
+To ensure that your contributions are accepted and integrated smoothly, please adhere to
+the following guidelines and best practices:
 
-* **Follow the Style Guide
-  **: Maintain consistency with the existing codebase by following our eslint coding style.
+* **Follow the Style Guide**:
+  Maintain consistency with the existing codebase by following our eslint coding style.
 
-* **Write Tests
-  **: Ensure that your changes are covered by tests. Write unit tests for new functionality and update
+* **Write Tests**:
+  Ensure that your changes are covered by tests. Write unit tests for new functionality and update
   existing tests for changes to ensure full test coverage.
 
-* **Document Changes
-  **: Provide clear and concise documentation for any new functionality or changes made to existing
-  functionality. This includes updating README.md, adding JSDoc comments, and any other relevant documentation.
+* **Document Changes**:
+  Provide clear and concise documentation for any new functionality or changes made to existing
+  functionality. This includes updating README.md, adding JSDoc comments, and any other relevant
+  documentation.
 
-* **Keep PRs Small and Focused
-  **: Submit separate PRs for each logical change or set of related changes. This makes it
+* **Keep PRs Small and Focused**:
+  Submit separate PRs for each logical change or set of related changes. This makes it
   easier to review and merge your contributions.
 
-* **Be Responsive
-  **: Be responsive to feedback and comments on your PRs. Address any review comments promptly and make
+* **Be Responsive**:
+  Be responsive to feedback and comments on your PRs. Address any review comments promptly and make
   necessary adjustments to your code.
 
-* **Respect Licensing
-  **: Ensure that your contributions adhere to the licensing terms of the project. If you're
-  introducing dependencies with different licenses, make sure they are compatible with our project's license.
+* **Respect Licensing**:
+  Ensure that your contributions adhere to the licensing terms of the project. If you're
+  introducing dependencies with different licenses, make sure they are compatible with our project's
+  license.
 
 ## Need Help?
 

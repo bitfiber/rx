@@ -218,7 +218,7 @@ no further changes or updates will be made to it or its items
 **Example:**
 
 ```ts
-import {delay, of, switchMap, take} from 'rxjs';
+import {switchMap} from 'rxjs';
 import {pluck} from '@bitfiber/utils';
 import {asyncGroup, emitter, state, Store, transmit} from '@bitfiber/rx';
 
@@ -239,11 +239,6 @@ interface Product {
 }
 
 interface ProductsState {
-  products: Product[];
-  isLoading: booleang;
-}
-
-interface ProductsState {
   dict1: DictItem[];
   dict2: DictItem[];
   dict3: DictItem[];
@@ -253,7 +248,7 @@ interface ProductsState {
 
 class ProductsStore extends Store {
   // Provides the start of the first data loading process
-  start = emitter<void>();
+  start = emitter<ProductsFilters>();
 
   // Provides the state of the products filters
   filters = state<ProductsFilters>({search: '', page: 1})
@@ -261,84 +256,64 @@ class ProductsStore extends Store {
     .useLazyEmission();
 
   // Provides a group of emitters for managing the loading process of `dict1`
-  dict1Req = asyncGroup<void, DictItem[], Error>(dict1Req => {
+  dict1Req = asyncGroup<ProductsFilters, DictItem[], Error>(dict1Req => {
     dict1Req.launch
-      // Runs a query when data is received from the `start` emitter
+      // Receives new data from the `start` emitter
       .receive(this.start)
-      // Runs a query when data is received from the `filters` state
+      // Receives new data from the `filters` state
       .receive(this.filters)
       // Performs the effect each time new data is received
       .effect(
-        switchMap((_, index) => of(
-          [
-            {id: 1, name: 'd1a'},
-            {id: 2, name: 'd1b'},
-            ...(index === 1 ? [{id: 3, name: 'd1c'}] : [])
-          ],
+        switchMap(filters => dict1Service.get(filters)
           // 'transmit' operator takes either data or an error and transmits it to the `success`
-          // or `fail` emitter of the group, respectively
-        ).pipe(delay(30), transmit(dict1Req))),
+          // or `fail` emitter of the async group, respectively
+          .pipe(transmit(dict1Req))),
       );
   }, []);
 
   // Provides a group of emitters for managing the loading process of `dict2`
-  dict2Req = asyncGroup<void, DictItem[], Error>(dict2Req => {
+  dict2Req = asyncGroup<ProductsFilters, DictItem[], Error>(dict2Req => {
     dict2Req.launch
-      // Runs a query when data is received from the `start` emitter
+      // Receives new data from the `start` emitter
       .receive(this.start)
-      // Runs a query when data is received from the `filters` state
+      // Receives new data from the `filters` state
       .receive(this.filters)
       // Performs the effect each time new data is received
       .effect(
-        switchMap((_, index) => of(
-          [
-            {id: 1, name: 'd2a'},
-            {id: 2, name: 'd2b'},
-            ...(index === 1 ? [{id: 3, name: 'd2c'}] : [])
-          ],
+        switchMap(filters => dict2Service.get(filters)
           // 'transmit' operator takes either data or an error and transmits it to the `success`
-          // or `fail` emitter of the group, respectively
-        ).pipe(delay(30), transmit(dict2Req))),
+          // or `fail` emitter of the async group, respectively
+          .pipe(transmit(dict2Req))),
       );
   }, []);
 
   // Provides a group of emitters for managing the loading process of `dict3`
   dict3Req = asyncGroup<[string[], string[]], DictItem[], Error>(dict3Req => {
     dict3Req.launch
-      // Runs a query when data is received from the `dict1Req` group and `dict2Req` group
+      // Receives new data from the `dict1Req` group and `dict2Req` group
       .zip(this.dict1Req.success, this.dict2Req.success, (dict1, dict2) => {
         return [pluck(dict1, 'id'), pluck(dict2, 'id')];
       })
       // Performs the effect each time new data is received
       .effect(
-        switchMap((_, index) => of(
-          [
-            {id: 1, name: 'd3a'},
-            {id: 2, name: 'd3b'},
-            ...(index === 1 ? [{id: 3, name: 'd3c'}] : [])
-          ],
+        switchMap(data => dict3Service.get(data)
           // 'transmit' operator takes either data or an error and transmits it to the `success`
-          // or `fail` emitter of the group, respectively
-        ).pipe(delay(30), transmit(dict3Req))),
+          // or `fail` emitter of the async group, respectively
+          .pipe(transmit(dict3Req))),
       );
   }, []);
 
   // Provides a group of emitters for managing the loading process of `products`
   productsReq = asyncGroup<ProductsFilters, Product[], Error>((productsReq, {launch}) => {
     launch
-      // Runs a query when data is received from the `dict3Req` group
+      // Receives new data from the `dict3Req` group
       .receive(this.dict3Req.success, () => this.filters())
       // Performs the effect each time new data is received
       .effect(
-        switchMap((_, index) => of(
-          [
-            {id: 1, name: 'p1', price: 1},
-            {id: 2, name: 'p2', price: 2},
-            ...(index === 1 ? [{id: 3, name: 'p3', price: 3}] : [])
-          ],
+        switchMap(filters => productsService.get(filters)
           // 'transmit' operator takes either data or an error and transmits it to the `success`
-          // or `fail` emitter of the group, respectively
-        ).pipe(delay(30), transmit(productsReq))),
+          // or `fail` emitter of the async group, respectively
+          .pipe(transmit(productsReq))),
       );
   }, []);
 
@@ -380,24 +355,14 @@ const productsStore = new ProductsStore();
 // Initializes the store and all items within the store
 productsStore.initialize();
 
-// Performs a tap callback each time data is updated
-productsStore.data.tap(data => {
-  if (data.products.length === 3) {
+productsStore.data
+  // Performs a tap callback each time data is updated
+  .tap(data => {
     console.log(productsStore.data());
-    /* Expected output:
-    {
-       dict1: [{id: 1, name: 'd1a'}, {id: 2, name: 'd1b'}, {id: 3, name: 'd1c'}],
-       dict2: [{id: 1, name: 'd2a'}, {id: 2, name: 'd2b'}, {id: 3, name: 'd2c'}],
-       dict3: [{id: 1, name: 'd3a'}, {id: 2, name: 'd3b'}, {id: 3, name: 'd3c'}],
-       products: [{id: 1, name: 'p1', price: 1}, {id: 2, name: 'p2', price: 2}, {id: 3, name: 'p3', price: 3}],
-       isLoading: false,
-    }
-     */
-  }
-});
+  });
 
 // Starts the first data loading process
-productsStore.start.emit();
+productsStore.start.emit(productsStore.filters());
 
 setTimeout(() => {
   // Changes the filters applied to the products
@@ -1695,6 +1660,10 @@ const productsReq = asyncGroup<number, Product[], Error>((group, {launch, fail, 
         .pipe(transmit(group))),
     );
 
+  success
+    // Performs a tap callback each time the request succeeds
+    .tap(data => console.log(data));
+
   fail
     // Performs a tap callback each time the request fails
     .tap(error => console.log(error));
@@ -1704,7 +1673,7 @@ const productsReq = asyncGroup<number, Product[], Error>((group, {launch, fail, 
     .tap(() => console.log('Request has been finished'));
 }, []);
 
-// Provides the final state of the store data
+// Provides the final state
 const data = state<ProductsState>({products: [], isLoading: false}, s => s
   // Receives request success data
   .receive(productsReq.success, (products, state) => ({...state, products}))

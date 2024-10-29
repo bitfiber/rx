@@ -4,7 +4,7 @@
 [![GitHub star chart](https://img.shields.io/github/stars/bitfiber/rx?style=social)](https://star-history.com/#bitfiber/rx)
 [![GitHub fork](https://img.shields.io/github/forks/bitfiber/rx?style=social)](https://github.com/bitfiber/rx/fork)
 
-`@bitfiber/rx` is a powerful and flexible library built on top of RxJS, designed to manage
+`@bitfiber/rx` is a powerful and flexible library built on top of [RxJS](https://github.com/ReactiveX/rxjs), designed to manage
 reactive state, asynchronous workflows, and events in modern JavaScript applications.
 It provides a structured approach to handling complex data flows using emitters, states, groups,
 and stores, allowing seamless integration of various reactive sources like emitters, states,

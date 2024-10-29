@@ -321,61 +321,147 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
     return this;
   }
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A>(op1: OP<T, A>): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B>(op1: OP<T, A>, op2: OP<A, B>): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C>(op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D>(op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D, E>(
     op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>, op5: OP<D, E>,
   ): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D, E, F>(
     op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>, op5: OP<D, E>, op6: OP<E, F>,
   ): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D, E, F, G>(
     op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>, op5: OP<D, E>, op6: OP<E, F>,
     op7: OP<F, G>,
   ): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D, E, F, G, H>(
     op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>, op5: OP<D, E>, op6: OP<E, F>,
     op7: OP<F, G>, op8: OP<G, H>,
   ): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D, E, F, G, H, I>(
     op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>, op5: OP<D, E>, op6: OP<E, F>,
     op7: OP<F, G>, op8: OP<G, H>, op9: OP<H, I>,
   ): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D, E, F, G, H, I, J>(
     op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>, op5: OP<D, E>, op6: OP<E, F>,
     op7: OP<F, G>, op8: OP<G, H>, op9: OP<H, I>, op10: OP<I, J>,
   ): this;
 
+  /**
+   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+   * performing actions or side effects whenever the emitter emits a value. This can be
+   * particularly useful for tasks like logging, debugging, or triggering external operations
+   * in response to emitted values
+   * @params op1, ...opX - RxJS operators that define the side effects
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
   effect<A, B, C, D, E, F, G, H, I, J, K>(
     op1: OP<T, A>, op2: OP<A, B>, op3: OP<B, C>, op4: OP<C, D>, op5: OP<D, E>, op6: OP<E, F>,
     op7: OP<F, G>, op8: OP<G, H>, op9: OP<H, I>, op10: OP<I, J>, op11: OP<J, K>,
     ...operators: OP<any, any>[]
   ): this;
 
-  /**
-   * Creates a new stream with a side effect, similar to the RxJS `pipe` method.
-   *
-   * This method allows you to apply a sequence of RxJS operators to the emitter's stream,
-   * performing actions or side effects whenever the emitter emits a value. This can be
-   * particularly useful for tasks like logging, debugging, or triggering external operations
-   * in response to emitted values
-   *
-   * @param operators - A sequence of RxJS operators that define the side effects
-   * to be applied to the emitted values
-   *
-   * @returns the instance of the current emitter, allowing for method chaining
-   */
   effect(...operators: OperatorFunction<any, any>[]): this {
     this.throwIfCompleted('effect');
     // @ts-ignore

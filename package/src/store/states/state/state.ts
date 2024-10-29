@@ -174,7 +174,7 @@ export class State<T> extends AbstractState<T> {
       this.deferredValue$ = new Subject<T>();
 
       // Emits the last value after all sync actions
-      setTimeout(() => {
+      queueMicrotask(() => {
         if (!this.compare(this.startValue as T, this.value)) {
           this.subject.next(this.value);
           if (this.source && !this.isValueFromSource) {

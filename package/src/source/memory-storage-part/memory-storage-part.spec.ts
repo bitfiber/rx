@@ -27,6 +27,7 @@ describe('@bitfiber/rx/source/memoryStoragePart', () => {
   it('Emits a value', done => {
     const result: (string | undefined)[] = [];
     const reference = ['value', 'value2'];
+    msPart.$.subscribe();
     msPart.$.subscribe(v => {
       result.push(v);
       if (equals(result, reference)) {

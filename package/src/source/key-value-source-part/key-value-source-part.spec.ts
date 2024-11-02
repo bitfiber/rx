@@ -27,6 +27,7 @@ describe('@bitfiber/rx/source/KeyValueSourcePart', () => {
   it('Emits a value', done => {
     const result: (string | undefined)[] = [];
     const reference = ['value', 'value2'];
+    part.$.subscribe();
     part.$.subscribe(v => {
       result.push(v);
       if (equals(result, reference)) {

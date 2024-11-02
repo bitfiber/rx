@@ -347,6 +347,15 @@ class ProductsStore extends Store {
         },
       ),
   );
+
+  // Provides the store error handling
+  error = emitter<Error>(error => error
+    // Receives all errors from all async tasks
+    .receive(this.dict1Req.fail, this.dict2Req.fail, this.dict3Req.fail, this.productsReq.fail)
+    // Performs the tap callback each time new error is received
+    .tap(error => {
+      // Performs some error handling logic
+    }));
 }
 
 // Creates a new store for managing products

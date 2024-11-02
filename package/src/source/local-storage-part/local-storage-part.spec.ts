@@ -58,6 +58,7 @@ describe('@bitfiber/rx/source/localStoragePart', () => {
   it('Emits a value', done => {
     const result: (string | undefined)[] = [];
     const reference = ['value', 'value2'];
+    lsPart.$.subscribe();
     lsPart.$.subscribe(v => {
       result.push(v);
       if (equals(result, reference)) {

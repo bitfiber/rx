@@ -1,5 +1,5 @@
 import {BfError, Index} from '@bitfiber/utils';
-import {filter, map, Observable, Subject} from 'rxjs';
+import {filter, map, Observable, share, Subject} from 'rxjs';
 
 import {startWithDefined} from '../../operators';
 import {KeyValueSource} from '../';
@@ -80,6 +80,7 @@ export class MemoryStorage<T = any> implements KeyValueSource<T> {
     return this.subject.pipe(
       filter(eKey => key === eKey),
       map(key => this.get(key)),
+      share(),
       startWithDefined(() => this.get(key)),
     );
   }

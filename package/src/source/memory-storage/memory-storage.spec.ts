@@ -27,7 +27,9 @@ describe('@bitfiber/rx/source/memoryStorage', () => {
   it('Emits a value', done => {
     const result: string[] = [];
     const reference = ['value', 'value2'];
-    ms.observe('key').subscribe(v => {
+    const ob$ = ms.observe('key');
+    ob$.subscribe();
+    ob$.subscribe(v => {
       result.push(v);
       if (equals(result, reference)) {
         expect(result).toEqual(reference);

@@ -58,7 +58,9 @@ describe('@bitfiber/rx/source/sessionStorage', () => {
   it('Emits a value', done => {
     const result: string[] = [];
     const reference = ['value', 'value2'];
-    ss.observe('key').subscribe(v => {
+    const ob$ = ss.observe('key');
+    ob$.subscribe();
+    ob$.subscribe(v => {
       result.push(v);
       if (equals(result, reference)) {
         expect(result).toEqual(reference);

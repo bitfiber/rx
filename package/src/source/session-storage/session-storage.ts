@@ -1,5 +1,5 @@
 import {isString, getWindow} from '@bitfiber/utils';
-import {Subject, Observable, filter, map} from 'rxjs';
+import {Subject, Observable, filter, map, share} from 'rxjs';
 
 import {startWithDefined} from '../../operators';
 import {KeyValueSource} from '../';
@@ -93,6 +93,7 @@ export class SessionStorage<T = any> implements KeyValueSource<T> {
     return this.subject.pipe(
       filter(eKey => key === eKey),
       map(key => this.get(key)),
+      share(),
       startWithDefined(() => this.get(key)),
     );
   }

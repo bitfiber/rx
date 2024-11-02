@@ -58,7 +58,9 @@ describe('@bitfiber/rx/source/localStorage', () => {
   it('Emits a value', done => {
     const result: string[] = [];
     const reference = ['value', 'value2'];
-    ls.observe('key').subscribe(v => {
+    const ob$ = ls.observe('key');
+    ob$.subscribe();
+    ob$.subscribe(v => {
       result.push(v);
       if (equals(result, reference)) {
         expect(result).toEqual(reference);

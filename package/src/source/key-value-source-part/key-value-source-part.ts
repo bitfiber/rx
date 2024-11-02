@@ -1,4 +1,4 @@
-import {Observable, share} from 'rxjs';
+import {Observable} from 'rxjs';
 
 import {KeyValueSource, DataSource} from '../';
 
@@ -34,7 +34,7 @@ export class KeyValueSourcePart<T> implements DataSource<T> {
   constructor(key: string, source: KeyValueSource) {
     this.key = key;
     this.source = source;
-    this.$ = this.source.observe(this.key).pipe(share());
+    this.$ = this.source.observe(this.key);
   }
 
   /**

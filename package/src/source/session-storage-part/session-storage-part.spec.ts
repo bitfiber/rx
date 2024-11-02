@@ -58,6 +58,7 @@ describe('@bitfiber/rx/source/sessionStoragePart', () => {
   it('Emits a value', done => {
     const result: (string | undefined)[] = [];
     const reference = ['value', 'value2'];
+    ssPart.$.subscribe();
     ssPart.$.subscribe(v => {
       result.push(v);
       if (equals(result, reference)) {

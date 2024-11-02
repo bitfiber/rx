@@ -1,5 +1,5 @@
 import {isString, extend, getDocument, getWindow, stub} from '@bitfiber/utils';
-import {Subject, Observable, map, filter} from 'rxjs';
+import {Subject, Observable, map, filter, share} from 'rxjs';
 
 import {startWithDefined} from '../../operators';
 import {KeyValueSource} from '../';
@@ -177,6 +177,7 @@ export class Cookie<T = any> implements KeyValueSource<T> {
     return this.subject.pipe(
       filter(eKey => key === eKey),
       map(key => this.get(key)),
+      share(),
       startWithDefined(() => this.get(key)),
     );
   }

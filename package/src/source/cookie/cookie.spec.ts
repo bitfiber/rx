@@ -42,7 +42,9 @@ describe('@bitfiber/rx/source/cookie', () => {
   it('Emits a value', done => {
     const result: string[] = [];
     const reference = ['value', 'value2'];
-    cookieSource.observe('key').subscribe(data => {
+    const ob$ = cookieSource.observe('key');
+    ob$.subscribe();
+    ob$.subscribe(data => {
       result.push(data.value);
       if (equals(result, reference)) {
         expect(result).toEqual(reference);

@@ -2377,11 +2377,14 @@ msPart.remove();
 
 ---
 
-### `@function cookie<T = any>`
+### `@function cookie<T extends CookieData<any> = CookieData<string | undefined>>`
 
 <a id="id-cookie-fn"></a>
 Creates and returns a singleton instance of the `Cookie` class and ensures that only one
 instance is created. If the instance already exists, it returns the existing one
+
+`@template T` - Represents an object that includes both the value and parameters for the cookie.  
+Defaults to `CookieData<string | undefined>`
 
 `@returns Cookie<T>`
 
@@ -2395,7 +2398,7 @@ const ck = cookie();
 
 ---
 
-### `@class Cookie<T = any>`
+### `@class Cookie<T extends CookieData<any> = CookieData<string | undefined>>`
 
 <a id="id-cookie"></a>
 Provides access to browser cookies as a key-value storage.
@@ -2404,7 +2407,8 @@ The `Cookie` class implements the `KeyValueSource` interface, allowing interacti
 browser cookies using key-value semantics. It provides methods for retrieving, setting,
 observing, and removing cookies
 
-`@template T` - The type of data stored in the cookie. Defaults to `any`
+`@template T` - Represents an object that includes both the value and parameters for the cookie.  
+Defaults to `CookieData<string | undefined>`
 
 ---
 
@@ -2467,15 +2471,15 @@ cookie.destroy();
 
 ---
 
-### `@function cookiePart<T = CookieValue<string | undefined>>`
+### `@function cookiePart<T extends CookieData<any> = CookieData<string | undefined>>`
 
 <a id="id-cookie-part-fn"></a>
 Creates and returns an instance of `CookiePart`, allowing interaction
 with a specific key in the browser's cookie storage. You can also provide optional `removeParams`
 for managing cookie removal
 
-`@template T` - The type of the value stored in the cookie.
-Defaults to `CookieValue<string | undefined>`
+`@template T` - Represents an object that includes both the value and parameters for the cookie.  
+Defaults to `CookieData<string | undefined>`
 
 `@param key` - The key used to access the value in the browser cookie  
 `@param removeParams` - Optional parameters for managing cookie removal
@@ -2492,7 +2496,7 @@ const part = cookiePart('key');
 
 ---
 
-### `@class CookiePart<T = CookieValue<string | undefined>>`
+### `@class CookiePart<T extends CookieData<any> = CookieData<string | undefined>>`
 
 <a id="id-cookie-part"></a>
 Extends `KeyValueSourcePart` and allows interaction with a particular
@@ -2500,8 +2504,8 @@ key in the browser's cookie storage. It provides methods for retrieving, setting
 the cookie value associated with the given key.  
 See [`KeyValueSourcePart here`](#id-key-value-source-part)
 
-`@template T` - The type of the value stored in the cookie.
-Defaults to `CookieValue<string | undefined>`
+`@template T` - Represents an object that includes both the value and parameters for the cookie.  
+Defaults to `CookieData<string | undefined>`
 
 ---
 

@@ -68,10 +68,11 @@ let source: Cookie | undefined;
  * Creates and returns a singleton instance of the `Cookie` class and ensures that only one
  * instance is created. If the instance already exists, it returns the existing one
  *
- * @template T - The type of the value stored in the cookie. Defaults to `any`
+ * @template T - Represents an object that includes both the value and parameters for the cookie.
+ * Defaults to `CookieData<string | undefined>`
  */
-export function cookie<T = any>(): Cookie<T> {
-  return source ??= new Cookie<T>();
+export function cookie<T extends CookieData<any> = CookieData<string | undefined>>(): Cookie<T> {
+  return (source as Cookie<T>) ??= new Cookie<T>();
 }
 
 /**
@@ -81,9 +82,11 @@ export function cookie<T = any>(): Cookie<T> {
  * browser cookies using key-value semantics. It provides methods for retrieving, setting,
  * observing, and removing cookies
  *
- * @template T - The type of data stored in the cookie. Defaults to `any`
+ * @template T - Represents an object that includes both the value and parameters for the cookie.
+ * Defaults to `CookieData<string | undefined>`
  */
-export class Cookie<T = any> implements KeyValueSource<T> {
+export class Cookie<T extends CookieData<any> = CookieData<string | undefined>>
+implements KeyValueSource<T> {
   /**
    * A reference to the global `document` object
    * @readonly
@@ -111,7 +114,7 @@ export class Cookie<T = any> implements KeyValueSource<T> {
    */
   constructor() {
     if (source) {
-      return source;
+      return (source as Cookie<T>);
     } else {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       source = this;
@@ -138,8 +141,8 @@ export class Cookie<T = any> implements KeyValueSource<T> {
    *
    * @param key - The specific key under which the value will be stored
    * @param data - An object containing the new value to store, as well as optional cookie parameters
-   */ // @ts-ignore
-  set(key: string, data: CookieData<T>): void {
+   */
+  set(key: string, data: T): void {
     const {value, path, domain, expires, maxAge, secure, sameSite} = data;
     const _value = encodeURIComponent(JSON.stringify(value));
     const _path = `; path=${path || '/'}`;
@@ -164,8 +167,8 @@ export class Cookie<T = any> implements KeyValueSource<T> {
     const {hostname} = this.win.location;
     const expires = new Date(1970, 1, 1);
     this.set(key, extend({path: '/'}, params || {domain: hostname}, {
-      value: <T>'', expires, maxAge: -1,
-    }));
+      value: '', expires, maxAge: -1,
+    }) as T);
   }
 
   /**

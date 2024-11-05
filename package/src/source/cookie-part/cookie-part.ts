@@ -1,17 +1,17 @@
-import {Cookie, cookie, CookieParams, CookieValue, KeyValueSourcePart} from '../';
+import {Cookie, cookie, CookieData, CookieParams, KeyValueSourcePart} from '../';
 
 /**
  * Creates and returns an instance of `CookiePart`, allowing interaction
  * with a specific key in the browser's cookie storage. You can also provide optional `removeParams`
  * for managing cookie removal
  *
- * @template T - The type of the value stored in the cookie.
- * Defaults to `CookieValue<string | undefined>`
+ * @template T - Represents an object that includes both the value and parameters for the cookie.
+ * Defaults to `CookieData<string | undefined>`
  *
  * @param key - The key used to access the value in the browser cookie
  * @param [removeParams] - Optional parameters for managing cookie removal
  */
-export function cookiePart<T = CookieValue<string | undefined>>(
+export function cookiePart<T extends CookieData<any> = CookieData<string | undefined>>(
   key: string,
   removeParams?: CookieParams,
 ): CookiePart<T> {
@@ -23,10 +23,11 @@ export function cookiePart<T = CookieValue<string | undefined>>(
  * key in the browser's cookie storage. It provides methods for retrieving, setting, and observing
  * the cookie value associated with the given key
  *
- * @template T - The type of the value stored in the cookie.
- * Defaults to `CookieValue<string | undefined>`
+ * @template T - Represents an object that includes both the value and parameters for the cookie.
+ * Defaults to `CookieData<string | undefined>`
  */
-export class CookiePart<T = CookieValue<string | undefined>> extends KeyValueSourcePart<T> {
+export class CookiePart<T extends CookieData<any> = CookieData<string | undefined>>
+  extends KeyValueSourcePart<T> {
   /**
    * Optional parameters for managing the removal of the cookie
    * @readonly
@@ -48,6 +49,6 @@ export class CookiePart<T = CookieValue<string | undefined>> extends KeyValueSou
    * Removes the cookie stored under the specific key
    */
   override remove(): void {
-    (this.source as Cookie).remove(this.key, this.removeParams);
+    (this.source as Cookie<T>).remove(this.key, this.removeParams);
   }
 }

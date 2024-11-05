@@ -28,6 +28,9 @@ export interface StoreHooks {
    * An optional hook that runs after the store has been completed
    */
   afterStoreComplete?(): void;
+
+  // Fix TS2559: Type Store has no properties in common with type StoreHooks
+  complete(): void;
 }
 
 /**
@@ -39,7 +42,7 @@ export interface StoreHooks {
  * and completion. This class serves as a base for specific store implementations
  *
  * @abstract
- */// @ts-ignore
+ */
 export abstract class Store extends AbstractItem implements StoreHooks {
   /**
    * Holds the group of store items managed by the store

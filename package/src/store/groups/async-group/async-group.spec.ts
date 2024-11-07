@@ -1,7 +1,7 @@
 import {AsyncGroup, asyncGroup, Emitter, State, transmit} from '@bitfiber/rx';
 import {delay, of, switchMap, throwError} from 'rxjs';
 
-describe('@bitfiber/rx/store/state/asyncGroup', () => {
+describe('@bitfiber/rx/store/asyncGroup', () => {
   let valueCounter: number;
   let testGroup: AsyncGroup<string, number, number>;
 

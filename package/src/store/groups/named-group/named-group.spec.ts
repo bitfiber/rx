@@ -2,7 +2,7 @@ import {
   AsyncGroup, asyncGroup, Emitter, emitter, NamedGroup, namedGroup, State, state,
 } from '@bitfiber/rx';
 
-describe('@bitfiber/rx/store/state/namedGroup', () => {
+describe('@bitfiber/rx/store/namedGroup', () => {
   let testGroup: NamedGroup<{
     state1: State<string>;
     state2: State<string>;
@@ -24,7 +24,6 @@ describe('@bitfiber/rx/store/state/namedGroup', () => {
 
   it('Group has all nested groups and emitters', () => {
     expect((testGroup as any).counter).toBeUndefined();
-    expect(testGroup.state1 instanceof State).toBeTruthy();
     expect(testGroup.state1 instanceof State).toBeTruthy();
     expect(testGroup.state2 instanceof State).toBeTruthy();
     expect(testGroup.emitter1 instanceof Emitter).toBeTruthy();

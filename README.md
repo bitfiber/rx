@@ -143,6 +143,8 @@ Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
 * [`State`](#id-state)
 * [`changeDefaultComparison`](#id-change-default-comparison)
 * [`Comparison`](#id-comparison)
+* [`group`](#id-group-fn)
+* [`Group`](#id-group)
 * [`namedGroup`](#id-named-group-fn)
 * [`NamedGroup`](#id-named-group)
 * [`asyncGroup`](#id-async-group-fn)
@@ -214,6 +216,12 @@ the store is initialized
 Completes the store and all of its items, signaling that the store has finished
 its operations and is now in a completed state. Once the store is completed,
 no further changes or updates will be made to it or its items
+
+---
+
+`@method markAsReady(): void`  
+Marks the store as ready, indicating that all store items, such as emitters, states, and groups,
+have been defined. This method must be called after all store items are defined!
 
 **Example:**
 
@@ -356,6 +364,10 @@ class ProductsStore extends Store {
     .tap(error => {
       // Performs some error handling logic
     }));
+
+  // Marks the store as ready, indicating that all store items, such as emitters, states,
+  // and groups, have been defined
+  #ready = this.markAsReady();
 }
 
 // Creates a new store for managing products
@@ -1503,6 +1515,126 @@ The `Comparison` type allows for different ways to compare two values:
 * `'strict'`: A strict equality comparison, using strict equality (`===`),
 * `((a: any, b: any) => boolean)`: A custom comparison function that takes two arguments and
   returns a boolean indicating whether the values are considered equal based on the provided logic
+
+---
+
+### `@function group`
+
+<a id="id-group-fn"></a>
+Creates a new `Group` instance that collects all subsequently created group items such as
+emitters, states, and groups until `group.markAsReady()` is called
+
+`@returns Group`
+
+**Example:**
+
+```ts
+import {state, emitter, group, asyncGroup} from '@bitfiber/rx';
+
+// Collects all subsequently created emitters, states, and groups for
+// mass initialization and completion
+const someGroup = group();
+
+// The emitter, state, and group will be added in 'someGroup'
+const someState = state<string>('initialValue1');
+const someEmitter = emitter<number>();
+const reqGroup = asyncGroup<string, number, number>();
+
+// Marks the group as ready, indicating that all group items, such as emitters, states,
+// and groups, have been defined
+someGroup.markAsReady();
+
+// Initializes the group and all items within the group
+someGroup.initialize();
+
+// Completes the group and all items within the group
+someGroup.complete();
+
+```
+
+---
+
+### `@class Group`
+
+<a id="id-group"></a>
+Represents a group that collects all subsequently created group items such as emitters, states,
+and groups until `group.markAsReady()` is called
+
+---
+
+`@method initialize(): this`  
+Initiates the group and all its items.
+
+In most cases, this method will be called automatically by a group or store managing
+the group, so you generally don't need to call it manually unless you have a specific
+reason to do so
+
+`@returns` the instance of the current group, allowing for method chaining
+
+**Example:**
+
+```ts
+import {group} from '@bitfiber/rx';
+
+// Collects all subsequently created emitters, states, and groups for
+// mass initialization and completion
+const someGroup = group();
+
+// Initializes the group and all items within the group
+someGroup.initialize();
+
+```
+
+---
+
+`@method complete(): void`  
+Completes the group and all its items,
+signaling to all item subscribers that no more values will be emitted.
+
+Once the group is completed, Its items will no longer emit any values, and any subsequent
+subscriptions will immediately receive an error.
+
+In most cases, this method will be called automatically by a group or store managing
+the group, so you generally don't need to call it manually unless you have a specific
+reason to do so
+
+**Example:**
+
+```ts
+import {group} from '@bitfiber/rx';
+
+// Collects all subsequently created emitters, states, and groups for
+// mass initialization and completion
+const someGroup = group();
+
+// Completes the group and all items within the group
+group.complete();
+
+```
+
+---
+
+`@method markAsReady(): void`  
+Marks the group as ready, indicating that all group items, such as emitters, states, and groups,
+have been defined. This method must be called after all group items are defined!
+
+**Example:**
+
+```ts
+import {group} from '@bitfiber/rx';
+
+// Collects all subsequently created emitters, states, and groups for
+// mass initialization and completion
+const someGroup = group();
+
+// The state will be added in 'someGroup'
+const someState = state<string>('initialValue1');
+
+// Marks the store as ready, indicating that all store items, such as emitters, states,
+// and groups, have been defined
+someGroup.markAsReady();
+
+```
 
 ---
 

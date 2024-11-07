@@ -4,7 +4,7 @@ import {asyncGroup, AsyncGroup, emitter, Emitter, state, StateType} from '@bitfi
 
 import {transmit} from './transmit';
 
-describe('@bitfiber/rx/store/operators/transmit', () => {
+describe('@bitfiber/rx/operators/transmit', () => {
   let starter: Subject<string>;
   let dataSubject: Subject<number>;
   let errorSubject: Subject<Error>;

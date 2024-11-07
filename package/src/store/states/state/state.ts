@@ -110,6 +110,7 @@ export class State<T> extends AbstractState<T> {
       }),
     );
 
+    state.addToActiveGroup();
     return state;
   }
 

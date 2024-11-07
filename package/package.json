@@ -1,7 +1,7 @@
 {
   "name": "@bitfiber/rx",
   "description": "Reactive State and Async Workflow Management Library based on RxJS",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "es2015": "./dist/esm/index.js",

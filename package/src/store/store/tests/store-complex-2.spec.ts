@@ -91,6 +91,8 @@ class EntitiesStore extends Store {
         },
       ),
   );
+
+  ready = this.markAsReady();
 }
 
 describe('@bitfiber/rx/store/store2', () => {

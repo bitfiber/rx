@@ -1,7 +1,7 @@
 import {mapObj} from '@bitfiber/utils';
 import {asyncGroup, emitter, getStoreIndex, namedGroup, state} from '@bitfiber/rx';
 
-describe('@bitfiber/rx/store/state/getStoreIndex', () => {
+describe('@bitfiber/rx/store/getStoreIndex', () => {
   it('Returns an index with store groups and emitters only', () => {
     const store = {
       counter: 0,

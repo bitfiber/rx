@@ -4,6 +4,11 @@ import {StoreItem} from '../../types';
 import {AbstractItem} from '../../common/abstract-item/abstract-item';
 
 /**
+ * The current active group serves as the context for new group items
+ */
+export let activeGroup: AbstractGroup | null = null;
+
+/**
  * Represents an abstract group that can aggregate and manage multiple items,
  * such as states, emitters, or other groups.
  *
@@ -17,16 +22,24 @@ import {AbstractItem} from '../../common/abstract-item/abstract-item';
  */
 export abstract class AbstractGroup extends AbstractItem {
   /**
-   * Holds the collection of `StoreItem` instances that the group is responsible for managing.
-   * The `items` array is populated by the `setItems` method, which is called once during
-   * the initialization or configuration of the group
+   * Holds the previous active group, allowing a return to it after the group is marked as ready
    */
-  #items!: StoreItem[];
+  private prevActiveGroup = this.changeActiveGroup();
+
+  /**
+   * Holds the collection of `StoreItem` instances that the group is responsible for managing
+   */
+  private groupItems: StoreItem[] = [];
 
   /**
    * Flag indicating whether the group's operations are deferred
    */
-  #deferred = false;
+  private deferred = false;
+
+  /**
+   * Flag indicating that the `markAsReady()` method has been called for the group
+   */
+  private isReady = false;
 
   /**
    * Registers a deferred actions hook that is called before the group is initialized.
@@ -42,14 +55,14 @@ export abstract class AbstractGroup extends AbstractItem {
   onInit(deferredActions: (group: this, sameGroup: this) => void): this {
     this.throwIfInitialized('onInit');
     this.throwIfCompleted('onInit');
-    if (this.#deferred) {
+    if (this.deferred) {
       throw new BfError(
         'The onInit function can only be used once',
         {code: 'bf_rx_store_AbstractGroup_onInit_1'},
       );
     }
     this.executeDeferredActions = () => deferredActions(this, this);
-    this.#deferred = true;
+    this.deferred = true;
     return this;
   }
 
@@ -66,9 +79,9 @@ export abstract class AbstractGroup extends AbstractItem {
     this.throwIfInitialized('initialize');
     this.throwIfCompleted('initialize');
 
-    if (!this.#items) {
+    if (!this.isReady) {
       throw new BfError(
-        'You need to pass store items before initialization with method "setItems"',
+        'You need to call the `markAsReady` method after defining all group items',
         {code: 'bf_rx_store_AbstractGroup_initialize_1'},
       );
     }
@@ -76,9 +89,9 @@ export abstract class AbstractGroup extends AbstractItem {
     if (!this.isInitStarted()) {
       this.startInitialization();
       this.executeInnerDeferredActions();
-      this.#items.forEach(item => !item.isInitialized() && item.initialize());
+      this.groupItems.forEach(item => !item.isInitialized() && item.initialize());
       this.executeDeferredActions();
-      this.#items.forEach(item => !item.isInitialized() && item.finishInitialization());
+      this.groupItems.forEach(item => !item.isInitialized() && item.finishInitialization());
       if (!this.isTwoStepInitialization()) {
         this.finishInitialization();
       }
@@ -100,7 +113,7 @@ export abstract class AbstractGroup extends AbstractItem {
    */
   complete(): void {
     this.throwIfCompleted('complete');
-    this.#items.forEach(item => !item.isCompleted() && item.complete());
+    this.groupItems.forEach(item => !item.isCompleted() && item.complete());
     this.finishCompletion();
   }
 
@@ -121,16 +134,35 @@ export abstract class AbstractGroup extends AbstractItem {
   }
 
   /**
-   * Sets the provided array of store items to the group,
-   * allowing the group to manage these items collectively.
-   *
-   * This method is called once during the initialization or configuration of the group
-   *
-   * @param items - An array of `StoreItem` instances to be managed by the group
-   *
+   * Adds a new group item to the group
+   * @param item - The group item to be added to the group
    */
-  protected setItems(items: StoreItem[]): void {
-    this.#items = items;
-    this.#items.forEach(item => !item.isInitialized() && item.enableTwoStepInitialization());
+  protected addGroupItem(item: StoreItem): void {
+    this.groupItems.push(item);
+  }
+
+  /**
+   * Marks the group as ready, indicating that all group items, such as emitters, states, and groups,
+   * have been defined. This method must be called after all group items are defined!
+   */
+  protected markAsReady(): boolean {
+    activeGroup = this.prevActiveGroup;
+    this.prevActiveGroup = null;
+    this.groupItems.forEach(item => !item.isInitialized() && item.enableTwoStepInitialization());
+    this.isReady = true;
+    return true;
+  }
+
+  /**
+   * Saves the previous active group and sets the group as the active group
+   */
+  private changeActiveGroup(): AbstractGroup | null {
+    const prevActiveGroup = activeGroup;
+    if (activeGroup) {
+      (activeGroup as any).addGroupItem(this);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    activeGroup = this;
+    return prevActiveGroup;
   }
 }

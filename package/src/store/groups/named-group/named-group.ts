@@ -75,7 +75,8 @@ const NamedGroup = class NamedGroup<I extends Index> extends AbstractGroup {
   constructor(index: I) {
     super();
     const storeIndex = getStoreIndex(index);
-    this.setItems(values(storeIndex));
+    values(storeIndex).forEach(item => this.addGroupItem(item as StoreItem));
     extend(this, storeIndex);
+    this.markAsReady();
   }
 } as NamedGroupConstructor;

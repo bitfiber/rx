@@ -33,6 +33,8 @@ class EntitiesStore extends Store {
     .select(this.entitiesReq.success, entities => {
       return {...data(), entities};
     }));
+
+  ready = this.markAsReady();
 }
 
 describe('@bitfiber/rx/store/store1', () => {

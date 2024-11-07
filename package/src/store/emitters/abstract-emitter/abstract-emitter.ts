@@ -7,6 +7,7 @@ import {completeWith, operator} from '../../../operators';
 import {EmitterOrSubject, EmitterOrObservable, EmitterOrObservableTuple} from '../../types';
 import {AbstractItem} from '../../common/abstract-item/abstract-item';
 import {AbstractState} from '../../states/abstract-state/abstract-state';
+import {activeGroup} from '../../groups/abstract-group/abstract-group';
 
 /**
  * Alias for OperatorFunction
@@ -523,5 +524,15 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
       return (this.managementOperators ? source.pipe(...this.managementOperators) : source)
         .subscribe(subscriber);
     });
+  }
+
+  /**
+   * Adds an emitter to the active group if the group is present.
+   * Indicates that the emitter is created within the context of the active group
+   */
+  protected addToActiveGroup(): void {
+    if (activeGroup) {
+      (activeGroup as any).addGroupItem(this);
+    }
   }
 }

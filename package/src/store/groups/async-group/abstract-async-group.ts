@@ -117,57 +117,57 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
   /**
    * Indicates whether caching is enabled for the asynchronous action
    */
-  #hasCache = false;
+  private hasCache = false;
 
   /**
    * Stores a unique identifier used for caching the results of the asynchronous action.
    * At the moment of launch, this cache key is generated from the launch payload and is assigned
    * for further use after the action succeeds
    */
-  #cacheKey = '';
+  private cacheKey = '';
 
   /**
    * Defines the maximum number of entries allowed in the cache
    */
-  #cacheSize = 0;
+  private cacheSize = 0;
 
   /**
    * Holds either the cache lifetime in seconds or a callback function
    */
-  #secOrFn!: number | (() => boolean);
+  private secOrFn!: number | (() => boolean);
 
   /**
    * Stores the keys of cached entries in the order they were added.
    * This array is used to manage the cache eviction process, typically
    * following FIFO strategy
    */
-  #cacheQueue: string[] = [];
+  private cacheQueue: string[] = [];
 
   /**
    * Controls whether the success state should be updated after a failure
    * when the fallback value is emitted by the success emitter
    */
-  #needSuccessState = true;
+  private needSuccessState = true;
 
   /**
    * Controls whether the finish event should be emitted after a failure
    * when the fallback value is emitted by the success emitter
    */
-  #needSuccessFinish = true;
+  private needSuccessFinish = true;
 
   /**
    * Holds an optional fallback value of type `S` that is used as a default success value
    * if the asynchronous action fails
    * @readonly
    */
-  readonly #fallbackValue?: S;
+  private readonly fallbackValue?: S;
 
   /**
    * Holds an index of cached entries, where each key maps to an `AsyncCacheData` object
    * containing the cached data and its expiration time
    * @readonly
    */
-  readonly #cacheIndex: Index<AsyncCacheData<S>> = {};
+  private readonly cacheIndex: Index<AsyncCacheData<S>> = {};
 
   /**
    * Creates the instance and optionally accepts a `fallbackValue`, which serves as
@@ -179,7 +179,7 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
    */
   constructor(fallbackValue?: S) {
     super();
-    this.#fallbackValue = fallbackValue;
+    this.fallbackValue = fallbackValue;
   }
 
   /**
@@ -198,30 +198,30 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
   useCache(secOrFn: number | (() => boolean), cacheSize = 10): this {
     this.throwIfInitialized('useCache');
     this.throwIfCompleted('useCache');
-    if (this.#hasCache) {
+    if (this.hasCache) {
       throw new BfError(
         'The useCache function can only be used once',
         {code: 'bf_rx_store_AsyncGroup_useCache_1'},
       );
     }
 
-    this.#hasCache = true;
-    this.#cacheSize = cacheSize;
-    this.#secOrFn = secOrFn;
+    this.hasCache = true;
+    this.cacheSize = cacheSize;
+    this.secOrFn = secOrFn;
 
     const realLaunchEmit = this.launch._emit.bind(this.launch);
 
     this.launch._emit = (value: L) => {
       const key = toHash(toSortedString(value)) || 'default';
-      const cacheData = this.#cacheIndex[key];
+      const cacheData = this.cacheIndex[key];
 
-      if (isDefined(cacheData) && (isNumber(this.#secOrFn)
-        ? this.#secOrFn === 0 || cacheData.expiresAt > Date.now()
-        : this.#secOrFn())) {
-        this.#cacheKey = '';
+      if (isDefined(cacheData) && (isNumber(this.secOrFn)
+        ? this.secOrFn === 0 || cacheData.expiresAt > Date.now()
+        : this.secOrFn())) {
+        this.cacheKey = '';
         this.success.emit(cacheData.data);
       } else {
-        this.#cacheKey = key;
+        this.cacheKey = key;
         realLaunchEmit(value);
       }
 
@@ -242,25 +242,25 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
   }
 
   protected initializeSuccess(): void {
-    if (isDefined(this.#fallbackValue)) {
+    if (isDefined(this.fallbackValue)) {
       const fail$ = this.fail.$.pipe(take(1), filter(() => this.state().successCounter === 0));
       this.success.receive(fail$, () => {
-        this.#needSuccessState = false;
-        this.#needSuccessFinish = false;
-        return copy(this.#fallbackValue as S);
+        this.needSuccessState = false;
+        this.needSuccessFinish = false;
+        return copy(this.fallbackValue as S);
       });
     }
 
-    if (this.#hasCache) {
+    if (this.hasCache) {
       this.success.tap(data => {
-        if (this.#cacheKey) {
-          if (this.#cacheSize && this.#cacheQueue.length === this.#cacheSize) {
-            const firstCacheKey = this.#cacheQueue.shift() as string;
-            delete this.#cacheIndex[firstCacheKey];
+        if (this.cacheKey) {
+          if (this.cacheSize && this.cacheQueue.length === this.cacheSize) {
+            const firstCacheKey = this.cacheQueue.shift() as string;
+            delete this.cacheIndex[firstCacheKey];
           }
-          this.#cacheQueue.push(this.#cacheKey);
-          this.#cacheIndex[this.#cacheKey] = {
-            data, expiresAt: isNumber(this.#secOrFn) ? (Date.now() + (this.#secOrFn * 1000)) : 0,
+          this.cacheQueue.push(this.cacheKey);
+          this.cacheIndex[this.cacheKey] = {
+            data, expiresAt: isNumber(this.secOrFn) ? (Date.now() + (this.secOrFn * 1000)) : 0,
           };
         }
       });
@@ -270,8 +270,8 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
   protected initializeFinish(): void {
     this.finish
       .receive(this.success.$.pipe(filter(() => {
-        const needSuccessFinish = this.#needSuccessFinish;
-        this.#needSuccessFinish = true;
+        const needSuccessFinish = this.needSuccessFinish;
+        this.needSuccessFinish = true;
         return needSuccessFinish;
       })), () => undefined)
       .receive(this.fail, () => undefined);
@@ -287,8 +287,8 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
         failed: false,
       }))
       .receive(this.success.$.pipe(filter(() => {
-        const needSuccessState = this.#needSuccessState;
-        this.#needSuccessState = true;
+        const needSuccessState = this.needSuccessState;
+        this.needSuccessState = true;
         return needSuccessState;
       })), (_, {successCounter, failCounter}) => ({
         successCounter: ++successCounter,

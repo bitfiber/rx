@@ -9,6 +9,7 @@ export {
 } from './states/abstract-state/abstract-state';
 export {state, State, StateType} from './states/state/state';
 export {AbstractGroup} from './groups/abstract-group/abstract-group';
+export {group, Group} from './groups/group/group';
 export {namedGroup, NamedGroup} from './groups/named-group/named-group';
 export {AbstractAsyncGroup, AsyncData} from './groups/async-group/abstract-async-group';
 export {asyncGroup, AsyncGroup} from './groups/async-group/async-group';

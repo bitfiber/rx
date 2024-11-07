@@ -40,9 +40,13 @@ export class Emitter<T> extends AbstractEmitter<T> {
    */
   readonly $: Observable<T>;
 
+  /**
+   * Constructs an instance of the `Emitter`
+   */
   constructor() {
     super();
     this.$ = this.subject.pipe(this.manager(), share());
+    this.addToActiveGroup();
   }
 
   /**

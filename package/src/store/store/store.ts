@@ -1,8 +1,7 @@
 import {BfError, isFunction} from '@bitfiber/utils';
 
-import {StoreIndex} from '../types';
 import {AbstractItem} from '../common/abstract-item/abstract-item';
-import {namedGroup, NamedGroup} from '../groups/named-group/named-group';
+import {group} from '../groups/group/group';
 
 /**
  * Represents optional hooks for `Store` that can be implemented to perform
@@ -47,7 +46,12 @@ export abstract class Store extends AbstractItem implements StoreHooks {
   /**
    * Holds the group of store items managed by the store
    */
-  #storeGroup!: NamedGroup<StoreIndex<any>>;
+  private storeGroup = group();
+
+  /**
+   * Flag indicating that the `markAsReady()` method has been called for the store
+   */
+  private isReady = false;
 
   /**
    * Initializes the store and all of its items, preparing it for use. Optionally, a `beforeInit`
@@ -61,9 +65,15 @@ export abstract class Store extends AbstractItem implements StoreHooks {
     this.throwIfInitialized('initialize');
     this.throwIfCompleted('initialize');
 
+    if (!this.isReady) {
+      throw new BfError(
+        'You need to call the `markAsReady` method after defining all store items',
+        {code: 'bf_rx_store_AbstractStore_initialize_1'},
+      );
+    }
+
     if (!this.isInitStarted()) {
       this.startInitialization();
-      this.#storeGroup = namedGroup(this);
 
       // @ts-ignore
       if (isFunction(this.beforeStoreInit)) {
@@ -75,7 +85,7 @@ export abstract class Store extends AbstractItem implements StoreHooks {
         beforeInit(this);
       }
 
-      this.#storeGroup.initialize();
+      this.storeGroup.initialize();
       this.finishInitialization();
 
       // @ts-ignore
@@ -108,7 +118,7 @@ export abstract class Store extends AbstractItem implements StoreHooks {
       this.beforeStoreComplete();
     }
 
-    this.#storeGroup.complete();
+    this.storeGroup.complete();
     this.finishCompletion();
 
     // @ts-ignore
@@ -116,5 +126,14 @@ export abstract class Store extends AbstractItem implements StoreHooks {
       // @ts-ignore
       this.afterStoreComplete();
     }
+  }
+
+  /**
+   * Marks the store as ready, indicating that all store items, such as emitters, states, and groups,
+   * have been defined. This method must be called after all store items are defined!
+   */
+  protected markAsReady(): boolean {
+    this.isReady = true;
+    return this.storeGroup.markAsReady();
   }
 }

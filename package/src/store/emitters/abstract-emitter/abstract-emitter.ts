@@ -1,10 +1,12 @@
 import {BfError, Fn, isFunction, stub} from '@bitfiber/utils';
 import {
-  isObservable, combineLatest, zip, tap, Subject, Observable, OperatorFunction, Observer,
+  isObservable, combineLatest, zip, tap, Subject, Observable, OperatorFunction, Observer, take,
 } from 'rxjs';
 
 import {completeWith, operator} from '../../../operators';
-import {EmitterOrSubject, EmitterOrObservable, EmitterOrObservableTuple} from '../../types';
+import {
+  EmitterOrSubject, EmitterOrObservable, EmitterOrObservableTuple, SpreadFn,
+} from '../../types';
 import {AbstractItem} from '../../common/abstract-item/abstract-item';
 import {AbstractState} from '../../states/abstract-state/abstract-state';
 import {activeGroup} from '../../groups/abstract-group/abstract-group';
@@ -156,9 +158,8 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
   }
 
   /**
-   * Combines values from multiple emitters, states, or observables,
-   * applies a reducer function to these values,
-   * and emits the resulting value to all subscribers of this emitter.
+   * Combines values from multiple emitters, states, or observables, applies a reducer function to
+   * these values, and emits the resulting value to all subscribers of this emitter.
    *
    * The first emission occurs only after all values have been received from the sources,
    * ensuring that the reducer function operates on a complete set of inputs.
@@ -167,12 +168,12 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    * Works similarly to the RxJs 'combineLatest' operator
    *
    * @param data - A spread of emitters, states, or observables, followed by a reducer function.
-   * The reducer function takes the latest values from each source as arguments
-   * and returns the value to be emitted
+   * The reducer function takes the latest values from each source as arguments and returns
+   * the value to be emitted
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  select<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]): this {
+  select<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
     this.throwIfCompleted('select');
     const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
     const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
@@ -183,9 +184,8 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
   }
 
   /**
-   * Combines values from multiple emitters, states, or observables,
-   * applies a reducer function to these values,
-   * and emits the resulting value to all subscribers of this emitter.
+   * Combines values from multiple emitters, states, or observables, applies a reducer function to
+   * these values, and emits the resulting value to all subscribers of this emitter.
    *
    * The first emission occurs only after all values have been received from the sources,
    * ensuring that the reducer function operates on a complete set of inputs.
@@ -194,17 +194,38 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    * Works similarly to the RxJs 'zip' operator
    *
    * @param data - A spread of emitters, states, or observables, followed by a reducer function.
-   * The reducer function takes the latest values from each source as arguments
-   * and returns the value to be emitted
+   * The reducer function takes the latest values from each source as arguments and returns
+   * the value to be emitted
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  zip<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]): this {
+  zip<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
     this.throwIfCompleted('zip');
     const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
     const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
     zip(inputs.map(input => (isObservable(input) ? input : input.$)))
       .pipe(completeWith(this.subject))
+      .subscribe(values => this._emit(selector(...<I>values)));
+    return this;
+  }
+
+  /**
+   * Waits for the first values from multiple emitters, states, or observables, applies a reducer
+   * function to these values, emits the resulting value to all subscribers of this emitter,
+   * and completes the stream
+   *
+   * @param data - A spread of emitters, states, or observables, followed by a reducer function.
+   * The reducer function takes the first values from each source as arguments and returns
+   * the value to be emitted
+   *
+   * @returns the instance of the current emitter, allowing for method chaining
+   */
+  wait<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
+    this.throwIfCompleted('wait');
+    const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
+    const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
+    combineLatest(inputs.map(input => (isObservable(input) ? input : input.$)))
+      .pipe(completeWith(this.subject), take(1))
       .subscribe(values => this._emit(selector(...<I>values)));
     return this;
   }

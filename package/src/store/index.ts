@@ -1,6 +1,6 @@
 export {
   EmitterOrSubject, EmitterOrObservable, EmitterOrObservableTuple, StateGetter, StoreItem,
-  StoreIndex,
+  StoreIndex, SpreadFn,
 } from './types';
 export {AbstractEmitter} from './emitters/abstract-emitter/abstract-emitter';
 export {emitter, Emitter} from './emitters/emitter/emitter';

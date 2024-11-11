@@ -498,6 +498,11 @@ const result2 = emitter<[number, number]>(e => e
     console.log(range);
   }));
 
+// Creates an emitter that emits the timestamp of the last received ID
+const lastIdTime = emitter<number>(e => e
+  // Waits for the first value from the `lastId` emitter, then completes the stream
+  .wait(lastId, lastId => new Date().getTime()));
+
 // Groups all emitters and states for mass initialization and completion
 const group = namedGroup({currentId, lastId, productReq, log, result1, result2});
 
@@ -592,9 +597,8 @@ launch.emit(7);
 ---
 
 `@method select<I extends any[]>(...data): this`  
-Combines values from multiple emitters, states, or observables,
-applies a reducer function to these values,
-and emits the resulting value to all subscribers of this emitter.
+Combines values from multiple emitters, states, or observables, applies a reducer function to
+these values, and emits the resulting value to all subscribers of this emitter.
 
 The first emission occurs only after all values have been received from the sources,
 ensuring that the reducer function operates on a complete set of inputs.
@@ -602,10 +606,9 @@ Subsequent emissions occur whenever any of the sources emit a new value,
 triggering the reducer function to recompute the result based on the latest values.
 Works similarly to the RxJs 'combineLatest' operator
 
-`@param ...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]` - A spread of emitters,
-states, or observables, followed by a reducer function.
-The reducer function takes the latest values from each source as arguments
-and returns the value to be emitted
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the latest values
+from each source as arguments and returns the value to be emitted
 
 `@returns this` the instance of the current emitter, allowing for method chaining
 
@@ -630,9 +633,8 @@ const result = emitter<Result>(e => e
 ---
 
 `@method zip<I extends any[]>(...data): this`  
-Combines values from multiple emitters, states, or observables,
-applies a reducer function to these values,
-and emits the resulting value to all subscribers of this emitter.
+Combines values from multiple emitters, states, or observables, applies a reducer function to
+these values, and emits the resulting value to all subscribers of this emitter.
 
 The first emission occurs only after all values have been received from the sources,
 ensuring that the reducer function operates on a complete set of inputs.
@@ -640,10 +642,9 @@ Subsequent emissions occur only when all sources emit new values,
 triggering the reducer function to recompute the result based on the latest values.
 Works similarly to the RxJs 'zip' operator
 
-`@param ...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]` - A spread of emitters,
-states, or observables, followed by a reducer function.
-The reducer function takes the latest values from each source as arguments
-and returns the value to be emitted
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the latest values
+from each source as arguments and returns the value to be emitted
 
 `@returns this` the instance of the current emitter, allowing for method chaining
 
@@ -663,6 +664,33 @@ const result = emitter<Result>(e => e
   .zip(launch, data, count$, (launchId, data, count) => {
     launchId, data, count
   }));
+```
+
+---
+
+`wait<I extends any[]>(...data): this`  
+Waits for the first values from multiple emitters, states, or observables, applies a reducer
+function to these values, emits the resulting value to all subscribers of this emitter,
+and completes the stream
+
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the first values from
+each source as arguments and returns the value to be emitted
+
+`@returns this` the instance of the current emitter, allowing for method chaining
+
+```ts
+import {emitter, state} from '@bitfiber/rx';
+import {of} from 'rxjs';
+
+const launch = emitter<number>();
+const data = state<string>(1);
+const count$ = of(1);
+
+const result = emitter<number>(e => e
+  // Waits the first values from all reactive sources, emits the reducer function value to
+  // the emitter subscribers, and completes the stream
+  .wait(launch, data, count$, (launch, data, count) => count));
 ```
 
 ---
@@ -948,6 +976,11 @@ const result2 = state<[number, number]>([0, 0], s => s
     console.log(range);
   }));
 
+// Creates a state that records the timestamp of the last received ID
+const lastIdTime = state<number | null>(null, s => s
+  // Waits for the first value from the `lastId` state, then completes the stream
+  .wait(lastId, lastId => new Date().getTime()));
+
 // Groups all emitters and states for mass initialization and completion
 const group = namedGroup({currentId, lastId, productReq, log, result1, result2});
 
@@ -1216,9 +1249,8 @@ const data = state<number>(0, s => s
 ---
 
 `@method select<I extends any[]>(...data): this`  
-Combines values from multiple emitters, states, or observables,
-applies a reducer function to these values,
-and emits the resulting value to all subscribers of this state.
+Combines values from multiple emitters, states, or observables, applies a reducer function to
+these values, and emits the resulting value to all subscribers of this state.
 
 The first emission occurs only after all values have been received from the sources,
 ensuring that the reducer function operates on a complete set of inputs.
@@ -1226,10 +1258,9 @@ Subsequent emissions occur whenever any of the sources emit a new value,
 triggering the reducer function to recompute the result based on the latest values.
 Works similarly to the RxJs 'combineLatest' operator
 
-`@param ...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]` - A spread of emitters,
-states, or observables, followed by a reducer function.
-The reducer function takes the latest values from each source as arguments
-and returns the value to be emitted
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the latest values
+from each source as arguments and returns the value to be emitted
 
 `@returns this` the instance of the current state, allowing for method chaining
 
@@ -1254,9 +1285,8 @@ const result = state<Result>({launchId: 0, data: '', count: 0}, s => s
 ---
 
 `@method zip<I extends any[]>(...data): this`  
-Combines values from multiple emitters, states, or observables,
-applies a reducer function to these values,
-and emits the resulting value to all subscribers of this state.
+Combines values from multiple emitters, states, or observables, applies a reducer function to
+these values, and emits the resulting value to all subscribers of this state.
 
 The first emission occurs only after all values have been received from the sources,
 ensuring that the reducer function operates on a complete set of inputs.
@@ -1264,10 +1294,9 @@ Subsequent emissions occur only when all sources emit new values,
 triggering the reducer function to recompute the result based on the latest values.
 Works similarly to the RxJs 'zip' operator
 
-`@param ...data: [...EmitterOrObservableTuple<I>, (...values: I) => T]` - A spread of emitters,
-states, or observables, followed by a reducer function.
-The reducer function takes the latest values from each source as arguments
-and returns the value to be emitted
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the latest values
+from each source as arguments and returns the value to be emitted
 
 `@returns this` the instance of the current state, allowing for method chaining
 
@@ -1287,6 +1316,33 @@ const result = state<Result>({launchId: 0, data: '', count: 0}, s => s
   .zip(launch, data, count$, (launchId, data, count) => {
     launchId, data, count
   }));
+```
+
+---
+
+`wait<I extends any[]>(...data): this`  
+Waits for the first values from multiple emitters, states, or observables, applies a reducer
+function to these values, emits the resulting value to all subscribers of this state,
+and completes the stream
+
+`@param ...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]` - A spread of emitters, states,
+or observables, followed by a reducer function. The reducer function takes the first values from
+each source as arguments and returns the value to be emitted
+
+`@returns this` the instance of the current emitter, allowing for method chaining
+
+```ts
+import {emitter, state} from '@bitfiber/rx';
+import {of} from 'rxjs';
+
+const launch = emitter<number>();
+const data = state<string>(1);
+const count$ = of(1);
+
+const result = state<number>(0, s => s
+  // Waits the first values from all reactive sources, emits the reducer function value to
+  // the state subscribers, and completes the stream
+  .wait(launch, data, count$, (launch, data, count) => count));
 ```
 
 ---

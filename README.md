@@ -55,14 +55,31 @@ management and lifecycle control of related reactive sources.
 ## Key Features
 
 1. **Integration with RxJS**  
-   Since `@bitfiber/rx` is built on top of RxJS, it integrates seamlessly with the RxJS ecosystem.
-   Emitters and states can easily interact with observables and subjects, and you can leverage
-   all RxJS operators (e.g., map, filter, debounce, etc.) in various methods. The library simplifies
-   handling reactive streams, allowing you to focus on logic without worrying about manual
-   subscription and completion management.
+   Since `@bitfiber/rx` is built on top of RxJS, it integrates smoothly with the RxJS ecosystem.
+   Emitters and states can easily interact with observables and subjects, and can also create
+   effects using RxJS operators.
 
 
-2. **Strict Typing**  
+2. **Stream Connections**  
+   Easily connects multiple emitters, states, and observables to each other.
+
+
+3. **Readable Code Structure**  
+   Produces clear, traceable code, making connections between emitters, states, and
+   observables easy to follow.
+
+
+4. **Automatic Subscription Management**  
+   Simplifies handling reactive streams, freeing you from managing manual subscriptions
+   and completions.
+
+
+5. **Synchronization with Data Sources**  
+   States can synchronize with data sources like local storage, cookies, and
+   other external data sources.
+
+
+6. **Strict Typing**  
    The library leverages TypeScript to enforce strict typing, ensuring robust type checking
    at compile time. This reduces the likelihood of runtime errors and enhances code reliability.
    TypeScript's powerful type inference also makes it easier to write cleaner, more maintainable code,
@@ -70,7 +87,7 @@ management and lifecycle control of related reactive sources.
    components.
 
 
-3. **Tree Shaking**  
+7. **Tree Shaking**  
    The modular design of `@bitfiber/rx` enables tree shaking, allowing developers to optimize
    bundle sizes by importing only the required functionalities. This eliminates unused code from
    the final build, leading to smaller, more efficient applications, which is particularly useful
@@ -178,19 +195,19 @@ Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
 
 ### RxJs Operators
 
-* [`operator`](#operator)
-* [`completeWith`](#completeWith)
-* [`startWithDefined`](#startWithDefined)
+* [`operator`](#id-operator-fn)
+* [`completeWith`](#id-complete-with-fn)
+* [`startWithDefined`](#id-start-with-defined-fn)
 
 ---
 
 ## Store
 
 ---
+<a id="id-store"></a>
 
 ### `@class Store`
 
-<a id="id-store"></a>
 Extends `AbstractItem`, implements the `StoreHooks` interface, and provides functionality
 for managing store items such as emitters, states, and groups.
 
@@ -397,10 +414,10 @@ setTimeout(() => {
 ```
 
 ---
+<a id="id-store-hooks"></a>
 
 ### `@interface StoreHooks`
 
-<a id="id-store-hooks"></a>
 Represents optional hooks for `Store` that can be implemented to perform
 actions before and after the store is initialized and completed
 
@@ -417,10 +434,10 @@ An optional hook that runs before the store is completed
 An optional hook that runs after the store has been completed
 
 ---
+<a id="id-emitter-fn"></a>
 
 ### `@function emitter<T>`
 
-<a id="id-emitter-fn"></a>
 Creates and returns a new `Emitter` instance in a convenient way that provides functionality
 to create streams, handle subscriptions, emit values to subscribers, and integrate with
 other reactive sources such as emitters, states, subjects, observables.
@@ -529,10 +546,10 @@ group.complete();
 ```
 
 ---
+<a id="id-emitter"></a>
 
 ### `@class Emitter<T>`
 
-<a id="id-emitter"></a>
 Extends the `AbstractEmitter` class and provides functionality to create streams,
 handle subscriptions, emit values to subscribers, and integrate with other reactive sources
 such as emitters, states, subjects, observables.
@@ -888,10 +905,10 @@ const log = emitter<number>(e => e
 ```
 
 ---
+<a id="id-state-fn"></a>
 
 ### `@function state<T>`
 
-<a id="id-state-fn"></a>
 Creates an instance that combines the functionality of both the `State` class
 and the `StateGetter` function, initialized with the provided `initialValue`.
 Optionally, you can provide an `onInit` callback function, which is called just before
@@ -1011,10 +1028,10 @@ group.complete();
 ```
 
 ---
+<a id="id-state"></a>
 
 ### `@class State<T>`
 
-<a id="id-state"></a>
 Represents a concrete state in a reactive store, extending the functionality of `AbstractState`.
 This class encapsulates the logic for updating, resetting and maintaining a state,
 reacting to changes, and notifying subscribers whenever the state is updated.
@@ -1542,10 +1559,10 @@ const log = state<number>(0, s => s
 ```
 
 ---
+<a id="id-change-default-comparison"></a>
 
 `@function changeDefaultComparison`
 
-<a id="id-change-default-comparison"></a>
 Changes the default comparison method that will be used for all states.
 This can be one of the predefined comparison types: 'equals' for deep comparison,
 'strict' for strict equality, or a custom comparison function
@@ -1559,10 +1576,10 @@ changeDefaultComparison('strict');
 ```
 
 ---
+<a id="id-comparison"></a>
 
 ### `@type Comparison`
 
-<a id="id-comparison"></a>
 Represents a comparison operation, which can be a predefined comparison type or a custom function.
 
 The `Comparison` type allows for different ways to compare two values:
@@ -1573,10 +1590,10 @@ The `Comparison` type allows for different ways to compare two values:
   returns a boolean indicating whether the values are considered equal based on the provided logic
 
 ---
+<a id="id-group-fn"></a>
 
 ### `@function group`
 
-<a id="id-group-fn"></a>
 Creates a new `Group` instance that collects all subsequently created group items such as
 emitters, states, and groups until `group.markAsReady()` is called
 
@@ -1609,10 +1626,10 @@ someGroup.complete();
 ```
 
 ---
+<a id="id-group"></a>
 
 ### `@class Group`
 
-<a id="id-group"></a>
 Represents a group that collects all subsequently created group items such as emitters, states,
 and groups until `group.markAsReady()` is called
 
@@ -1693,10 +1710,10 @@ someGroup.markAsReady();
 ```
 
 ---
+<a id="id-named-group-fn"></a>
 
 ### `@function namedGroup<I extends Index>`
 
-<a id="id-named-group-fn"></a>
 Creates a new `NamedGroup` instance with the store items from the provided index,
 where each item is accessible by its unique key.
 
@@ -1739,10 +1756,10 @@ group.complete();
 ```
 
 ---
+<a id="id-named-group"></a>
 
 ### `@class NamedGroup<I extends Index>`
 
-<a id="id-named-group"></a>
 Represents a named group that incorporates store items from the provided index and can manage
 these items, each accessible by a unique key
 
@@ -1800,10 +1817,10 @@ group.complete();
 ```
 
 ---
+<a id="id-async-group-fn"></a>
 
 ### `@function asyncGroup<L, S, F>`
 
-<a id="id-async-group-fn"></a>
 Creates a new `AsyncGroup` instance that manages the lifecycle of an asynchronous action,
 including emitters for launching the action, handling its success, dealing with failures,
 and maintaining the state of the asynchronous action.
@@ -1893,10 +1910,10 @@ group.complete();
 ```
 
 ---
+<a id="id-async-group"></a>
 
 ### `@class AsyncGroup<L, S, F>`
 
-<a id="id-async-group"></a>
 Represents an asynchronous group that manages the lifecycle of an asynchronous action,
 including emitters for launching the action, handling its success, dealing with failures,
 and maintaining the state of the asynchronous action.
@@ -2029,10 +2046,10 @@ const group = asyncGroup<number, string[], Error>(group => {
 ```
 
 ---
+<a id="id-transmit"></a>
 
 ### `@function transmit<L, S, F>`
 
-<a id="id-transmit"></a>
 Transmits the result of the asynchronous action to the provided emitter
 or group, allowing success, failure, and completion actions or effects to be performed.
 It can also transmit to additional emitters for failure and finish actions or effects
@@ -2091,10 +2108,10 @@ launch
 ## Data Source
 
 ---
+<a id="id-local-storage-fn"></a>
 
 ### `@function localStorage<T = any>`
 
-<a id="id-local-storage-fn"></a>
 Creates and returns a singleton instance of `LocalStorage` and ensures that only one instance
 is created. If the instance already exists, it returns the existing instance
 
@@ -2111,10 +2128,10 @@ const ls = localStorage();
 ```
 
 ---
+<a id="id-local-storage"></a>
 
 ### `@class LocalStorage<T = any>`
 
-<a id="id-local-storage"></a>
 Implements the `KeyValueSource` interface, allowing interaction
 with the browser's local storage using key-value semantics. It provides methods for
 retrieving, setting, observing, and removing key-value pairs stored in local storage
@@ -2176,10 +2193,10 @@ ls.destroy();
 ```
 
 ---
+<a id="id-local-storage-part-fn"></a>
 
 ### `@function localStoragePart<T = string | undefined>`
 
-<a id="id-local-storage-part-fn"></a>
 Creates and returns an instance of `LocalStoragePart`, allowing interaction
 with a specific key-value pair stored in the browser's local storage
 
@@ -2198,10 +2215,10 @@ const lsPart = localStoragePart('key');
 ```
 
 ---
+<a id="id-local-storage-part"></a>
 
 ### `@class LocalStoragePart<T = string | undefined>`
 
-<a id="id-local-storage-part"></a>
 Extends `KeyValueSourcePart` and allows interaction with a particular
 key in the browser's local storage. It provides methods for retrieving, setting, and observing
 the value associated with the given key.  
@@ -2251,10 +2268,10 @@ lsPart.remove();
 ```
 
 ---
+<a id="id-session-storage-fn"></a>
 
 ### `@function sessionStorage<T = any>`
 
-<a id="id-session-storage-fn"></a>
 Creates and returns a singleton instance of `SessionStorage` and ensures that only one instance
 is created. If the instance already exists, it returns the existing instance
 
@@ -2271,10 +2288,10 @@ const ss = sessionStorage();
 ```
 
 ---
+<a id="id-session-storage"></a>
 
 ### `@class SessionStorage<T = any>`
 
-<a id="id-session-storage"></a>
 Implements the `KeyValueSource` interface, allowing interaction
 with the browser's session storage using key-value semantics. It provides methods for
 retrieving, setting, observing, and removing key-value pairs stored in session storage
@@ -2336,10 +2353,10 @@ ss.destroy();
 ```
 
 ---
+<a id="id-session-storage-part-fn"></a>
 
 ### `@function sessionStoragePart<T = string | undefined>`
 
-<a id="id-session-storage-part-fn"></a>
 Creates and returns an instance of `SessionStoragePart`, allowing interaction
 with a specific key-value pair stored in the browser's session storage
 
@@ -2358,10 +2375,10 @@ const ssPart = sessionStoragePart('key');
 ```
 
 ---
+<a id="id-session-storage-part"></a>
 
 ### `@class SessionStoragePart<T = string | undefined>`
 
-<a id="id-session-storage-part"></a>
 Extends `KeyValueSourcePart` and allows interaction with a particular
 key in the browser's session storage. It provides methods for retrieving, setting, and observing
 the value associated with the given key.  
@@ -2411,10 +2428,10 @@ ssPart.remove();
 ```
 
 ---
+<a id="id-memory-storage-fn"></a>
 
 ### `@function memoryStorage<T = any>`
 
-<a id="id-memory-storage-fn"></a>
 Creates a singleton instance of `MemoryStorage`, ensuring that only one instance of
 the in-memory key-value storage exists
 
@@ -2431,10 +2448,10 @@ const ms = memoryStorage<string>();
 ```
 
 ---
+<a id="id-memory-storage"></a>
 
 ### `@class MemoryStorage<T = any>`
 
-<a id="id-memory-storage"></a>
 Implements the `KeyValueSource` interface and allows storing, retrieving, observing,
 and managing key-value pairs directly in memory. It provides a simple storage mechanism
 that exists only during the runtime of the application
@@ -2487,10 +2504,10 @@ ms.destroy();
 ```
 
 ---
+<a id="id-memory-storage-part-fn"></a>
 
 ### `@function memoryStoragePart<T = string | undefined>`
 
-<a id="id-memory-storage-part-fn"></a>
 Creates an instance of `MemoryStoragePart`, which provides
 access to the data stored under the specified key in the memory storage
 
@@ -2509,10 +2526,10 @@ const msPart = memoryStoragePart('key');
 ```
 
 ---
+<a id="id-memory-storage-part"></a>
 
 ### `@class MemoryStoragePart<T = string | undefined>`
 
-<a id="id-memory-storage-part"></a>
 Extends `KeyValueSourcePart` and allows interacting with the data stored
 under a specific key in the memory storage. It enables retrieving, setting, observing,
 and removing data associated with the specified key.  
@@ -2564,10 +2581,10 @@ msPart.remove();
 ```
 
 ---
+<a id="id-cookie-fn"></a>
 
 ### `@function cookie<T extends CookieData<any> = CookieData<string | undefined>>`
 
-<a id="id-cookie-fn"></a>
 Creates and returns a singleton instance of the `Cookie` class and ensures that only one
 instance is created. If the instance already exists, it returns the existing one
 
@@ -2585,10 +2602,10 @@ const ck = cookie();
 ```
 
 ---
+<a id="id-cookie"></a>
 
 ### `@class Cookie<T extends CookieData<any> = CookieData<string | undefined>>`
 
-<a id="id-cookie"></a>
 Provides access to browser cookies as a key-value storage.
 
 The `Cookie` class implements the `KeyValueSource` interface, allowing interaction with
@@ -2658,10 +2675,10 @@ cookie.destroy();
 ```
 
 ---
+<a id="id-cookie-part-fn"></a>
 
 ### `@function cookiePart<T extends CookieData<any> = CookieData<string | undefined>>`
 
-<a id="id-cookie-part-fn"></a>
 Creates and returns an instance of `CookiePart`, allowing interaction
 with a specific key in the browser's cookie storage. You can also provide optional `removeParams`
 for managing cookie removal
@@ -2683,10 +2700,10 @@ const part = cookiePart('key');
 ```
 
 ---
+<a id="id-cookie-part"></a>
 
 ### `@class CookiePart<T extends CookieData<any> = CookieData<string | undefined>>`
 
-<a id="id-cookie-part"></a>
 Extends `KeyValueSourcePart` and allows interaction with a particular
 key in the browser's cookie storage. It provides methods for retrieving, setting, and observing
 the cookie value associated with the given key.  
@@ -2738,10 +2755,10 @@ part.remove();
 ```
 
 ---
+<a id="id-cookie-params"></a>
 
 ### `@interface CookieParams`
 
-<a id="id-cookie-params"></a>
 Represents the optional parameters that can be used when setting a cookie
 
 `@property path?: string`
@@ -2765,10 +2782,10 @@ Specifies the `SameSite` policy for the cookie, which controls how cookies are s
 with cross-site requests
 
 ---
+<a id="id-cookie-value"></a>
 
 ### `@interface CookieValue<T>`
 
-<a id="id-cookie-value"></a>
 Represents a value stored in a cookie
 
 `@template T` - The type of the value stored in the cookie
@@ -2777,19 +2794,19 @@ Represents a value stored in a cookie
 The value to be stored in the cookie
 
 ---
+<a id="id-cookie-data"></a>
 
 ### `@type CookieData<T>`
 
-<a id="id-cookie-data"></a>
 Combines cookie parameters with the value to be stored in a cookie
 
 `@template T` - The type of the value stored in the cookie
 
 ---
+<a id="id-key-value-source-part"></a>
 
 ### `@class KeyValueSourcePart<T>`
 
-<a id="id-key-value-source-part"></a>
 Implements the `DataSource` interface and provides functionality for managing a specific portion
 of a key-value source. It allows observing, retrieving, setting, and removing data associated
 with a particular key
@@ -2838,10 +2855,10 @@ window.localStorage.getItem('key'); // result: value
 ```
 
 ---
+<a id="id-key-value-source"></a>
 
 ### `@interface KeyValueSource<T = any>`
 
-<a id="id-key-value-source"></a>
 Represents a generic, writable key-value source with methods
 for getting, setting, removing, and observing values associated with a specific key.
 It also includes a method to destroy the source, allowing for cleanup when it is no longer needed
@@ -2880,10 +2897,10 @@ Observes changes to the value associated with the specified key
 Destroys the key-value source, releasing any resources held by it
 
 ---
+<a id="id-data-source"></a>
 
 ### `@interface DataSource<T>`
 
-<a id="id-data-source"></a>
 Represents a data source that can be observed, retrieved, modified, or removed.  
 It provides an observable for monitoring changes
 
@@ -2916,6 +2933,7 @@ Removes the current value from the data source
 ## RxJs Operators
 
 ---
+<a id="id-operator-fn"></a>
 
 ### `@function operator<T, R>`
 
@@ -2948,6 +2966,7 @@ of('value').pipe(op).subscribe();
 ```
 
 ---
+<a id="id-complete-with-fn"></a>
 
 ### `@function completeWith<T>`
 
@@ -2982,6 +3001,7 @@ interval(50).pipe(completeWith(trigger2$, true)).subscribe({
 ```
 
 ---
+<a id="id-start-with-defined-fn"></a>
 
 ### `@function startWithDefined<T, U extends T>`
 

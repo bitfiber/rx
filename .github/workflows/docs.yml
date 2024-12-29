@@ -38,11 +38,12 @@ jobs:
         run: npm ci
 
       - name: Docs build
-        working-directory: .\docs
+        working-directory: ./docs
         run: next build
       
   # Deploy job
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     
     environment:

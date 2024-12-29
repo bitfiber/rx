@@ -39,7 +39,7 @@ jobs:
 
       - name: Docs build
         working-directory: ./docs
-        run: next build
+        run: npm run build
       
   # Deploy job
   deploy:

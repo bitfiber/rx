@@ -1,1 +1,0 @@
-(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[5303],{15456:(e,_,r)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/sources/reference/memoryStoragePart/_meta",function(){return r(71683)}])},71683:(e,_,r)=>{"use strict";r.r(_),r.d(_,{__N_SSG:()=>u,default:()=>n});var u=!0;let n=()=>null}},e=>{var _=_=>e(e.s=_);e.O(0,[636,6593,8792],()=>_(15456)),_N_E=e.O()}]);

@@ -3,10 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "next build & npm run copy-to-site",
+    "build": "next build",
     "start:dev": "next",
-    "start:prod": "npx serve@latest .\\site\\",
-    "copy-to-site": "node tools/copy-to-site.mjs"
+    "start:prod": "npm run build & npx serve@latest .\\dist\\"
   },
   "peerDependencies": {
     "next": "~15.1.0",

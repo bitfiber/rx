@@ -1,0 +1,17 @@
+export default {
+  store: 'Store',
+  storeHooks: 'StoreHooks',
+  emitterFn: 'emitter',
+  emitter: 'Emitter',
+  stateFn: 'state',
+  state: 'State',
+  comparison: 'Comparison',
+  changeDefaultComparison: 'changeDefaultComparison',
+  groupFn: 'group',
+  group: 'Group',
+  namedGroupFn: 'namedGroup',
+  namedGroup: 'NamedGroup',
+  asyncGroupFn: 'asyncGroup',
+  asyncGroup: 'AsyncGroup',
+  transmit: 'transmit',
+};

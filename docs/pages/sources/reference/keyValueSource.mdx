@@ -1,0 +1,56 @@
+import {Badge} from '../../../';
+
+# KeyValueSource <Badge type={'interface'}>Interface</Badge>
+
+Represents a generic, writable key-value source with methods for getting, setting, removing, and
+observing values associated with a specific key. It also includes a method to destroy the source,
+allowing for cleanup when it is no longer needed
+
+`@template T = any {:ts}`  
+The type of the values stored in the key-value source. Defaults to `any`
+
+## API
+
+```ts copy
+interface KeyValueSource<T = any> {
+  get(key: string): T;
+  set(key: string, value: T): void;
+  remove(key: string): void;
+  observe(key: string): Observable<T>;
+  destroy(): void;
+}
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements KeyValueSource<T> {
+  private data: Index<T> = {};
+  private readonly subject = new Subject<string>();
+  
+  get(key: string): T {
+    return this.data[key];
+  }
+  
+  set(key: string, value: T): void {
+    this.data[key] = value;
+    this.subject.next(key);
+  }
+  
+  remove(key: string): void {
+    delete this.data[key];
+    this.subject.next(key);
+  }
+  
+  observe(key: string): Observable<T> {
+    return this.subject.pipe(
+      filter(eKey => key === eKey),
+      map(key => this.get(key)),
+    );
+  }
+  
+  destroy(): void {
+    this.data = {};
+  }
+}
+```

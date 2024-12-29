@@ -4,51 +4,53 @@
 [![GitHub star chart](https://img.shields.io/github/stars/bitfiber/rx?style=social)](https://star-history.com/#bitfiber/rx)
 [![GitHub fork](https://img.shields.io/github/forks/bitfiber/rx?style=social)](https://github.com/bitfiber/rx/fork)
 
-`@bitfiber/rx` is a powerful and flexible library built on top of [RxJS](https://github.com/ReactiveX/rxjs), designed to manage
-reactive state, asynchronous workflows, and events in modern JavaScript applications.
-It provides a structured approach to handling complex data flows using emitters, states, groups,
-and stores, allowing seamless integration of various reactive sources like emitters, states,
-and observables. Emitters and states can be organized into groups and stores, enabling efficient
-management and lifecycle control of related reactive sources.
+`@bitfiber/rx` is a powerful and flexible library built on top of [RxJS](https://rxjs.dev), tailored for managing
+reactive state, asynchronous workflows, and events in modern JavaScript applications. It introduces
+a structured approach to handle complex data flows through key components such as emitters, states,
+groups, and stores.
+
+This library seamlessly integrates various reactive sources like emitters, states, and observables,
+enabling a cohesive and efficient workflow. Emitters and states can be organized into groups and
+stores, streamlining management and lifecycle control for related reactive components.
+
+Whether you're working on small or large-scale applications, `@bitfiber/rx` simplifies reactive
+programming, making it more efficient and maintainable.
 
 ---
 
 ## Key Components
 
-1. **Emitters**  
-   Emitters are the core units of communication in the library, broadcasting values or events
-   to multiple subscribers. They provide a straightforward mechanism for creating and managing
-   reactive streams, allowing you to easily handle data emissions and manage complex reactive flows.
-   Emitters can integrate with other reactive sources like emitters, states, and observables.
+1. **Store**  
+   The Store is a foundational component for implementing reactive state management and
+   handling asynchronous data flow in modules or entire applications. It serves as a central hub,
+   organizing and managing store items like emitters, states, and groups, ensuring seamless
+   interaction among them.
+
+2. **Emitters**  
+   Emitters are fundamental units of communication in the reactive store. They enable straightforward
+   creation and management of reactive streams, integrating seamlessly with other reactive sources
+   like emitters, states, and observables. This integration allows you to build complex networks of
+   streams and effectively manage reactive data flows.
 
 
-2. **States**  
-   States are the primary data containers within the library, responsible for maintaining
-   and broadcasting data updates to multiple subscribers. Like emitters, states can create
-   and manage reactive streams to broadcast changes efficiently. They are designed to simplify
-   state propagation and synchronization across stores or features, ensuring consistency.
-   States can also integrate seamlessly with other reactive sources like emitters, states,
-   and observables.
-
-
-3. **Data sources**  
-   Data sources serve as external containers for persistent or external data, which can be
-   synchronized with states. They allow the connection of states to external data sources, ensuring
-   that state data is always up to date and aligned with external systems or storage.
+3. **States**  
+   States are the core data containers in the reactive store, responsible for maintaining and
+   broadcasting data updates to multiple subscribers. Like emitters, states can create and manage
+   reactive streams to broadcast changes efficiently. They are designed to simplify state
+   propagation and synchronization across stores or features, ensuring consistency. States can also
+   integrate seamlessly with other reactive sources like emitters, states, and observables.
 
 
 4. **Groups**  
-   Groups are collections of store items, including emitters, states, or even other groups,
-   and are used to implement the functionality of specific features. They help organize related
-   reactive sources into a cohesive structure, ensuring that all items are properly initialized
-   and completed as a unit.
+   Groups are collections of emitters, states, and other groups that are unified under a specific
+   feature. They help organize related reactive sources into a cohesive structure, ensuring proper
+   initialization and completion of all items as a single unit.
 
 
-5. **Stores**  
-   Stores are the complete collections of store items and methods that manage the functionality
-   of an entire module or application. They can contain emitters, states, and groups, providing
-   an organized structure for managing related reactive sources, ensuring that all items are
-   properly initialized and completed as a unit.
+5. **Data sources**  
+   Data sources serve as external containers for persistent or external data, which can be
+   synchronized with states. They allow the connection of states to external data sources, ensuring
+   that state data is always up to date and aligned with external systems or storage.
 
 ---
 
@@ -141,16 +143,15 @@ By participating, you are expected to uphold this code.
 
 ## License
 
-This project is released under the Apache 2.0 License.  
-You can find the full text of the license in the [LICENSE](https://github.com/bitfiber/rx/blob/main/LICENSE.txt)
-file.  
-Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
+Code licensed under an [Apache 2.0 License](https://github.com/bitfiber/rx/blob/main/LICENSE.txt).  
+Documentation licensed under [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/).  
+Copyright © 2023-2025 Oleksandr Zmanovskyi. All rights reserved.
 
 ---
 
 ## Table of Contents
 
-### Store
+### Rx Store
 
 * [`Store`](#id-store)
 * [`StoreHooks`](#id-store-hooks)
@@ -168,7 +169,7 @@ Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
 * [`AsyncGroup`](#id-async-group)
 * [`transmit`](#id-transmit)
 
-### Data Source
+### Data Sources
 
 * [`localStorage`](#id-local-storage-fn)
 * [`LocalStorage`](#id-local-storage)
@@ -193,7 +194,7 @@ Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
 * [`KeyValueSource`](#id-key-value-source)
 * [`DataSource`](#id-data-source)
 
-### RxJs Operators
+### RxJS Operators
 
 * [`operator`](#id-operator-fn)
 * [`completeWith`](#id-complete-with-fn)
@@ -201,7 +202,7 @@ Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
 
 ---
 
-## Store
+## Rx Store
 
 ---
 <a id="id-store"></a>
@@ -211,10 +212,9 @@ Copyright © 2023-2024 Oleksandr Zmanovskyi. All rights reserved.
 Extends `AbstractItem`, implements the `StoreHooks` interface, and provides functionality
 for managing store items such as emitters, states, and groups.
 
-The
-`Store` class handles the initialization and completion of these items, providing lifecycle hooks
-that allow custom logic to be executed before and after key events such as store initialization
-and completion. This class serves as a base for specific store implementations
+The `Store` class handles the initialization and completion of these items, providing lifecycle
+hooks that allow custom logic to be executed before and after key events such as store
+initialization and completion. This class serves as a base for specific store implementations
 
 `@abstract`
 
@@ -2105,7 +2105,7 @@ launch
 
 ---
 
-## Data Source
+## Data Sources
 
 ---
 <a id="id-local-storage-fn"></a>
@@ -2168,8 +2168,7 @@ Removes a value associated with the provided key from local storage
 ---
 
 `@method observe(key: string): Observable<T>`  
-Creates and returns an observable that emits value changes
-stored under the given key in local storage     
+Returns an observable that emits value changes stored under the given key in local storage     
 `@param key: string` - The specific key under which the value is stored in local storage
 
 ---
@@ -2328,8 +2327,7 @@ Removes a value associated with the provided key from session storage
 ---
 
 `@method observe(key: string): Observable<T>`  
-Creates and returns an observable that emits value changes
-stored under the given key in session storage     
+Returns an observable that emits value changes stored under the given key in session storage     
 `@param key: string` - The specific key under which the value is stored in session storage
 
 ---
@@ -2643,16 +2641,15 @@ as well as optional cookie parameters
 Removes the cookie associated with the given key. Optionally, you can
 provide `CookieParams` to specify additional options, such as the path or domain, to ensure
 the correct cookie is removed  
-`@param key: string` - The specific key (name) of the cookie to be removed  
+`@param key: string` - The specific key of the cookie to be removed  
 `@param params?: CookieParams` - Optional parameters that can be used to specify
 the cookie's path, domain, etc.
 
 ---
 
 `@method observe(key: string): Observable<T>`  
-Creates and returns an observable that emits value changes of the cookie
-associated with the specified key. This allows reactive monitoring of the cookie value  
-`@param key: string` - The specific key (name) under which the cookie value is stored
+Returns an observable that emits value changes of the cookie associated with the specified key  
+`@param key: string` - The specific key under which the cookie value is stored
 
 ---
 
@@ -2859,9 +2856,9 @@ window.localStorage.getItem('key'); // result: value
 
 ### `@interface KeyValueSource<T = any>`
 
-Represents a generic, writable key-value source with methods
-for getting, setting, removing, and observing values associated with a specific key.
-It also includes a method to destroy the source, allowing for cleanup when it is no longer needed
+Represents a generic, writable key-value source with methods for getting, setting, removing, and
+observing values associated with a specific key. It also includes a method to destroy the source,
+allowing for cleanup when it is no longer needed
 
 `@template T` - The type of the values stored in the key-value source. Defaults to `any`
 
@@ -2887,9 +2884,9 @@ Removes the value associated with the specified key
 ---
 
 `@method observe(key: string): Observable<T>`  
-Observes changes to the value associated with the specified key   
-`@param key: string` - The key to observe for changes     
-`@returns Observable<T>` - An observable that emits the value associated with the key
+Returns an observable that will emit value changes for a specific key   
+`@param key: string` - The key for which to observe value changes     
+`@returns Observable<T>` - An observable that will emit value changes for a specific key
 
 ---
 
@@ -2930,7 +2927,7 @@ Removes the current value from the data source
 
 ---
 
-## RxJs Operators
+## RxJS Operators
 
 ---
 <a id="id-operator-fn"></a>

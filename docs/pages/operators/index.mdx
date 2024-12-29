@@ -1,0 +1,43 @@
+# What is RxJS Operators?
+
+An Operator is essentially a pure function which takes one Observable as input and generates another
+Observable as output. Subscribing to the output Observable will also subscribe to the input
+Observable.
+
+Operators can be piped to Observables using the syntax observableInstance.pipe(operator) or,
+more commonly, observableInstance.pipe(operatorFactory()).
+
+## List of Operators
+
+1. **[completeWith](/operators/reference/completeWith)**  
+Completes the subscriber when the provided `trigger` observable completes
+
+2. **[startWithDefined](/operators/reference/startWithDefined)**  
+Instantly emits a value from the provided getter if the value is defined
+
+3. **[transmit](/store/reference/transmit)**  
+Transmits the result of the asynchronous action to the provided emitter or group, allowing success,
+failure, and completion actions or effects to be performed. Only for [Rx Store](/store)
+
+## Creating a Custom Operator
+
+For creating a custom RxJS operator, you can use the **[operator](/operators/reference/operator)** method.
+It provides the source observable and the subscriber as arguments in a callback function, making it
+easier to define custom transformations or logic
+
+### Custom Operator Example
+
+```ts copy
+import {Observable} from 'rxjs';
+import {operator} from '@bitfiber/rx';
+
+function customOperator<T, R>(transform: (value: T) => R) {
+  return operator<T, R>((source, subscriber) => {
+    return source.subscribe({
+      next: value => subscriber.next(transform(value)),
+      error: error => subscriber.error(error),
+      complete: () => subscriber.complete(),
+    });
+  });
+}
+```

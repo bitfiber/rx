@@ -1,0 +1,30 @@
+import {Badge} from '../../../../';
+
+# markAsReady <Badge type={'method'}>Method</Badge>
+
+Marks the group as ready, indicating that all group items, such as emitters, states, and groups,
+have been defined.  
+This method must be called after all group items are defined!
+
+## API
+
+```ts copy
+markAsReady(): void;
+```
+
+## Example
+
+```ts copy
+import {state, group} from '@bitfiber/rx';
+
+// Collects all subsequently created emitters, states, and groups for
+// mass initialization and completion
+const someGroup = group();
+
+// The state will be added in 'someGroup'
+const someState = state<string>('initialValue1');
+
+// Marks the store as ready, indicating that all store items, such as emitters, states,
+// and groups, have been defined
+someGroup.markAsReady();
+```

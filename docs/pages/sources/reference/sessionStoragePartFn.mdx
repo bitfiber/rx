@@ -1,0 +1,30 @@
+import {Badge} from '../../../';
+
+# sessionStoragePart <Badge type={'function'}>Function</Badge>
+
+Creates an instance of `SessionStoragePart`, allowing interaction with a specific key-value pair
+stored in the browser's session storage
+
+`@template T = string | undefined {:ts}`  
+The type of the value stored in session storage. Defaults to `string | undefined`
+
+`@param key: string {:ts}`  
+The key used to access the value in session storage
+
+`@returns SessionStoragePart<T> {:ts}`
+
+See also: [SessionStoragePart](/sources/reference/sessionStoragePart)
+
+## API
+
+```ts copy
+function sessionStoragePart<T = string | undefined>(key: string): SessionStoragePart<T>;
+```
+
+## Example
+
+```ts copy
+import {sessionStoragePart} from '@bitfiber/rx';
+
+const ssPart = sessionStoragePart('key');
+```

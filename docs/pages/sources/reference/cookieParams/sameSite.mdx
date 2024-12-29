@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# sameSite <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Specifies the `SameSite` policy for the cookie, which controls how cookies are sent with
+cross-site requests
+
+## API
+
+```ts copy
+sameSite?: 'strict' | 'lax';
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const now = new Date();
+const token = cookiePart('token');
+
+token.set({
+  value: 'token-hash',
+  sameSite: 'strict',
+});
+```

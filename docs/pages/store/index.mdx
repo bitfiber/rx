@@ -1,0 +1,304 @@
+# What is Store?
+
+The Store is a foundational component for implementing reactive state management and
+handling asynchronous data flow in modules or entire applications. It serves as a central hub,
+organizing and managing store items like emitters, states, and groups, ensuring seamless
+interaction among them.
+
+Stores can also include methods to trigger specific actions, making them a powerful and
+flexible tool for coordinating complex application logic. Their structured design simplifies
+the development of scalable, maintainable, and reactive applications, ensuring consistency and
+clarity in managing state and data flow.
+
+## Creating a Store
+
+To create a store, define a new class that extends the [Store](/store/reference/store) class.
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {Store, asyncGroup, emitter, state, transmit} from '@bitfiber/rx';
+
+// Define a products store
+class ProductsStore extends Store {
+  // Define your store items here
+}
+```
+
+## Adding Store Items
+
+Within the store class, define the store items you need, such as emitters, states, or groups.
+Each item will serve a specific purpose in managing the store's reactive logic and state.
+
+```ts copy
+class ProductsStore extends Store {
+  // Provides the start of the first data loading process
+  start = emitter<void>();
+
+  // Provides the state of the products filters
+  filters = state<ProductsFilters>({search: '', page: 1});
+
+  // Provides an async group for managing categories loading process
+  categoriesReq = asyncGroup<void, ProductCategory[], Error>();
+
+  // Provides an async group for managing products loading process
+  productsReq = asyncGroup<ProductsFilters, Product[], Error>();
+  
+  // Provides the loading status state
+  isLoading = state<boolean>(false);
+
+  // Provides the main store state
+  data = state<ProductsState>({categories: [], products: []});
+
+  // Provides the store error handling
+  errors = emitter<Error>();
+}
+```
+
+## Adding Interaction Logic
+
+Use `onInit` callbacks within emitters, states, and groups to define side effects, establish
+relationships between store items, and manage their interactions effectively. This ensures
+subscriptions and emissions occur only after the store is initialized.
+
+```ts copy
+class ProductsStore extends Store {
+  start = emitter<void>();
+  
+  filters = state<ProductsFilters>({search: '', page: 1})
+    .useLazyEmission();
+  
+  categoriesReq = asyncGroup<void, ProductCategory[], Error>((categoriesReq, {launch}) => {
+    launch
+      // Trigger categories loading once the start emitter emits
+      .wait(this.start)
+      // Define a side effect for loading categories
+      .effect(switchMap(() => categoriesService.get().pipe(transmit(categoriesReq))));
+  }, []);
+  
+  productsReq = asyncGroup<ProductsFilters, Product[], Error>((productsReq, {launch}) => {
+    launch
+      // Trigger products loading after categories are successfully loaded
+      .wait(this.categoriesReq.success, () => this.filters())
+      // Reload products when filters are updated
+      .receive(this.filters)
+      // Define a side effect for loading products
+      .effect(switchMap(filters => productsService.get(filters).pipe(transmit(productsReq))));
+  }, []);
+  
+  isLoading = state<boolean>(false, s => s
+    // Track loading status based on the state of asynchronous actions
+    .select(
+      this.categoriesReq.state,
+      this.productsReq.state,
+      (categoriesState, productsState) => categoriesState.inProgress || productsState.inProgress,
+    ),
+  );
+  
+  data = state<ProductsState>({categories: [], products: []}, s => s
+    // Combine data from categories and products into a single state
+    .select(
+      this.categoriesReq.success,
+      this.productsReq.success,
+      (categories, products) => ({categories, products}),
+    ),
+  );
+  
+  errors = emitter<Error>(e => e
+    // Collect errors from asynchronous actions
+    .receive(this.categoriesReq.fail, this.productsReq.fail)
+    // Handle errors with a side effect
+    .tap(error => console.log('Error:', error)));
+}
+```
+
+## Marking Store as Ready
+
+To finalize the store setup and indicate that all store items have been defined, call
+the `markAsReady` method.
+
+```ts copy
+class ProductsStore extends Store {
+  start = emitter<void>();
+  filters = state<ProductsFilters>({search: '', page: 1});
+  categoriesReq = asyncGroup<void, ProductCategory[], Error>();
+  productsReq = asyncGroup<ProductsFilters, Product[], Error>();
+  isLoading = state<boolean>(false);
+  data = state<ProductsState>({categories: [], products: []});
+  errors = emitter<Error>();
+
+  // Marks the store as ready, indicating that all store items have been defined
+  #ready = this.markAsReady();
+}
+```
+
+## Lifecycle Hooks
+
+You can use lifecycle hooks like `beforeStoreInit`, `afterStoreInit`, `beforeStoreComplete`, and
+`afterStoreComplete` to add custom logic at key lifecycle events.
+
+```ts copy
+class ProductsStore extends Store {
+  start = emitter<void>();
+  filters = state<ProductsFilters>({search: '', page: 1});
+  categoriesReq = asyncGroup<void, ProductCategory[], Error>();
+  productsReq = asyncGroup<ProductsFilters, Product[], Error>();
+  isLoading = state<boolean>(false);
+  data = state<ProductsState>({categories: [], products: []});
+  errors = emitter<Error>();
+  
+  // Lifecycle hook: Automatically start the store after initialization
+  afterStoreInit(): void {
+    this.start.emit();
+  }
+}
+```
+
+## Action Methods
+
+Define action methods to trigger specific store logic.
+
+```ts copy
+class ProductsStore extends Store {
+  start = emitter<void>();
+  filters = state<ProductsFilters>({search: '', page: 1});
+  categoriesReq = asyncGroup<void, ProductCategory[], Error>();
+  productsReq = asyncGroup<ProductsFilters, Product[], Error>();
+  isLoading = state<boolean>(false);
+  data = state<ProductsState>({categories: [], products: []});
+  errors = emitter<Error>();
+  
+  // Action method: Changes the filters applied to the products
+  updateFilters(filters: Partial<ProductsFilters>): void {
+    this.filters.update(state => ({...state, ...filters}));
+  }
+}
+```
+
+## Full Store Example
+
+Below is a complete example of a reactive store for managing products, categories, and filters.
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {Store, asyncGroup, emitter, state, transmit} from '@bitfiber/rx';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductCategory {
+  id: number;
+  name: string;
+}
+
+interface ProductsFilters {
+  search: string;
+  page: number;
+}
+
+interface ProductsState {
+  categories: ProductCategory[];
+  products: Product[];
+}
+
+class ProductsStore extends Store {
+  // Provides the start of the first data loading process
+  start = emitter<void>();
+
+  // Provides the state of the products filters
+  filters = state<ProductsFilters>({search: '', page: 1})
+    .useLazyEmission();
+  
+  // Provides an async group for managing categories loading process
+  categoriesReq = asyncGroup<void, ProductCategory[], Error>((categoriesReq, {launch}) => {
+    launch
+      // Trigger categories loading once the start emitter emits
+      .wait(this.start)
+      // Define a side effect for loading categories
+      .effect(switchMap(() => categoriesService.get().pipe(transmit(categoriesReq))));
+  }, []);
+  
+  // Provides an async group for managing products loading process
+  productsReq = asyncGroup<ProductsFilters, Product[], Error>((productsReq, {launch}) => {
+    launch
+      // Trigger products loading after categories are successfully loaded
+      .wait(this.categoriesReq.success, () => this.filters())
+      // Reload products when filters are updated
+      .receive(this.filters)
+      // Define a side effect for loading products
+      .effect(switchMap(filters => productsService.get(filters).pipe(transmit(productsReq))));
+  }, []);
+  
+  // Provides the loading status state
+  isLoading = state<boolean>(false, s => s
+    // Track loading status based on the state of asynchronous actions
+    .select(
+      this.categoriesReq.state,
+      this.productsReq.state,
+      (categoriesState, productsState) => categoriesState.inProgress || productsState.inProgress,
+    ),
+  );
+
+  // Provides the main store state
+  data = state<ProductsState>({categories: [], products: []}, s => s
+    // Combine data from categories and products into a single state
+    .select(
+      this.categoriesReq.success,
+      this.productsReq.success,
+      (categories, products) => ({categories, products}),
+    ),
+  );
+
+  // Provides the store error handling
+  errors = emitter<Error>(e => e
+    // Collect errors from asynchronous actions
+    .receive(this.categoriesReq.fail, this.productsReq.fail)
+    // Handle errors with a side effect
+    .tap(error => console.log('Error:', error)));
+
+  // Marks the store as ready, indicating that all store items have been defined
+  #ready = this.markAsReady();
+  
+  // Automatically start the store after initialization
+  afterStoreInit(): void {
+    this.start.emit();
+  }
+  
+  // Changes the filters applied to the products
+  updateFilters(filters: Partial<ProductsFilters>): void {
+    this.filters.update(state => ({...state, ...filters}));
+  }
+}
+```
+
+## Usage the store
+
+To use the store, create an instance, initialize it, and then interact with its items:
+
+```ts copy
+// Create a new store for managing products
+const productsStore = new ProductsStore();
+
+// Initialize the store and all its items
+productsStore.initialize();
+
+// Use tap to perform a side effect when the loading status changes
+productsStore.isLoading
+  .tap(isLoading => console.log('Loading state:', isLoading));
+
+// Subscribe to the state observable to react to data updates
+productsStore.data.$
+  .subscribe(data => console.log('Updated products:', data.products));
+
+// Update filters to trigger products reloading
+productsStore.updateFilters({page: 2});
+
+// Retrieve the current data synchronously
+const data = productsStore.data();
+console.log('Current products:', data.products);
+
+// Complete the store and all its items when done
+productsStore.complete();
+```

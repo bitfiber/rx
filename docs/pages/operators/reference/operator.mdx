@@ -1,0 +1,44 @@
+import {Badge} from '../../../';
+
+# operator <Badge type={'function'}>Function</Badge>
+
+Creates a custom RxJS operator that can be used in the `pipe` function of an observable.
+This operator allows you to apply custom transformation logic to the observable stream
+
+`@template T {:ts}`  
+The type of values emitted by the source observable
+
+`@template R {:ts}`  
+The type of values emitted by the transformed observable after applying the operator
+
+`@param fn: (source: Observable<T>, subscriber: Subscriber<R>) => Subscription | void {:ts}`  
+A function that takes the source observable and the subscriber, and returns teardown logic to
+clean up resources when the observable completes or errors
+
+`@returns OperatorFunction<T, R> {:ts}`
+
+## API
+
+```ts copy
+function operator<T, R>(fn: (
+  source: Observable<T>,
+  subscriber: Subscriber<R>,
+) => TeardownLogic): OperatorFunction<T, R>;
+```
+
+## Example
+
+```ts copy
+import {Observable} from 'rxjs';
+import {operator} from '@bitfiber/rx';
+
+function customOperator<T, R>(transform: (value: T) => R) {
+  return operator<T, R>((source, subscriber) => {
+    return source.subscribe({
+      next: value => subscriber.next(transform(value)),
+      error: error => subscriber.error(error),
+      complete: () => subscriber.complete(),
+    });
+  });
+}
+```

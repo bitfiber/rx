@@ -6,5 +6,7 @@
     "sourceMap": true,
     "removeComments": true,
     "declaration": false
-  }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

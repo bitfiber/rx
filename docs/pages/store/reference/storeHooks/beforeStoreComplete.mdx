@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# beforeStoreComplete <Badge type={'method'}>Method</Badge>
+
+An optional hook that runs before the store is completed
+
+## API
+
+```ts copy
+beforeStoreComplete?(): void;
+```
+
+## Example
+
+```ts copy
+import {emitter, Store} from '@bitfiber/rx';
+
+class StoreWithHook extends Store {
+  start = emitter<void>();
+  
+  beforeStoreComplete(): void {
+    // Runs some logic before the store is completed
+  }
+}
+```

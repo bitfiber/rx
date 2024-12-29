@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# $ <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+An observable that serves as the source for all emitter streams.
+It allows subscribers to listen to and react to emitted values or events
+
+## API
+
+```ts copy
+readonly $: Observable<T>;
+```
+
+## Example
+
+```ts copy
+import {map} from 'rxjs';
+import {emitter} from '@bitfiber/rx'; 
+
+const num = emitter<number>();
+
+// Uses emitter observable
+num.$
+  .pipe(map(v => v * 2))
+  .subscribe(v => console.log(v));
+```

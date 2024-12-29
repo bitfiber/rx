@@ -1,0 +1,33 @@
+import {Badge} from '../../../';
+
+# KeyValueSourcePart <Badge type={'class'}>Class</Badge>
+
+Implements the `DataSource` interface and provides functionality for managing a specific portion
+of a key-value source. It allows observing, retrieving, setting, and removing data associated
+with a particular key
+
+`@template T {:ts}`  
+The type of data stored in the key-value source
+
+See also: [DataSource](/sources/reference/dataSource), [KeyValueSource](/sources/reference/keyValueSource)
+
+## API
+
+```ts copy
+class KeyValueSourcePart<T> implements DataSource<T> {
+  readonly $: Observable<T>;
+  constructor(key: string, source: KeyValueSource);
+  get(): T;
+  set(value: T): void;
+  remove(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {KeyValueSourcePart, MemoryStorage} from '@bitfiber/rx';
+
+// Creates a memory source part
+const source = new KeyValueSourcePart<number>('someKey', new MemoryStorage());
+```

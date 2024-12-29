@@ -1,0 +1,66 @@
+import {Badge} from '../../../../';
+
+# tap <Badge type={'method'}>Method</Badge>
+
+## Overload 1
+
+Creates a new stream with a side effect, similar to the RxJS `tap` operator.
+
+This method allows you to perform actions or side effects whenever the emitter emits a value,
+without altering the value itself. It is useful for tasks like logging, debugging,
+or triggering external operations in response to emitted values
+
+`@param observer: Partial<Observer<T>> {:ts}`  
+A partial observer with lifecycle methods (`next`, `error`, `complete`)
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+### API
+
+```ts copy
+tap(observer: Partial<Observer<T>>): this;
+```
+
+### Example
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+
+const log = emitter<number>(e => e
+  // Performs a tap callback each time the emitter emits new data and handles errors
+  .tap({
+    next: data => console.log(data),
+    error: error => console.log(error),
+  }));
+```
+
+## Overload 2
+
+Creates a new stream with a side effect, similar to the RxJS `tap` operator.
+
+This method allows you to perform actions or side effects whenever the emitter emits a value,
+without altering the value itself. It is useful for tasks like logging, debugging,
+or triggering external operations in response to emitted values
+
+`@param next: (value: T) => void {:ts}`  
+A function that takes the emitted value and performs a side effect
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+### API
+
+```ts copy
+tap(next: (value: T) => void): this;
+```
+
+### Example
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+
+const log = emitter<number>(e => e
+  // Performs a tap callback each time the emitter emits new data
+  .tap(data => console.log(data)));
+```

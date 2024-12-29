@@ -1,0 +1,32 @@
+import {Badge} from '../../../';
+
+# MemoryStorage <Badge type={'class'}>Class</Badge>
+
+Implements the `KeyValueSource` interface and allows storing, retrieving, observing, and managing
+key-value pairs directly in memory. It provides a simple storage mechanism that exists only during
+the runtime of the application
+
+`@template T = any {:ts}`  
+The type of data stored in the memory storage. Defaults to `any`
+
+See also: [KeyValueSource](/sources/reference/keyValueSource)
+
+## API
+
+```ts copy
+class MemoryStorage<T = any> implements KeyValueSource<T> {
+  get(key: string): T;
+  set(key: string, value: T): void;
+  remove(key: string): void;
+  observe(key: string): Observable<T>;
+  destroy(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {MemoryStorage} from '@bitfiber/rx';
+
+const ms = new MemoryStorage();
+```

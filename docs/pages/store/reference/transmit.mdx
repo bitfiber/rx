@@ -1,0 +1,75 @@
+import {Badge} from '../../../';
+
+# transmit <Badge type={'function'}>Function</Badge>
+
+Transmits the result of the asynchronous action to the provided emitter or group, allowing success,
+failure, and completion actions or effects to be performed. It can also transmit to additional
+emitters for failure and finish actions or effects
+
+`@template L {:ts}`  
+The type representing the data for the launch emitter
+
+`@template S {:ts}`  
+The type representing the data for the success emitter
+
+`@template F {:ts}`  
+The type representing the error data for the fail emitter
+
+`@param emitterOrGroup: AbstractEmitter<S> | Subject<S> | AbstractAsyncGroup<L, S, F> {:ts}`  
+The primary emitter, state, subject, or async group that will receive the success data
+
+`@param failEmitter?: AbstractEmitter<F> | Subject<F> | null {:ts}`  
+An optional emitter, state, or subject that will emit the failure data after a failed action
+
+`@param finishEmitter?: AbstractEmitter<void> | Subject<void> {:ts}`  
+An optional emitter, state, or subject that will emit once the asynchronous action is completed,
+either successfully or with a failure
+
+`@returns OperatorFunction<S, S> {:ts}`  
+An RxJS operator that transmits the data to the corresponding emitter
+
+See also: [asyncGroup](/store/reference/asyncGroupFn)
+
+## API
+
+```ts copy
+function transmit<L, S, F>(
+  emitterOrGroup: AbstractEmitter<S> | Subject<S> | AbstractAsyncGroup<L, S, F>,
+  failEmitter?: AbstractEmitter<F> | Subject<F> | null,
+  finishEmitter?: AbstractEmitter<void> | Subject<void>,
+): OperatorFunction<S, S>;
+```
+
+## Example
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {transmit, emitter, asyncGroup} from '@bitfiber/rx';
+
+// Provides a group of emitters for managing the products loading process
+const productsReq = asyncGroup<number, Product[], Error>((group, {launch}) => {
+  launch
+    // Performs an effect each time the launch emits new data
+    .effect(
+      switchMap(page => productsService.get(`api/products?page=${page}`)
+        // 'transmit' operator takes either data or an error and transmits it to the `success`
+        // or `fail` emitter of the group, respectively
+        .pipe(transmit(group))),
+    );
+}, []);
+
+// Custom emitters for the 'transmit' operator
+const launch = emitter<number>();
+const success = emitter<Product[]>();
+const fail = emitter<Error>();
+const finish = emitter<void>();
+
+launch
+  // Performs an effect each time the launch emits new data
+  .effect(
+    switchMap(page => productsService.get(`api/products?page=${page}`)
+      // 'transmit' operator takes either data or an error and transmits it to the `success`
+      // or `fail` custom emitter, respectively
+      .pipe(transmit(success, fail, finish))),
+  );
+```

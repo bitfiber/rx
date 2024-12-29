@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Sets a new value under the given key in local storage.
+Before storing, the value is serialized to a JSON string format
+
+`@param key: string {:ts}`  
+The specific key under which the value will be stored
+
+`@param value: T {:ts}`  
+The new value to be stored, which will be stringified before being added
+
+## API
+
+```ts copy
+set(key: string, value: T): void;
+```
+
+## Example
+
+```ts copy
+import {localStorage} from '@bitfiber/rx';
+
+const ls = localStorage();
+ls.set('key', 'value');
+```

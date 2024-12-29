@@ -1,0 +1,30 @@
+import {Badge} from '../../../../';
+
+# remove <Badge type={'method'}>Method</Badge>
+
+Removes the value associated with the specified key
+
+`@param key: string {:ts}`  
+The key for which to remove the value
+
+## API
+
+```ts copy
+remove(key: string): void;
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements KeyValueSource<T> {
+  private data: Index<T> = {};
+  private readonly subject = new Subject<string>();
+  
+  remove(key: string): void {
+    delete this.data[key];
+    this.subject.next(key);
+  }
+  
+  // ...
+}
+```

@@ -1,0 +1,23 @@
+import {Badge} from '../../../../';
+
+# remove <Badge type={'method'}>Method</Badge>
+
+Removes the value associated with the specified key
+
+`@param key: string {:ts}`  
+The key for which to remove the value
+
+## API
+
+```ts copy
+remove(key: string): void;
+```
+
+## Example
+
+```ts copy
+import {memoryStorage} from '@bitfiber/rx';
+
+const ms = memoryStorage();
+ms.remove('key');
+```

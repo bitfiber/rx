@@ -1,0 +1,41 @@
+import {Badge} from '../../../';
+
+# Group <Badge type={'class'}>Class</Badge>
+
+Represents a group that collects all subsequently created group items such as emitters, states,
+and groups until `group.markAsReady()` is called
+
+## API
+
+```ts copy
+class Group extends AbstractGroup {
+  initialize(): this;
+  complete(): void;
+  markAsReady(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {state, emitter, group, asyncGroup} from '@bitfiber/rx';
+
+// Collects all subsequently created emitters, states, and groups for
+// mass initialization and completion
+const someGroup = group();
+
+// The emitter, state, and group will be added in 'someGroup'
+const someState = state<string>('initialValue1');
+const someEmitter = emitter<number>();
+const reqGroup = asyncGroup<string, number, number>();
+
+// Marks the group as ready, indicating that all group items, such as emitters, states,
+// and groups, have been defined
+someGroup.markAsReady();
+
+// Initializes the group and all items within the group
+someGroup.initialize();
+
+// Completes the group and all items within the group
+someGroup.complete();
+```

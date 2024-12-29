@@ -1,0 +1,20 @@
+import {Badge} from '../../../../';
+
+# remove <Badge type={'method'}>Method</Badge>
+
+Removes the current value
+
+## API
+
+```ts copy
+remove(): void;
+```
+
+## Example
+
+```ts copy
+import {sessionStoragePart} from '@bitfiber/rx';
+
+const ssPart = sessionStoragePart('key');
+ssPart.remove();
+```

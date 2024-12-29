@@ -1,0 +1,94 @@
+# What is Key-Value Sources?
+
+Key-value sources act as facades for external storages like local storage, session storage,
+cookies, and more. They implement a unified interface called [KeyValueSource](/sources/reference/keyValueSource),
+which simplifies integration with various storage mechanisms.
+
+In addition to storage access, key-value sources provide the ability to subscribe to data changes
+in external storages, enabling reactive updates within your application.
+
+## List of Key-Value Sources
+
+1. **[Local Storage](/sources/reference/localStorageFn)**  
+Provides interaction with the browser's local storage
+
+2. **[Session Storage](/sources/reference/sessionStorageFn)**  
+Provides interaction with the browser's session storage
+
+3. **[Memory Storage](/sources/reference/memoryStorageFn)**  
+Provides interaction the memory storage
+
+4. **[Cookie](/sources/reference/cookieFn)**  
+Provides interaction with the browser's cookie
+
+## How to Use Key-Value Sources
+
+### Create a key-value source
+
+Let’s start by creating a key-value source that manages data in localStorage:
+
+```ts copy
+import { localStorage } from '@bitfiber/rx';
+
+// Create a key-value source
+const lsSource = localStorage();
+```
+
+### Modify data
+
+Set or update the value for a specific key:
+
+```ts copy
+lsSource.set('theme', 'dark');
+```
+
+To remove the value for a key, use:
+
+```ts copy
+lsSource.remove('theme');
+```
+
+### Retrieve data
+
+Retrieve the current value for a key:
+
+```ts copy
+const value = lsSource.get('theme');
+```
+
+### Subscribe to data changes
+
+Key-value sources are reactive, meaning you can subscribe to changes for a specific key and
+respond accordingly:
+
+```ts copy
+lsSource.observe('theme').subscribe((theme) => {
+  if (theme === 'dark') {
+    // Perform logic for the dark theme
+    console.log('Dark theme activated!');
+  }
+});
+```
+
+## Any Data Types for Storages
+
+Key-value sources such as `localStorage`, `sessionStorage`, and `cookie` simplify the handling of
+data by allowing you to store and retrieve values of any type, including objects, arrays, and
+primitives. These sources automatically convert data into JSON strings when storing it and parse
+JSON strings back into their original types when retrieving.
+
+```ts copy
+import {localStorage} from '@bitfiber/rx';
+
+// Create a key-value source
+const lsSource = localStorage();
+
+// Set a preferences object in local storage
+lsSource.set('preferences', {theme: 'dark', notifications: true});
+
+// Retrieve the preferences object from local storage
+const preferences = lsSource.get('preferences');
+
+// Expected result: preferences is equal to {theme: 'dark', notifications: true}
+console.log(preferences);
+```

@@ -56,9 +56,8 @@ export interface KeyValueSource<T = any> {
   remove(key: string): void;
 
   /**
-   * Observes changes to the value associated with the specified key
-   * @param key - The key to observe for changes
-   * @returns An observable that emits the value associated with the key
+   * Returns an observable that will emit value changes for a specific key
+   * @param key - The key for which to observe value changes
    */
   observe(key: string): Observable<T>;
 

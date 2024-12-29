@@ -1,0 +1,240 @@
+# Groups
+
+Groups are collections of emitters, states, and other groups that are unified under a specific
+feature. They help organize related reactive sources into a cohesive structure, ensuring proper
+initialization and completion of all items as a single unit.
+
+## List of Groups
+
+1. ### [Group](/store/reference/groupFn)
+
+The group collects all subsequently created emitters, states, and groups until
+`group.markAsReady()` is called.
+
+The group can be used as an alternative to the store when lifecycle hooks are not required, or
+when extending the Store class is not feasible due to other class inheritance.
+
+```ts copy
+import {state, emitter, group, asyncGroup} from '@bitfiber/rx';
+
+// Define a group that collects emitters, states, and groups
+const myGroup = group();
+
+// Add items to the group
+const someState = state<string>('');
+const someEmitter = emitter<number>();
+const req = asyncGroup<string, number, number>();
+
+// Marks the group as ready, indicating that all group items have been defined
+myGroup.markAsReady();
+
+// Initialize the group and all its items
+myGroup.initialize();
+
+// Complete the group and all its items
+myGroup.complete();
+```
+
+2. ### [Named Group](/store/reference/namedGroupFn)
+
+The named group extracts emitters, states, and groups from the provided object and adds them to
+the group. Each item is accessible by the key used in the object.
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {state, emitter, namedGroup, transmit} from '@bitfiber/rx';
+
+// Define a named group
+const myGroup = namedGroup(
+  {
+   // Add group items here
+    launch: emitter<void>(),
+    data: state<number>(0),
+  },
+  ({launch, data}) => {
+    // Add interaction logic in the 'onInit' callback
+    launch
+      // Side effect for data loading
+      .effect(switchMap(() => getData('api/data').pipe(transmit(data))));
+  }
+);
+
+// Initialize the group and all its items
+myGroup.initialize();
+
+// Trigger the loading process
+myGroup.launch.emit();
+
+// Complete the group and all its items
+myGroup.complete();
+```
+
+3. ### [Async Group](/store/reference/asyncGroupFn)
+
+The async group manages the lifecycle of asynchronous actions, providing emitters for launching
+actions, handling success, dealing with failures, and managing the state of these actions.
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {state, asyncGroup, transmit} from '@bitfiber/rx';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductsState {
+  products: Product[];
+  isLoading: boolean;
+}
+
+// Define an async group for managing product loading
+const productsReq = asyncGroup<number, Product[], Error>((group, {
+  launch, success, fail, finish,
+}) => {
+  group
+    // Keeps cached data for 120 seconds, with a maximum entry count of 10
+    .useCache(120, 10);
+
+  launch
+    // Performs an effect each time the launch emits new data
+    .effect(
+      switchMap(page => productsService.get(`api/products?page=${page}`)
+        // 'transmit' operator takes either data or an error and transmits it to the `success`
+        // or `fail` emitter of the group, respectively
+        .pipe(transmit(group))),
+    );
+
+  success
+    // Performs a tap callback each time the request succeeds
+    .tap(data => console.log(data));
+
+  fail
+    // Performs a tap callback each time the request fails
+    .tap(error => console.log(error));
+
+  finish
+    // Performs a tap callback each time the request either fails or succeeds
+    .tap(() => console.log('Request has been finished'));
+}, []);
+
+// Define a state for products
+const data = state<ProductsState>({products: [], isLoading: false}, s => s
+  // Receives success data
+  .receive(productsReq.success, (products, state) => ({...state, products}))
+  // Receives the request state
+  .receive(productsReq.state, ({inProgress}, state) => ({...state, isLoading: inProgress}))
+);
+
+// Start loading products
+productsReq.launch.emit(1);
+```
+
+## Creating a Custom Group
+
+To create a custom group, extend the `AbstractGroup` class:
+
+```ts copy
+import {AbstractGroup, emitter, state, asyncGroup} from '@bitfiber/rx';
+
+class NotificationsGroup extends AbstractGroup {
+  // Define your group items here
+}
+```
+
+### Adding Group Items
+
+Within the group class, define the group items you need, such as emitters, states, or groups:
+
+```ts copy
+class NotificationsGroup extends AbstractGroup {
+  // Define an async group for managing notifications loading
+  notificationsReg = asyncGroup<void, string[], Error>();
+  
+  // Define a state to store the current notifications
+  notifications = state<string[]>([]);
+}
+```
+
+### Marking Group as Ready
+
+To finalize the group setup and indicate that all group items have been defined,call
+the `markAsReady` method:
+
+```ts copy
+class NotificationsGroup extends AbstractGroup {
+  notificationsReg = asyncGroup<void, string[], Error>();
+  notifications = state<string[]>([]);
+
+  // Mark the group as ready
+  #ready = this.markAsReady();
+}
+```
+
+### Adding Interaction Logic
+
+Use the `executeInnerDeferredActions` method to add interaction logic:
+
+```ts copy
+class NotificationsGroup extends AbstractGroup {
+  req = asyncGroup<void, string[], Error>();
+  data = state<string[]>([]);
+  
+  #ready = this.markAsReady();
+  
+  // Add interaction logic here
+  protected override executeInnerDeferredActions(): void {
+    this.req.launch
+      // Launch notifications request when the launch emitter emits
+      .effect(switchMap(() => getNotifications().pipe(transmit(this.req))));
+    
+    
+    this.data
+      // Update data state with successful results
+      .receive(this.req.success);
+  }
+}
+```
+
+### Adding Factory Function
+
+To maintain a consistent style in group implementations, define a factory function for creating
+the group. This approach provides a standardized way to initialize groups and optionally apply
+additional setup logic:
+
+```ts copy
+export function notificationsGroup(
+  onInit?: (group: NotificationsGroup, sameGroup: NotificationsGroup) => void,
+): NotificationsGroup {
+  const group = new NotificationsGroup();
+  return onInit ? group.onInit(onInit) : group;
+}
+```
+
+### Usage the group
+
+Create and initialize the group using the factory function:
+
+```ts copy
+// Define a custom group
+const customGroup = notificationsGroup();
+
+// Initialize the group and all its items
+customGroup.initialize();
+
+// Trigger notifications loading
+customGroup.req.launch.emit();
+
+// Subscribe to notifications
+customGroup.data.$.subscribe(notifications => {
+  console.log('Received notifications:', notifications);
+});
+
+// Get notifications synchronously
+const notifications = customGroup.data();
+console.log('Current notifications:', notifications);
+
+// Complete the group and all its items
+customGroup.complete();
+```

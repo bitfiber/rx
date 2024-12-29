@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Sets a value for the specified key
+
+`@param key: string {:ts}`  
+The key to associate the value with
+
+`@param value: T {:ts}`  
+The value to be set for the key
+
+## API
+
+```ts copy
+set(key: string, value: T): void;
+```
+
+## Example
+
+```ts copy
+import {memoryStorage} from '@bitfiber/rx';
+
+const ms = memoryStorage();
+ms.set('key', 'value');
+```

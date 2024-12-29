@@ -1,0 +1,101 @@
+import {Badge} from '../../../';
+
+# asyncGroup <Badge type={'function'}>Function</Badge>
+
+Creates a new `AsyncGroup` instance that manages the lifecycle of an asynchronous action,
+providing emitters for launching actions, handling success, dealing with failures, and
+managing the state of these actions.
+
+This function also allows for an optional `onInit` callback, which can be used to perform
+additional setup or configuration just before the group initialization.
+
+The fallback value is used as a default success value in case the asynchronous action fails,
+ensuring that the success emitter always returns a value
+
+`@template L {:ts}`  
+The type representing the data for the launch emitter
+
+`@template S {:ts}`  
+The type representing the data for the success emitter
+
+`@template F {:ts}`  
+The type representing the error data for the fail emitter
+
+`@param onInit?: (group: AsyncGroup<L, S, F>, sameGroup: AsyncGroup<L, S, F>) => void {:ts}`  
+An optional callback function executed just before the group initialization
+
+`@param fallbackValue?: S {:ts}`  
+An optional fallback value of type `S` that will be used as the default success value if
+the asynchronous action fails
+
+`@returns AsyncGroup<L, S, F> {:ts}`
+
+See also: [AsyncGroup](/store/reference/asyncGroup), [transmit](/store/reference/transmit)
+
+## API
+
+```ts copy
+function asyncGroup<L, S, F>(
+  onInit?: (group: AsyncGroup<L, S, F>, sameGroup: AsyncGroup<L, S, F>) => void,
+  fallbackValue?: S,
+): AsyncGroup<L, S, F>;
+```
+
+## Example
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {state, asyncGroup, transmit} from '@bitfiber/rx';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+interface ProductsState {
+  products: Product[];
+  isLoading: boolean;
+}
+
+// Defines an async group for managing the products loading process
+const productsReq = asyncGroup<number, Product[], Error>((group, {
+  launch, success, fail, finish,
+}) => {
+  group
+    // Keeps cached data for 120 seconds, with a maximum entry count of 10
+    .useCache(120, 10);
+
+  launch
+    // Performs an effect each time the launch emits new data
+    .effect(
+      switchMap(page => productsService.get(`api/products?page=${page}`)
+        // 'transmit' operator takes either data or an error and transmits it to the `success`
+        // or `fail` emitter of the group, respectively
+        .pipe(transmit(group))),
+    );
+
+  success
+    // Performs a tap callback each time the request succeeds
+    .tap(data => console.log(data));
+
+  fail
+    // Performs a tap callback each time the request fails
+    .tap(error => console.log(error));
+
+  finish
+    // Performs a tap callback each time the request either fails or succeeds
+    .tap(() => console.log('Request has been finished'));
+}, []);
+
+// Provides the final state
+const data = state<ProductsState>({products: [], isLoading: false}, s => s
+  // Receives request success data
+  .receive(productsReq.success, (products, state) => ({...state, products}))
+  // Receives the request state
+  .receive(productsReq.state, ({inProgress}, state) => ({...state, isLoading: inProgress}))
+);
+
+// Starts the products loading process
+productsReq.launch.emit(1);
+```

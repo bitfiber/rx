@@ -1,0 +1,32 @@
+import {Badge} from '../../../';
+
+# MemoryStoragePart <Badge type={'class'}>Class</Badge>
+
+Extends `KeyValueSourcePart` and allows interacting with the data stored under a specific key in
+the memory storage. It enables retrieving, setting, observing, and removing data associated with
+the specified key
+
+`@template T = string | undefined {:ts}`  
+The type of data stored under the specific key. Defaults to `string | undefined`
+
+See also: [KeyValueSourcePart](/sources/reference/keyValueSourcePart)
+
+## API
+
+```ts copy
+class MemoryStoragePart<T = string | undefined> extends KeyValueSourcePart<T> {
+  readonly $: Observable<T>;
+  constructor(key: string);
+  get(): T;
+  set(value: T): void;
+  remove(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {MemoryStoragePart} from '@bitfiber/rx';
+
+const msPart = new MemoryStoragePart('key');
+```

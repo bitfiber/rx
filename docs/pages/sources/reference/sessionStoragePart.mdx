@@ -1,0 +1,32 @@
+import {Badge} from '../../../';
+
+# SessionStoragePart <Badge type={'class'}>Class</Badge>
+
+Extends `KeyValueSourcePart` and allows interaction with a particular key in the browser's
+session storage. It provides methods for retrieving, setting, and observing the value associated
+with the given key
+
+`@template T = string | undefined {:ts}`  
+The type of the value stored in session storage. Defaults to `string | undefined`
+
+See also: [KeyValueSourcePart](/sources/reference/keyValueSourcePart)
+
+## API
+
+```ts copy
+class SessionStoragePart<T = string | undefined> extends KeyValueSourcePart<T> {
+  readonly $: Observable<T>;
+  constructor(key: string);
+  get(): T;
+  set(value: T): void;
+  remove(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {SessionStoragePart} from '@bitfiber/rx';
+
+const ssPart = new SessionStoragePart('key');
+```

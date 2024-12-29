@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# afterStoreInit <Badge type={'method'}>Method</Badge>
+
+An optional hook that runs after the store has been initialized
+
+## API
+
+```ts copy
+afterStoreInit?(): void;
+```
+
+## Example
+
+```ts copy
+import {emitter, Store} from '@bitfiber/rx';
+
+class StoreWithHook extends Store {
+  start = emitter<void>();
+
+  afterStoreInit(): void {
+    // Runs some logic after the store has been initialized
+  }
+}
+```

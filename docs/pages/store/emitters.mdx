@@ -1,0 +1,203 @@
+# Emitters
+
+Emitters are fundamental units of communication in the reactive store. They enable straightforward
+creation and management of reactive streams, integrating seamlessly with other reactive sources
+like emitters, states, and observables. This integration allows you to build complex networks of
+streams and effectively manage reactive data flows.
+
+## Creating an Emitter
+
+### Basic Emitter
+
+To create [Emitter](/store/reference/emitter), use the [emitter](/store/reference/emitterFn) function:
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+
+const counter = emitter<number>();
+```
+### Emitter with Interaction Logic
+
+To add interaction logic with other reactive sources, use the `onInit` callback. This ensures
+subscriptions and emissions occur only after the store is initialized:
+
+```ts copy
+const receiver = emitter<number>(e => e
+  // Add interaction logic here
+  .receive(source));
+
+const source = emitter<number>();
+```
+
+## Emitting Data
+
+Emitters allow you to send data to their subscribers, effects, and any connected reactive sources
+using the [emit](/store/reference/emitter/emit) method:
+
+```ts copy
+const token = emitter<string>();
+
+token.emit('token');
+```
+
+## Receiving Data
+
+Emitters can receive data from various reactive sources like emitters, states, and observables,
+transmitting it to subscribers without storing the data.
+
+### Methods for Receiving Data
+
+1. **[receive](/store/reference/emitter/receive) method**
+
+Emitters can receive data from other reactive sources using the `receive` method.
+
+**Without Data Transformation**
+
+```ts copy
+import {of} from 'rxjs';
+import {emitter, state} from '@bitfiber/rx';
+
+const source1 = emitter<number>();
+const source2 = state<number>(1);
+const source3$ = of(1);
+
+const receiver = emitter<number>(e => e
+  .receive(source1, source2, source3$));
+```
+
+**With Data Transformation**
+
+```ts copy
+const receiver = emitter<string>(e => e
+  .receive(source1, value => String(value)));
+```
+
+2. **[select](/store/reference/emitter/select) method**
+
+Combines data from all sources and emits a computed value whenever any source emits:
+
+```ts copy
+const receiver = emitter<number>(e => e
+  .select(source1, source2, source3$, (v1, v2, v3) => v1 * v2 * v3));
+```
+
+3. **[zip](/store/reference/emitter/zip) method**
+
+Combines data from all sources, emitting only when all sources emit new values:
+
+```ts copy
+const receiver = emitter<number>(e => e
+  .zip(source1, source2, source3$, (v1, v2, v3) => v1 * v2 * v3));
+```
+
+4. **[wait](/store/reference/emitter/wait) method**
+
+Waits for the first values from all sources, emits a computed value, and completes the stream:
+
+```ts copy
+const receiver = emitter<number>(e => e
+  .wait(source1, source2, source3$, (v1, v2, v3) => v1 * v2 * v3));
+```
+## Working with Observables
+
+Emitters can receive data from observables, which allows you to use RxJS operators for more
+advanced stream manipulation before connecting them to emitters.
+
+```ts copy
+import {debounceTime, filter} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+
+const source = emitter<number>();
+
+// The '$' property returns the emitter observable
+const source$ = source.$.pipe(
+  filter(v => v % 2),
+  debounceTime(500),
+);
+
+const receiver = emitter<number>(e => e
+  .receive(source$));
+```
+
+## Transmitting Data
+
+Emitters can transmit their emitted values to other reactive sources using
+the [transmit](/store/reference/emitter/transmit) method.
+
+### Without Data Transformation
+
+```ts copy
+import {Subject} from 'rxjs';
+import {emitter, state} from '@bitfiber/rx';
+
+const source = emitter<number>(e => e
+  .transmit(receiver1, receiver2, receiver3));
+
+const receiver1 = emitter<number>();
+const receiver2 = state<number>(0);
+const receiver3 = new Subject<number>();
+```
+
+### With Data Transformation
+
+```ts copy
+import {emitter, state} from '@bitfiber/rx';
+
+const source = emitter<string>(e => e
+  .transmit(receiver, (value, state) => state + Number(value)));
+
+const receiver = state<number>(0);
+```
+
+## Creating Side Effects
+
+Emitters support creating side effects using [tap](/store/reference/emitter/tap) and
+[effect](/store/reference/emitter/effect) methods.
+
+### Using Tap
+
+The `tap` method performs a side effect whenever the emitter emits a value.
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+
+const logger = emitter<number>(e => e
+  .tap(data => console.log(data)));
+```
+
+### Using Effect
+
+The `effect` method allows for complex stream management using RxJS operators.
+
+```ts copy
+import {debounceTime, filter, switchMap} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+
+const productReq = emitter<number | null>(e => e
+  .effect(
+    filter(id => id !== null),
+    debounceTime(1000),
+    switchMap(id => productsService.get(`api/product${id}`)),
+  ));
+```
+
+## Managing All Streams
+
+Emitters allow you to apply RxJS operators across all their streams simultaneously using
+the [manage](/store/reference/state/manage) method. This ensures consistent stream behavior
+by applying the same operators to all streams generated by the emitter.
+
+```ts copy
+import {delay, filter} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+
+// Create an emitter with managed streams
+const id = emitter<number>(e => e
+  // Apply operators to all streams of this emitter
+  .manage(
+    // Filter values to pass only odd numbers
+    filter(id => !!(id % 2)),
+    // Add a delay to all emissions
+    delay(100),
+  ));
+```

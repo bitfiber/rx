@@ -1,0 +1,27 @@
+import {Badge} from '../../../';
+
+# localStorage <Badge type={'function'}>Function</Badge>
+
+Creates a singleton instance of `LocalStorage` and ensures that only one instance is created.
+If the instance already exists, it returns the existing instance
+
+`@template T = any {:ts}`  
+The type of the value stored in local storage. Defaults to `any`
+
+`@returns LocalStorage<T> {:ts}`
+
+See also: [LocalStorage](/sources/reference/localStorage)
+
+## API
+
+```ts copy
+function localStorage<T = any>(): LocalStorage<T>;
+```
+
+## Example
+
+```ts copy
+import {localStorage} from '@bitfiber/rx';
+
+const ls = localStorage();
+```

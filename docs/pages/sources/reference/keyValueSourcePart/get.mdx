@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# get <Badge type={'method'}>Method</Badge>
+
+Retrieves the current value
+
+`@returns T {:ts}`
+
+## API
+
+```ts copy
+get(): T;
+```
+
+## Example
+
+```ts copy
+import {KeyValueSourcePart, MemoryStorage} from '@bitfiber/rx';
+
+// Creates a memory source part
+const source = new KeyValueSourcePart<number>('someKey', new MemoryStorage());
+
+// Returns the source value
+const value = source.get();
+```

@@ -1,0 +1,45 @@
+import {Badge} from '../../../';
+
+# StoreHooks <Badge type={'interface'}>Interface</Badge>
+
+Represents optional hooks for `Store` that can be implemented to perform
+actions before and after the store is initialized and completed
+
+See also: [Store](/store/reference/store)
+
+## API
+
+```ts copy
+interface StoreHooks {
+  beforeStoreInit?(): void;
+  afterStoreInit?(): void;
+  beforeStoreComplete?(): void;
+  afterStoreComplete?(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {emitter, Store} from '@bitfiber/rx';
+
+class StoreWithHooks extends Store {
+  start = emitter<void>();
+  
+  beforeStoreInit(): void {
+    // Runs some logic before the store is initialized
+  }
+
+  afterStoreInit(): void {
+    // Runs some logic after the store has been initialized
+  }
+
+  beforeStoreComplete(): void {
+    // Runs some logic before the store is completed
+  }
+
+  afterStoreComplete(): void {
+    // Runs some logic after the store has been completed
+  }
+}
+```

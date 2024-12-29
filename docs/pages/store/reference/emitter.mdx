@@ -1,0 +1,46 @@
+import {Badge} from '../../../';
+
+# Emitter <Badge type={'class'}>Class</Badge>
+
+Extends the `AbstractEmitter` class and provides functionality to create streams,
+handle subscriptions, emit values to subscribers, and integrate with other reactive sources
+such as emitters, states, subjects, observables.
+
+The `Emitter` class is typically used when you need a straightforward emitter that can
+broadcast values or events to all its subscribers or other reactive sources, such as emitters,
+states, subjects
+
+`@template T {:ts}`  
+The type of data emitted by this emitter
+
+## API
+
+```ts copy
+class Emitter<T> extends AbstractEmitter<T> {
+  readonly $: Observable<T>;
+  initialize(): this;
+  complete(): void;
+  manage(...operators: OperatorFunction<T, T>[]): this;
+  emit(value: T): this;
+  select<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+  zip<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+  wait<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this;
+  receive(...inputs: EmitterOrObservable<T>[]): this;
+  receive<I>(input: EmitterOrObservable<I>, reducer: (value: I) => T): this;
+  transmit(...outputs: (EmitterOrSubject<T> | EmitterOrSubject<void>)[]): this;
+  transmit<O>(output: AbstractState<O>, reducer: (value: T, state: O) => O): this;
+  transmit<O>(output: EmitterOrSubject<O>, reducer: (value: T) => O): this;
+  effect(...operators: OperatorFunction<any, any>[]): this;
+  tap(observer: Partial<Observer<T>>): this;
+  tap(next: (value: T) => void): this;
+}
+```
+
+## Example
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+
+// Creates an emitter
+const event = emitter<string>();
+```

@@ -1,0 +1,34 @@
+import {Badge} from '../../../../';
+
+# initialize <Badge type={'method'}>Method</Badge>
+
+Initializes the store and all of its items, preparing it for use. Optionally, a `beforeInit`
+callback function can be provided, which will be executed before the store is initialized
+
+`@param beforeInit?: (store: this) => void {:ts}`  
+An optional callback function that runs before the store is initialized
+
+`@returns this {:ts}`  
+The current instance of the store, allowing for method chaining
+
+## API
+
+```ts copy
+initialize(beforeInit?: (store: this) => void): this;
+```
+
+## Example
+
+```ts copy
+import {state, Store} from '@bitfiber/rx';
+
+class ProductsStore extends Store {
+  products = state<any[]>();
+  #ready = this.markAsReady();
+}
+
+const store = new ProductsStore();
+
+// Initializes the store
+store.initialize();
+```

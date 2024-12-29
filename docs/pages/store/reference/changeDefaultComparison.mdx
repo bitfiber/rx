@@ -1,0 +1,27 @@
+import {Badge} from '../../../';
+
+# changeDefaultComparison <Badge type={'function'}>Function</Badge>
+
+Changes the default comparison method that will be used for all states.
+
+This can be one of the predefined comparison types: 'equals' for deep comparison,
+'strict' for strict equality, or a custom comparison function
+
+`@param comparison: Comparison {:ts}`  
+The comparison method to be set as the default
+
+See also: [Comparison](/store/reference/comparison)
+
+## API
+
+```ts copy
+function changeDefaultComparison(comparison: Comparison): void;
+```
+
+## Example
+
+```ts copy
+import {changeDefaultComparison} from '@bitfiber/rx';
+
+changeDefaultComparison('strict');
+```

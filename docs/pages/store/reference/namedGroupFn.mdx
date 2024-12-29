@@ -1,0 +1,56 @@
+import {Badge} from '../../../';
+
+# namedGroup <Badge type={'function'}>Function</Badge>
+
+Creates a new `NamedGroup` instance that extracts emitters, states, and groups from the provided
+object and adds them to the group. Each item is accessible by the key used in the object.
+
+This function also allows for an optional `onInit` callback, which can be used to perform
+additional setup or configuration just before the group initialization
+
+`@template I extends Index {:ts}`  
+The type of the index used to access the `StoreItem` instances in the group
+
+`@param index: I {:ts}`  
+An index that contains `StoreItem` instances and other data, each associated with a unique key
+
+`@param onInit?: (group: NamedGroup<StoreIndex<I>>, sameGroup: NamedGroup<StoreIndex<I>>) => void {:ts}`  
+An optional callback function that is executed just before initialization
+
+`@returns NamedGroup<StoreIndex<I>> {:ts}`
+
+See also: [NamedGroup](/store/reference/namedGroup)
+
+## API
+
+```ts copy
+function namedGroup<I extends Index>(
+  index: I,
+  onInit?: (group: NamedGroup<StoreIndex<I>>, sameGroup: NamedGroup<StoreIndex<I>>) => void,
+): NamedGroup<StoreIndex<I>>;
+```
+
+## Example
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {state, emitter, namedGroup} from '@bitfiber/rx';
+
+// Groups all emitters and states for mass initialization and completion
+const group = namedGroup({launch: emitter<void>(), data: state<number>(0)}, ({launch}) => {
+  launch
+    // Performs an effect each time the launch emits new data
+    .effect(
+      switchMap(page => productsService.get(`api/products?page=${page}`)),
+    );
+});
+
+// Initializes the group and all items within the group
+group.initialize();
+
+// Accesses the 'launch' emitter through the group and emits a new data
+group.launch.emit(1);
+
+// Completes the group and all items within the group
+group.complete();
+```

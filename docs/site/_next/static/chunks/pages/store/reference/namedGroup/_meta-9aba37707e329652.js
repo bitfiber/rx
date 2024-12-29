@@ -1,0 +1,1 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[1581],{50794:(_,e,n)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/store/reference/namedGroup/_meta",function(){return n(95487)}])},95487:(_,e,n)=>{"use strict";n.r(e),n.d(e,{__N_SSG:()=>r,default:()=>u});var r=!0;let u=()=>null}},_=>{var e=e=>_(_.s=e);_.O(0,[636,6593,8792],()=>e(50794)),_N_E=_.O()}]);

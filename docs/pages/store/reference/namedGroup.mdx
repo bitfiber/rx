@@ -1,0 +1,50 @@
+import {Badge} from '../../../';
+
+# NamedGroup <Badge type={'class'}>Class</Badge>
+
+Represents a named group that extracts emitters, states, and groups from the provided object and
+adds them to the group. Each item is accessible by the key used in the object.
+
+`@template I extends Index`  
+Extends `Index` that contains `StoreItem` instances and other data, each associated with
+a unique key
+
+## API
+
+```ts copy
+class NamedGroup<I extends Index> extends AbstractGroup {
+  initialize(): this;
+  complete(): void;
+  markAsReady(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {switchMap} from 'rxjs';
+import {state, emitter, namedGroup, transmit} from '@bitfiber/rx';
+
+// Define a named group that contains emitters, states, or other groups
+const myGroup = namedGroup(
+  {
+    launch: emitter<void>(),
+    data: state<number>(0),
+  },
+  ({launch, data}) => {
+    // Add interaction logic inside the 'onInit' callback
+    launch
+      // Performs an effect each time the launch emits new data
+      .effect(switchMap(() => getData('api/data').pipe(transmit(data))));
+  }
+);
+
+// Initialize the group and all items it contains
+myGroup.initialize();
+
+// Emit to trigger the 'launch' emitter
+myGroup.launch.emit();
+
+// Complete the group, finalizing all its items
+myGroup.complete();
+```

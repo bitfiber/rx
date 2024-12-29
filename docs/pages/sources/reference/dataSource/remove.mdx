@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# remove <Badge type={'method'}>Method</Badge>
+
+Removes the current value from the data source
+
+## API
+
+```ts copy
+remove(): void;
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements DataSource<T> {
+  private value: T;
+  private readonly subject = new Subject<T>();
+  
+  remove(): void {
+    delete this.value;
+    this.subject.next(undefined);
+  }
+  
+  // ...
+}
+```

@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# destroy <Badge type={'method'}>Method</Badge>
+
+Destroys the key-value source, releasing any resources held by it
+
+## API
+
+```ts copy
+destroy(): void;
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements KeyValueSource<T> {
+  private data: Index<T> = {};
+  
+  destroy(): void {
+    this.data = {};
+  }
+  
+  // ...
+}
+```

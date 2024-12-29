@@ -1,0 +1,20 @@
+import {Badge} from '../../../../';
+
+# destroy <Badge type={'method'}>Method</Badge>
+
+Destroys the memory storage, releasing all stored key-value pairs
+
+## API
+
+```ts copy
+destroy(): void;
+```
+
+## Example
+
+```ts copy
+import {memoryStorage} from '@bitfiber/rx';
+
+const ms = memoryStorage();
+ms.destroy();
+```

@@ -1,0 +1,37 @@
+import {Badge} from '../../../../';
+
+# effect <Badge type={'method'}>Method</Badge>
+
+Creates a new stream with a side effect, similar to the RxJS `pipe` method.
+
+This method allows you to apply a sequence of RxJS operators to the emitter's stream,
+performing actions or side effects whenever the emitter emits a value. This can be
+particularly useful for tasks like logging, debugging, or triggering external operations
+in response to emitted values
+
+`@param ...operators: OperatorFunction<any, any>[] {:ts}`  
+A sequence of RxJS operators that define the side effects to be applied to the emitted values
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+## API
+
+```ts copy
+effect(...operators: OperatorFunction<any, any>[]): this;
+```
+
+## Example
+
+```ts copy
+import {debounceTime, filter, switchMap} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+
+const productReq = emitter<number | null>(e => e
+  // Performs an effect each time the emitter emits new value
+  .effect(
+    filter(id => id !== null),
+    debounceTime(1000),
+    switchMap(id => productsService.get(`api/product${id}`)),
+  ));
+```

@@ -1,0 +1,37 @@
+import {Badge} from '../../../';
+
+# cookiePart <Badge type={'function'}>Function</Badge>
+
+Creates an instance of `CookiePart`, allowing interaction with a specific key-value pair stored
+in the browser's cookie. You can also provide optional `removeParams` for managing cookie removal
+
+`@template T extends CookieData<any> = CookieData<string | undefined> {:ts}`  
+Represents an object that includes both the value and parameters for the cookie.  
+Defaults to `CookieData<string | undefined>`
+
+`@param key: string {:ts}`  
+The key used to access the value in the browser cookie
+
+`@param removeParams?: CookieParams {:ts}`  
+Optional parameters for managing cookie removal
+
+`@returns CookiePart<T> {:ts}`
+
+See also: [CookiePart](/sources/reference/cookiePart), [CookieData](/sources/reference/cookieData), [CookieParams](/sources/reference/cookieParams)
+
+## API
+
+```ts copy
+function cookiePart<T extends CookieData<any> = CookieData<string | undefined>>(
+  key: string,
+  removeParams?: CookieParams,
+): CookiePart<T>;
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const ckPart = cookiePart('key');
+```

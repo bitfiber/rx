@@ -1,0 +1,315 @@
+# States
+
+States are the core data containers in the reactive store, responsible for maintaining and
+broadcasting data updates to multiple subscribers. Like emitters, states can create and manage
+reactive streams to broadcast changes efficiently. They are designed to simplify state
+propagation and synchronization across stores or features, ensuring consistency. States can also
+integrate seamlessly with other reactive sources like emitters, states, and observables.
+
+## Creating a State
+
+### Basic State
+
+To create [State](/store/reference/state), use the [state](/store/reference/stateFn) function:
+
+```ts copy
+import {state} from '@bitfiber/rx';
+
+const counter = state<number>(0);
+```
+### State with Interaction Logic
+
+To add interaction logic with other reactive sources, use the `onInit` callback. This ensures
+subscriptions and emissions occur only after the store is initialized:
+
+```ts copy
+const receiver = state<number>(0, s => s
+  // Add interaction logic here
+  .receive(source));
+
+const source = emitter<number>();
+```
+
+## Getting Current Data
+
+States allow you to get current data using [get](/store/reference/state/get) method or calling
+the state like a function:
+
+```ts copy
+const counter = state<number>(1);
+
+const value1 = counter(); // Expected result: 1
+const value2 = counter.get(); // Expected result: 1
+```
+
+## Updating State
+
+States allow you to update their data and send updated data to their subscribers, effects, and any
+connected reactive sources using [set](/store/reference/state/set) and
+[update](/store/reference/state/update) methods.
+
+The `set` method directly sets a new value:
+
+```ts copy
+const counter = state<number>(0);
+
+counter.set(5);
+```
+
+The `update` method computes a new value based on the current value:
+
+```ts copy
+const counter = state<number>(0);
+
+counter.update(state => state + 1);
+```
+
+## Resetting State
+
+You can reset the state to its initial value using the [reset](/store/reference/state/reset) method:
+
+```ts copy
+const counter = state<number>(1);
+
+counter.reset();
+```
+
+## Receiving Data
+
+States can receive data from various reactive sources like emitters, states, and observables,
+updating their data and transmitting it to subscribers.
+
+### Methods for Receiving Data
+
+1. **[receive](/store/reference/state/receive) method**
+
+States can receive data from other reactive sources using the `receive` method.
+
+**Without Data Transformation**
+
+```ts copy
+import {of} from 'rxjs';
+import {emitter, state} from '@bitfiber/rx';
+
+const source1 = emitter<number>();
+const source2 = state<number>(1);
+const source3$ = of(1);
+
+const receiver = state<number>(0, s => s
+  .receive(source1, source2, source3$));
+```
+
+**With Data Transformation**
+
+```ts copy
+const receiver = state<string>('', s => s
+  .receive(source1, value => String(value)));
+```
+
+2. **[select](/store/reference/state/select) method**
+
+Combines data from all sources, updates its data by a computed value, and emits a computed value
+whenever any source emits:
+
+```ts copy
+const receiver = state<number>(0, s => s
+  .select(source1, source2, source3$, (v1, v2, v3) => v1 * v2 * v3));
+```
+
+3. **[zip](/store/reference/state/zip) method**
+
+Combines data from all sources, updating its data by a computed value and emitting a computed value
+only when all sources emit new values:
+
+```ts copy
+const receiver = state<number>(0, s => s
+  .zip(source1, source2, source3$, (v1, v2, v3) => v1 * v2 * v3));
+```
+
+4. **[wait](/store/reference/state/wait) method**
+
+Waits for the first values from all sources, updates its data by a computed value, emits
+a computed value, and completes the stream:
+
+```ts copy
+const receiver = state<number>(0, s => s
+  .wait(source1, source2, source3$, (v1, v2, v3) => v1 * v2 * v3));
+```
+## Working with Observables
+
+States can receive data from observables, which allows you to use RxJS operators for more
+advanced stream manipulation before connecting them to states.
+
+```ts copy
+import {debounceTime, filter} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+
+const source = emitter<number>();
+
+// The '$' property returns the emitter observable
+const source$ = source.$.pipe(
+  filter(v => v % 2),
+  debounceTime(500),
+);
+
+const receiver = state<number>(0, s => s
+  .receive(source$));
+```
+
+## Transmitting Data
+
+States can transmit their updated data to other reactive sources using
+the [transmit](/store/reference/state/transmit) method.
+
+### Without Data Transformation
+
+```ts copy
+import {Subject} from 'rxjs';
+import {emitter, state} from '@bitfiber/rx';
+
+const source = state<number>(0, s => s
+  .transmit(receiver1, receiver2, receiver3));
+
+const receiver1 = emitter<number>();
+const receiver2 = state<number>(0);
+const receiver3 = new Subject<number>();
+```
+
+### With Data Transformation
+
+```ts copy
+import {state} from '@bitfiber/rx';
+
+const source = state<string>(0, s => s
+  .transmit(receiver, (value, state) => state + Number(value)));
+
+const receiver = state<number>(0);
+```
+
+## Creating Side Effects
+
+States support creating side effects using [tap](/store/reference/state/tap) and
+[effect](/store/reference/state/effect) methods.
+
+### Using Tap
+
+The `tap` method performs a side effect whenever the state emits a value.
+
+```ts copy
+import {state} from '@bitfiber/rx';
+
+const logger = state<number>(0, s => s
+  .tap(data => console.log(data)));
+```
+
+### Using Effect
+
+The `effect` method allows for complex stream management using RxJS operators.
+
+```ts copy
+import {debounceTime, filter} from 'rxjs';
+import {state} from '@bitfiber/rx';
+
+const itemId = state<number | null>(null, s => s
+  .effect(
+    filter(id => id !== null),
+    debounceTime(1000),
+  ));
+```
+
+## Comparison Type
+
+States evaluate changes using a specific [Comparison](/store/reference/comparison) type.
+By default, states use the `equals` comparison type, which ensures data is updated only when
+values are different based on deep equality checks.
+
+You can change the comparison type for a specific state using
+the [compareBy](/store/reference/state/compareBy) method:
+
+```ts copy
+import {state} from '@bitfiber/rx';
+
+const data1 = state<number>(10, s => s
+  // Uses '===' for comparing values
+  .compareBy('strict'));
+
+const data2 = state<number | string>(10, s => s
+  // Uses a custom function for comparing values
+  .compareBy((a, b) => Number(a) === Number(b)));
+```
+
+To globally change the default comparison type for all states in your application, use
+the [changeDefaultComparison](/store/reference/changeDefaultComparison) function:
+
+```ts copy
+import {changeDefaultComparison} from '@bitfiber/rx';
+
+changeDefaultComparison('strict');
+```
+
+## Lazy Emission
+
+In scenarios where immediate emission is not desirable at the time of subscription, use
+the [useLazyEmission](/store/reference/state/useLazyEmission) or
+[useLazyEmissionOnce](/store/reference/state/useLazyEmissionOnce) methods.
+
+### For All Subscriptions
+
+```ts copy
+import {state} from '@bitfiber/rx';
+
+const data = state<number>(0, s => s
+  .useLazyEmission());
+```
+
+### For the Next Subscription
+
+```ts copy
+import {state} from '@bitfiber/rx';
+
+const data = state<number>(0, s => s
+  .useLazyEmissionOnce()
+  // Will not emit a value at the time of subscription
+  .effect(...)
+  // Will emit a value at the time of subscription
+  .transmit(...));
+```
+
+## Synchronizing with Data Sources
+
+State can be synchronized with external [data sources](/sources/) that implement
+the [DataSource](/sources/reference/dataSource/) interface like
+[localStoragePart](/sources/reference/localStoragePart/). For this, use
+the [connect](/store/reference/state/connect) method.
+
+Once connected, the state automatically updates from the data source whenever the source changes,
+and conversely, updates the data source whenever the state value is changed. This bidirectional
+synchronization ensures that both the state and the data source remain in sync.
+
+```ts copy
+import {state, localStoragePart} from '@bitfiber/rx';
+
+const theme = state<'dark' | 'light'>('dark', s => s
+  .connect(localStoragePart('theme')));
+```
+
+## Managing All Streams
+
+States allow you to apply RxJS operators across all their streams simultaneously using
+the [manage](/store/reference/state/manage) method. This ensures consistent stream behavior
+by applying the same operators to all streams generated by the state.
+
+```ts copy
+import {delay, filter} from 'rxjs';
+import {state} from '@bitfiber/rx';
+
+// Create a state with managed streams
+const data = state<number>(0, s => s
+  // Apply operators to all streams of this state
+  .manage(
+    // Filter values to pass only odd numbers
+    filter(id => !!(id % 2)),
+    // Add a delay to all emissions
+    delay(100),
+  ));
+```

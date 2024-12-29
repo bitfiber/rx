@@ -1,0 +1,44 @@
+import {Badge} from '../../../../';
+
+# compareBy <Badge type={'method'}>Method</Badge>
+
+Sets a custom comparison strategy that will be used to determine if the state has changed.
+This comparison can be one of the predefined comparison types (`'equals'` or `'strict'`)
+or a custom comparison function
+
+`@param comparison: Comparison {:ts}`  
+The comparison method to use for evaluating state changes
+
+`@returns this {:ts}`  
+The instance of the current state, allowing for method chaining
+
+See also: [Comparison](/store/reference/comparison)
+
+## API
+
+```ts copy
+compareBy(comparison: Comparison): this;
+```
+
+## Example
+
+```ts copy
+import {state, changeDefaultComparison} from '@bitfiber/rx';
+
+const data1 = state<number>(10, s => s
+  // Uses the `equals` function from the package '@bitfiber/utils' for comparing values
+  // this comparison is by default
+  .compareBy('equals'));
+
+const data2 = state<number>(10, s => s
+  // Uses '===' for comparing values
+  .compareBy('strict'));
+
+const data3 = state<number | string>(10, s => s
+  // Uses a custom function for comparing values
+  .compareBy((a, b) => Number(a) === Number(b)));
+
+// By default, uses the `equals` function for comparing values.
+// To set a different comparison type for all states by default, use this function
+changeDefaultComparison('strict');
+```

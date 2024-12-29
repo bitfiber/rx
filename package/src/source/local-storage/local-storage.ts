@@ -86,8 +86,7 @@ export class LocalStorage<T = any> implements KeyValueSource<T> {
   }
 
   /**
-   * Creates and returns an observable that emits value changes
-   * stored under the given key in local storage
+   * Returns an observable that emits value changes stored under the given key in local storage
    * @param key - The specific key under which the value is stored in local storage
    */
   observe(key: string): Observable<T> {

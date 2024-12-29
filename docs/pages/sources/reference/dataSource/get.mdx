@@ -1,0 +1,28 @@
+import {Badge} from '../../../../';
+
+# get <Badge type={'method'}>Method</Badge>
+
+Retrieves the current value from the data source
+
+`@returns T {:ts}`  
+The data source value
+
+## API
+
+```ts copy
+get(): T;
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements DataSource<T> {
+  private value: T;
+  
+  get(): T {
+    return this.value;
+  }
+  
+  // ...
+}
+```

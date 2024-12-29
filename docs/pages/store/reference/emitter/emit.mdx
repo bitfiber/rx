@@ -1,0 +1,29 @@
+import {Badge} from '../../../../';
+
+# emit <Badge type={'method'}>Method</Badge>
+
+Emits the specified value to all subscribers currently listening to the emitter.
+It is used to trigger reactive updates or actions in response to the emitted value
+
+`@param value: T {:ts}`  
+The value to be emitted to all subscribers
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+## API
+
+```ts copy
+emit(value: T): this;
+```
+
+## Example
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+
+const launch = emitter<number>();
+
+// Emits a value to its subscribers, linked reactive sources, and triggers its own taps and effects
+launch.emit(7);
+```

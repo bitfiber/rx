@@ -1,0 +1,23 @@
+import {Badge} from '../../../../';
+
+# remove <Badge type={'method'}>Method</Badge>
+
+Removes a value associated with the provided key from session storage
+
+`@param key: string {:ts}`  
+The specific key under which the value is stored and should be removed
+
+## API
+
+```ts copy
+remove(key: string): void;
+```
+
+## Example
+
+```ts copy
+import {sessionStorage} from '@bitfiber/rx';
+
+const ss = sessionStorage();
+ss.remove('key');
+```

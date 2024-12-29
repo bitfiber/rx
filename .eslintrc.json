@@ -4,7 +4,7 @@
   "plugins": ["@nx"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["*.ts", "*.tsx", "*.js", "*.mjs", "*.jsx"],
       "rules": {
         "@nx/enforce-module-boundaries": ["off"]
       }
@@ -189,7 +189,7 @@
       }
     },
     {
-      "files": ["*.js", "*.jsx"],
+      "files": ["*.js", "*.mjs", "*.jsx"],
       "extends": ["plugin:@nx/javascript"],
       "rules": {
         "@typescript-eslint/no-extra-semi": "error",
@@ -197,7 +197,7 @@
       }
     },
     {
-      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.mjs", "*.spec.jsx"],
       "env": {"jest": true},
       "rules": {}
     }

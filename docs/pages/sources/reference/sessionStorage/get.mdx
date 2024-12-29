@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# get <Badge type={'method'}>Method</Badge>
+
+Retrieves a value stored under the given key in session storage.
+The retrieved value is parsed from its JSON string format into the expected type `T`.
+If the key does not exist or if parsing fails, returns 'undefined'
+
+`@param key: string {:ts}`  
+The specific key under which the value is stored in session storage
+
+`@returns T {:ts}`
+
+## API
+
+```ts copy
+get(key: string): T;
+```
+
+## Example
+
+```ts copy
+import {sessionStorage} from '@bitfiber/rx';
+
+const ss = sessionStorage();
+const value = ss.get('key');
+```

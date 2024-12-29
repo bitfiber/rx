@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# observe <Badge type={'method'}>Method</Badge>
+
+Returns an observable that emits value changes stored under the given key in local storage
+
+`@param key: string {:ts}`  
+The specific key under which the value is stored in local storage
+
+`@returns Observable<T> {:ts}`  
+An observable that will emit value changes for a specific key
+
+## API
+
+```ts copy
+observe(key: string): Observable<T>;
+```
+
+## Example
+
+```ts copy
+import {tap} from 'rxjs';
+import {localStorage} from '@bitfiber/rx';
+
+const ls = localStorage();
+ls.observe('key').pipe(tap(v => console.log(v))).subscribe();
+```

@@ -1,0 +1,20 @@
+import {Badge} from '../../../../';
+
+# destroy <Badge type={'method'}>Method</Badge>
+
+Destroys the reference to the instance and frees any associated resources
+
+## API
+
+```ts copy
+destroy(): void;
+```
+
+## Example
+
+```ts copy
+import {sessionStorage} from '@bitfiber/rx';
+
+const ss = sessionStorage();
+ss.destroy();
+```

@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# observe <Badge type={'method'}>Method</Badge>
+
+Returns an observable that emits value changes of the cookie associated with the specified key
+
+`@param key: string {:ts}`  
+The specific key under which the cookie value is stored
+
+`@returns Observable<T> {:ts}`  
+An observable that will emit value changes for a specific key
+
+## API
+
+```ts copy
+observe(key: string): Observable<T>;
+```
+
+## Example
+
+```ts copy
+import {tap} from 'rxjs';
+import {cookie} from '@bitfiber/rx';
+
+const ck = cookie();
+ck.observe('key').pipe(tap(v => console.log(v))).subscribe();
+```

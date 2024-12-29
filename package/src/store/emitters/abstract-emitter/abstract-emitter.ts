@@ -167,17 +167,17 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    * triggering the reducer function to recompute the result based on the latest values.
    * Works similarly to the RxJs 'combineLatest' operator
    *
-   * @param data - A spread of emitters, states, or observables, followed by a reducer function.
+   * @param inputs - A spread of emitters, states, or observables, followed by a reducer function.
    * The reducer function takes the latest values from each source as arguments and returns
    * the value to be emitted
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  select<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
+  select<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
     this.throwIfCompleted('select');
-    const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
-    const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
-    combineLatest(inputs.map(input => (isObservable(input) ? input : input.$)))
+    const rxInputs = <[...EmitterOrObservableTuple<I>]>[...inputs];
+    const selector = <(...values: I) => T>(isFunction(rxInputs.at(-1)) ? rxInputs.pop() : stub);
+    combineLatest(rxInputs.map(input => (isObservable(input) ? input : input.$)))
       .pipe(completeWith(this.subject))
       .subscribe(values => this._emit(selector(...<I>values)));
     return this;
@@ -193,17 +193,17 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    * triggering the reducer function to recompute the result based on the latest values.
    * Works similarly to the RxJs 'zip' operator
    *
-   * @param data - A spread of emitters, states, or observables, followed by a reducer function.
+   * @param inputs - A spread of emitters, states, or observables, followed by a reducer function.
    * The reducer function takes the latest values from each source as arguments and returns
    * the value to be emitted
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  zip<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
+  zip<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
     this.throwIfCompleted('zip');
-    const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
-    const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
-    zip(inputs.map(input => (isObservable(input) ? input : input.$)))
+    const rxInputs = <[...EmitterOrObservableTuple<I>]>[...inputs];
+    const selector = <(...values: I) => T>(isFunction(rxInputs.at(-1)) ? rxInputs.pop() : stub);
+    zip(rxInputs.map(input => (isObservable(input) ? input : input.$)))
       .pipe(completeWith(this.subject))
       .subscribe(values => this._emit(selector(...<I>values)));
     return this;
@@ -214,17 +214,17 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    * function to these values, emits the resulting value to all subscribers of this emitter,
    * and completes the stream
    *
-   * @param data - A spread of emitters, states, or observables, followed by a reducer function.
+   * @param inputs - A spread of emitters, states, or observables, followed by a reducer function.
    * The reducer function takes the first values from each source as arguments and returns
    * the value to be emitted
    *
    * @returns the instance of the current emitter, allowing for method chaining
    */
-  wait<I extends any[]>(...data: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
+  wait<I extends any[]>(...inputs: [...EmitterOrObservableTuple<I>, SpreadFn<I, T>]): this {
     this.throwIfCompleted('wait');
-    const inputs = <[...EmitterOrObservableTuple<I>]>[...data];
-    const selector = <(...values: I) => T>(isFunction(inputs.at(-1)) ? inputs.pop() : stub);
-    combineLatest(inputs.map(input => (isObservable(input) ? input : input.$)))
+    const rxInputs = <[...EmitterOrObservableTuple<I>]>[...inputs];
+    const selector = <(...values: I) => T>(isFunction(rxInputs.at(-1)) ? rxInputs.pop() : stub);
+    combineLatest(rxInputs.map(input => (isObservable(input) ? input : input.$)))
       .pipe(completeWith(this.subject), take(1))
       .subscribe(values => this._emit(selector(...<I>values)));
     return this;

@@ -1,0 +1,24 @@
+import {Badge} from '../../../../';
+
+# $ <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Readonly</Badge>
+
+Allows subscribers to reactively observe value changes
+
+## API
+
+```ts copy
+readonly $: Observable<T>;
+```
+
+## Example
+
+```ts copy
+import {map} from 'rxjs';
+import {localStoragePart} from '@bitfiber/rx';
+
+const lsPart = localStoragePart('key');
+
+lsPart.$
+  .pipe(map(v => v * 2))
+  .subscribe(v => console.log(v));
+```

@@ -1,0 +1,49 @@
+import {Badge} from '../../../';
+
+# completeWith <Badge type={'function'}>Function</Badge>
+
+Returns an RxJS operator that completes the subscriber when the provided `trigger` observable
+completes. Optionally, if `withError` is set to `true`, the subscriber will also complete
+if the `trigger` observable errors
+
+`@template T {:ts}`  
+The type of values emitted by the source observable
+
+`@param trigger: Observable<any> {:ts}`  
+An observable that can trigger the completion of the subscriber
+
+`@param withError?: boolean {:ts}`  
+If `true`, the subscriber will also complete when the `trigger` errors
+
+`@returns OperatorFunction<T, T> {:ts}`
+
+## API
+
+```ts copy
+function completeWith<T>(trigger: Observable<any>, withError?: boolean): OperatorFunction<T, T>;
+```
+
+## Example
+
+```ts copy
+import {of, map, delay, timeout, interval} from 'rxjs';
+import {completeWith} from '@bitfiber/rx';
+
+const trigger1$ = of(1).pipe(delay(400), timeout(500));
+
+interval(50)
+.pipe(completeWith(trigger1$))
+.subscribe({
+  complete: () => console.log('completed after the trigger completes'),
+});
+
+const trigger2$ = of(1).pipe(delay(200), map(() => {
+  throw new Error('Some error');
+}));
+
+interval(50)
+.pipe(completeWith(trigger2$, true))
+.subscribe({
+  complete: () => console.log('completed due to the trigger error'),
+});
+```

@@ -1,0 +1,53 @@
+import {Badge} from '../../../';
+
+# startWithDefined <Badge type={'function'}>Function</Badge>
+
+Instantly emits a value from the provided getter if the value is defined.
+If the getter returns an observable, the value will be emitted when the observable emits, but only
+if no values have been emitted previously. Optionally, if `nonNullish` is set to `true`, `null` or
+`undefined` values will not be emitted
+
+`@template T {:ts}`  
+The type of the values emitted by the observable
+
+`@template U {:ts}`  
+A subtype of `T` representing the specific value type emitted
+
+`@param getter: () => U | Observable<U> {:ts}`  
+A function that returns an initial value or an observable that emits the initial value
+
+`@param nonNullish?: boolean {:ts}`  
+If `true`, `null` or `undefined` values will not be emitted
+
+`@returns OperatorFunction<T, T> {:ts}`
+
+## API
+
+```ts copy
+function startWithDefined<T, U extends T>(
+  getter: () => U | Observable<U>,
+  nonNullish?: boolean,
+): OperatorFunction<T, T>;
+```
+
+## Example
+
+```ts copy
+import {Subject} from 'rxjs';
+import {Nullish} from '@bitfiber/utils';
+import {startWithDefined} from '@bitfiber/rx';
+
+const subject = new Subject<number | Nullish>();
+
+subject.pipe(startWithDefined(() => 5))
+  .subscribe(v => console.log(v)); // expected result: 5
+
+subject.pipe(startWithDefined(() => null))
+  .subscribe(v => console.log(v)); // expected result: null
+
+subject.pipe(startWithDefined(() => null), true)
+  .subscribe(v => console.log(v)); // expected result: null value won`t be emitted
+
+subject.pipe(startWithDefined(() => undefined))
+  .subscribe(v => console.log(v)); // expected result: undefined value won`t be emitted
+```

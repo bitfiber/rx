@@ -1,0 +1,23 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Sets a new value
+
+`@param value: T {:ts}`  
+A new form value
+
+## API
+
+```ts copy
+set(value: T): void;
+```
+
+## Example
+
+```ts copy
+import {sessionStoragePart} from '@bitfiber/rx';
+
+const ssPart = sessionStoragePart('key');
+ssPart.set(7);
+```

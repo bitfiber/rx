@@ -1,0 +1,43 @@
+import {Badge} from '../../../';
+
+# Comparison <Badge type={'type'}>Type</Badge>
+
+Represents a comparison operation, which can be a predefined comparison type or a custom function.
+
+The `Comparison` type allows for different ways to compare two values:
+
+* `'equals'`: A deep comparison using the `equals` function from the package '@bitfiber/utils'.
+
+* `'strict'`: A strict equality comparison, using strict equality (`===`).
+
+* `((a: any, b: any) => boolean)`: A custom comparison function that takes two arguments and
+returns a boolean indicating whether the values are considered equal based on the provided logic
+
+## API
+
+```ts copy
+type Comparison = 'equals' | 'strict' | ((a: any, b: any) => boolean);
+```
+
+## Example
+
+```ts copy
+import {state, changeDefaultComparison} from '@bitfiber/rx';
+
+const data1 = state<number>(10, s => s
+  // Uses the `equals` function from the package '@bitfiber/utils' for comparing values
+  // this comparison is by default
+  .compareBy('equals'));
+
+const data2 = state<number>(10, s => s
+  // Uses '===' for comparing values
+  .compareBy('strict'));
+
+const data3 = state<number | string>(10, s => s
+  // Uses a custom function for comparing values
+  .compareBy((a, b) => Number(a) === Number(b)));
+
+// By default, uses the `equals` function for comparing values.
+// To set a different comparison type for all states by default, use this function
+changeDefaultComparison('strict');
+```

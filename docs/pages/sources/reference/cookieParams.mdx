@@ -1,0 +1,36 @@
+import {Badge} from '../../../';
+
+# CookieParams <Badge type={'interface'}>Interface</Badge>
+
+Represents the optional parameters that can be used when setting a cookie
+
+## API
+
+```ts copy
+interface CookieParams {
+  path?: string;
+  domain?: string;
+  expires?: Date;
+  maxAge?: number;
+  secure?: boolean;
+  sameSite?: 'strict' | 'lax';
+}
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const now = new Date();
+const token = cookiePart('token', {
+  path: '/some-path',
+  domain: '.example.com',
+  expires: new Date(now.getTime() - 1000*60*60*24),
+  maxAge: -1,
+  secure: true,
+  sameSite: 'strict',
+});
+
+token.remove();
+```

@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# initialize <Badge type={'method'}>Method</Badge>
+
+Initiates the emitter.  
+In most cases, this method will be called automatically by a group or store managing the emitter,
+so you generally don't need to call it manually unless you have a specific reason to do so
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+## API
+
+```ts copy
+initialize(): this;
+```
+
+## Example
+
+```ts copy
+import {emitter} from '@bitfiber/rx';
+
+const num = emitter<number>();
+
+// Initialize the emitter
+num.initialize();
+```

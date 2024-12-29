@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# path <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Specifies the URL path that must exist in the requested URL for the cookie to be valid
+
+## API
+
+```ts copy
+path?: string;
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const now = new Date();
+const token = cookiePart('token');
+
+token.set({
+  value: 'token-hash',
+  path: '/some-path',
+});
+```

@@ -1,0 +1,26 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Sets a new value
+
+`@param value: T {:ts}`  
+A new form value
+
+## API
+
+```ts copy
+set(value: T): void;
+```
+
+## Example
+
+```ts copy
+import {KeyValueSourcePart, MemoryStorage} from '@bitfiber/rx';
+
+// Creates a memory source part
+const source = new KeyValueSourcePart<number>('someKey', new MemoryStorage());
+
+// Sets a new source value
+source.set(7);
+```

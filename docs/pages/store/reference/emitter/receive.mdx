@@ -1,0 +1,74 @@
+import {Badge} from '../../../../';
+
+# receive <Badge type={'method'}>Method</Badge>
+
+## Overload 1
+
+Receives values from one or more emitters, states, or observables
+and emits them to all subscribers of this emitter.
+
+This method allows this emitter to listen to external sources and relay their
+emitted values to its own subscribers, effectively linking multiple data streams together
+
+`@param ...inputs: EmitterOrObservable<T>[] {:ts}`  
+One or more emitters, states, or observables that provide values to be emitted by this emitter
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+### API
+
+```ts copy
+receive(...inputs: EmitterOrObservable<T>[]): this;
+```
+
+### Example
+
+```ts copy
+import {of} from 'rxjs';
+import {emitter, state} from '@bitfiber/rx';
+
+const source1 = emitter<number>();
+const source2 = state<number>(1);
+const source3$ = of(1);
+
+const result = emitter<number>(e => e
+  // Receives data from each reactive source separately and emits a value to its subscribers
+  // immediately, without waiting for other sources to emit
+  .receive(source1, source2, source3$));
+```
+## Overload 2
+
+Receives a value from an emitter, state, or observable, applies a reducer function to convert
+this value to the emitter's type, and emits the result to all subscribers of this emitter.
+
+This method allows this emitter to listen to external source and relay the transformed
+emitted value to its own subscribers, effectively linking data streams together
+
+`@param input: EmitterOrObservable<I> {:ts}`  
+An emitter, state or observable that provide values to be emitted by this emitter
+
+`@param reducer: (value: I) => T {:ts}`  
+A function that converts the received value from its original type to the type expected by this
+emitter, allowing for customization of the emitted value
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+### API
+
+```ts copy
+receive<I>(input: EmitterOrObservable<I>, reducer: (value: I, state: T) => T): this;
+```
+
+### Example
+
+```ts copy
+import {emitter, state} from '@bitfiber/rx';
+
+const source = state<number>(1);
+
+const result = emitter<string>(e => e
+  // Receives data from a reactive source, converts the value, and emits the result to its subscribers
+  .receive(source, value => String(value)));
+```

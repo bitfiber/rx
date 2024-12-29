@@ -1,0 +1,30 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Sets a cookie with the specified key and value, stringified before being added to the cookie.
+Additional parameters, such as cookie options (e.g., `expires`, `path`), can be provided as part
+of the `data` object
+
+`@param key: string {:ts}`  
+The specific key under which the value will be stored
+
+`@param value: T {:ts}`  
+An object containing the new value to store, as well as optional cookie parameters
+
+See also: [CookieData](/sources/reference/cookieData)
+
+## API
+
+```ts copy
+set(key: string, value: T): void;
+```
+
+## Example
+
+```ts copy
+import {cookie} from '@bitfiber/rx';
+
+const ck = cookie();
+ck.set('key', {value: 'value'});
+```

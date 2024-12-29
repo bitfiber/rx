@@ -85,8 +85,7 @@ export class SessionStorage<T = any> implements KeyValueSource<T> {
   }
 
   /**
-   * Creates and returns an observable that emits value changes
-   * stored under the given key in session storage
+   * Returns an observable that emits value changes stored under the given key in session storage
    * @param key - The specific key under which the value is stored in session storage
    */
   observe(key: string): Observable<T> {

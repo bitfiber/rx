@@ -1,0 +1,31 @@
+import {Badge} from '../../../../';
+
+# set <Badge type={'method'}>Method</Badge>
+
+Sets a new value for the data source.
+This method updates the value in the data source and notifies observers of the change
+
+`@param value: T {:ts}`  
+The new value to be set for the data source
+
+## API
+
+```ts copy
+set(value: T): void;
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements DataSource<T> {
+  private value: T;
+  private readonly subject = new Subject<T>();
+  
+  set(value: T): void {
+    this.value = value;
+    this.subject.next(this.value);
+  }
+  
+  // ...
+}
+```

@@ -1,0 +1,52 @@
+import {Badge} from '../../../';
+
+# DataSource <Badge type={'interface'}>Interface</Badge>
+
+Represents a data source that can be observed, retrieved, modified, or removed.
+It provides an observable for monitoring changes
+
+`@template T {:ts}`  
+The type of data stored in the data source
+
+## API
+
+```ts copy
+interface DataSource<T> {
+  $: Observable<T>;
+  get(): T;
+  set(value: T): void;
+  remove(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {Subject} from 'rxjs';
+import {DataSource} from '@bitfiber/rx';
+
+class CustomDataSource<T = any> implements DataSource<T> {
+  private value: T;
+  private readonly subject = new Subject<T>();
+
+  // Observable stream for external subscribers
+  readonly $ = this.subject.asObservable();
+
+  // Retrieve the current value
+  get(): T {
+    return this.value;
+  }
+
+  // Update the value and notify subscribers
+  set(value: T): void {
+    this.value = value;
+    this.subject.next(this.value);
+  }
+
+  // Remove the value and notify subscribers
+  remove(): void {
+    delete this.value;
+    this.subject.next(undefined);
+  }
+}
+```

@@ -1,0 +1,30 @@
+import {Badge} from '../../../';
+
+# localStoragePart <Badge type={'function'}>Function</Badge>
+
+Creates an instance of `LocalStoragePart`, allowing interaction with a specific key-value pair
+stored in the browser's local storage
+
+`@template T = string | undefined {:ts}`  
+The type of the value stored in local storage. Defaults to `string | undefined`
+
+`@param key: string {:ts}`  
+The key used to access the value in local storage
+
+`@returns LocalStoragePart<T> {:ts}`
+
+See also: [LocalStoragePart](/sources/reference/localStoragePart)
+
+## API
+
+```ts copy
+function localStoragePart<T = string | undefined>(key: string): LocalStoragePart<T>;
+```
+
+## Example
+
+```ts copy
+import {localStoragePart} from '@bitfiber/rx';
+
+const lsPart = localStoragePart('key');
+```

@@ -1,0 +1,30 @@
+import {Badge} from '../../../';
+
+# memoryStoragePart <Badge type={'function'}>Function</Badge>
+
+Creates an instance of `MemoryStoragePart`, allowing interaction with a specific key-value pair
+stored in the memory storage
+
+`@template T = string | undefined {:ts}`  
+The type of data stored under the specific key. Defaults to `string | undefined`
+
+`@param key: string {:ts}`  
+The key that is used to access the value in the memory storage
+
+`@returns MemoryStoragePart<T> {:ts}`
+
+See also: [MemoryStoragePart](/sources/reference/memoryStoragePart)
+
+## API
+
+```ts copy
+function memoryStoragePart<T = string | undefined>(key: string): MemoryStoragePart<T>;
+```
+
+## Example
+
+```ts copy
+import {memoryStoragePart} from '@bitfiber/rx';
+
+const msPart = memoryStoragePart('key');
+```

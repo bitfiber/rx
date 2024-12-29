@@ -40,3 +40,8 @@ Thumbs.db
 
 .nx/cache
 .nx/workspace-data
+
+# next.js
+/docs/.next/
+/docs/dist/
+/docs/next-env.d.ts

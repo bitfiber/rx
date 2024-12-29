@@ -1,0 +1,23 @@
+import {Badge} from '../../../../';
+
+# remove <Badge type={'method'}>Method</Badge>
+
+Removes the current value
+
+## API
+
+```ts copy
+remove(): void;
+```
+
+## Example
+
+```ts copy
+import {KeyValueSourcePart, MemoryStorage} from '@bitfiber/rx';
+
+// Creates a memory source part
+const source = new KeyValueSourcePart<number>('someKey', new MemoryStorage());
+
+// Removes the current source value
+source.remove();
+```

@@ -1,0 +1,22 @@
+import {Badge} from '../../../../';
+
+# get <Badge type={'method'}>Method</Badge>
+
+Retrieves the current value
+
+`@returns T {:ts}`
+
+## API
+
+```ts copy
+get(): T;
+```
+
+## Example
+
+```ts copy
+import {memoryStoragePart} from '@bitfiber/rx';
+
+const msPart = memoryStoragePart('key');
+const value = msPart.get();
+```

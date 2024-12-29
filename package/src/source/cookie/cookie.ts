@@ -160,7 +160,7 @@ implements KeyValueSource<T> {
    * provide `CookieParams` to specify additional options, such as the path or domain, to ensure
    * the correct cookie is removed
    *
-   * @param key - The specific key (name) of the cookie to be removed
+   * @param key - The specific key of the cookie to be removed
    * @param [params] - Optional parameters that can be used to specify the cookie's path, domain, etc.
    */
   remove(key: string, params?: CookieParams): void {
@@ -172,9 +172,8 @@ implements KeyValueSource<T> {
   }
 
   /**
-   * Creates and returns an observable that emits value changes of the cookie
-   * associated with the specified key. This allows reactive monitoring of the cookie value
-   * @param key - The specific key (name) under which the cookie value is stored
+   * Returns an observable that emits value changes of the cookie associated with the specified key
+   * @param key - The specific key under which the cookie value is stored
    */
   observe(key: string): Observable<T> {
     return this.subject.pipe(

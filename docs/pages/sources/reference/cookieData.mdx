@@ -1,0 +1,35 @@
+import {Badge} from '../../../';
+
+# CookieData <Badge type={'type'}>Type</Badge>
+
+Combines cookie parameters with the value to be stored in a cookie
+
+`@template T {:ts}`  
+The type of the value stored in the cookie
+
+See also: [CookieParams](/sources/reference/cookieParams)
+
+## API
+
+```ts copy
+type CookieData<T> = CookieParams & {value: T};
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const now = new Date();
+const token = cookiePart('token');
+
+token.set({
+  value: 'token-hash',
+  path: '/some-path',
+  domain: '.example.com',
+  expires: new Date(now.getTime() + 1000*60*60*24),
+  maxAge: 120,
+  secure: true,
+  sameSite: 'strict',
+});
+```

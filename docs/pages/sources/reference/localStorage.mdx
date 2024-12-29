@@ -1,0 +1,32 @@
+import {Badge} from '../../../';
+
+# LocalStorage <Badge type={'class'}>Class</Badge>
+
+Implements the `KeyValueSource` interface, allowing interaction with the browser's local storage
+using key-value semantics. It provides methods for retrieving, setting, observing, and removing
+key-value pairs stored in local storage
+
+`@template T = any {:ts}`  
+The type of the value stored in local storage. Defaults to `any`
+
+See also: [KeyValueSource](/sources/reference/keyValueSource)
+
+## API
+
+```ts copy
+class LocalStorage<T = any> implements KeyValueSource<T> {
+  get(key: string): T;
+  set(key: string, value: T): void;
+  remove(key: string): void;
+  observe(key: string): Observable<T>;
+  destroy(): void;
+}
+```
+
+## Example
+
+```ts copy
+import {LocalStorage} from '@bitfiber/rx';
+
+const ls = new LocalStorage();
+```

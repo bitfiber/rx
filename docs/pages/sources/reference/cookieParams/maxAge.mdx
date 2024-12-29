@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# maxAge <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Specifies the maximum age of the cookie in seconds. Overrides `expires` if both are set
+
+## API
+
+```ts copy
+maxAge?: number;
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const now = new Date();
+const token = cookiePart('token');
+
+token.set({
+  value: 'token-hash',
+  maxAge: 120,
+});
+```

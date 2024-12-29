@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# afterStoreComplete <Badge type={'method'}>Method</Badge>
+
+An optional hook that runs after the store has been completed
+
+## API
+
+```ts copy
+afterStoreComplete?(): void;
+```
+
+## Example
+
+```ts copy
+import {emitter, Store} from '@bitfiber/rx';
+
+class StoreWithHook extends Store {
+  start = emitter<void>();
+  
+  afterStoreComplete(): void {
+    // Runs some logic after the store has been completed
+  }
+}
+```

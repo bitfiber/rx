@@ -1,0 +1,27 @@
+import {Badge} from '../../../../';
+
+# get <Badge type={'method'}>Method</Badge>
+
+Retrieves a value stored under the given key in local storage.
+The retrieved value is parsed from its JSON string format into the expected type `T`.
+If the key does not exist or if parsing fails, returns 'undefined'
+
+`@param key: string {:ts}`  
+The specific key under which the value is stored in local storage
+
+`@returns T {:ts}`
+
+## API
+
+```ts copy
+get(key: string): T;
+```
+
+## Example
+
+```ts copy
+import {localStorage} from '@bitfiber/rx';
+
+const ls = localStorage();
+const value = ls.get('key');
+```

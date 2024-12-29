@@ -1,0 +1,34 @@
+import {Badge} from '../../../../';
+
+# observe <Badge type={'method'}>Method</Badge>
+
+Returns an observable that will emit value changes for a specific key
+
+`@param key: string {:ts}`  
+The key for which to observe value changes
+
+`@returns Observable<T> {:ts}`  
+An observable that will emit value changes for a specific key
+
+## API
+
+```ts copy
+observe(key: string): Observable<T>;
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements KeyValueSource<T> {
+  private readonly subject = new Subject<string>();
+  
+  observe(key: string): Observable<T> {
+    return this.subject.pipe(
+      filter(eKey => key === eKey),
+      map(key => this.get(key)),
+    );
+  }
+  
+  // ...
+}
+```

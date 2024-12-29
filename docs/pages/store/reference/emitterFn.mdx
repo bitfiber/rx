@@ -1,0 +1,118 @@
+import {Badge} from '../../../';
+
+# emitter <Badge type={'function'}>Function</Badge>
+
+Creates and returns a new `Emitter` instance in a convenient way that provides functionality
+to create streams, handle subscriptions, emit values to subscribers, and integrate with other
+reactive sources such as emitters, states, subjects, observables.
+
+You can optionally provide an `onInit` callback that will be invoked just before the emitter's
+initialization, allowing you to perform setup tasks or configure the emitter before it starts
+emitting values
+
+`@template T {:ts}`  
+The type of data emitted by this emitter
+
+`@param onInit?: (emitter: Emitter<T>) => void {:ts}`  
+An optional callback function that is called with the newly created `Emitter` instance just before
+its initialization. This function can be used to set up or configure the emitter
+
+`@returns Emitter<T> {:ts}`
+
+See also: [Emitter](/store/reference/emitter)
+
+## API
+
+```ts copy
+function emitter<T>(onInit?: (emitter: Emitter<T>) => void): Emitter<T>;
+```
+
+## Example
+
+```ts copy
+import {emitter, namedGroup} from '@bitfiber/rx';
+import {take, filter, switchMap} from 'rxjs';
+
+// Creates an emitter that emits the IDs
+const currentId = emitter<number>(e => e
+  // Transmits all emitted data to the 'productReq' emitter
+  .transmit(productReq));
+
+// The observable of the emitter
+const currentId$ = currentId.$;
+
+// Creates an emitter that emits the final ID
+const lastId = emitter<number>();
+
+// Creates an emitter that receives transmitted 'currentId' data and performs an effect that calls an API
+const productReq = emitter<number>(e => e
+  // All streams created by this emitter will filter the data
+  .manage(
+    filter(id => !!(id % 2)),
+  )
+  // Performs a tap callback each time the emitter emits new filtered data
+  .tap(id => {
+    console.log(id);
+  })
+  // Performs a effect each time the emitter emits new filtered data
+  .effect(
+    switchMap(id => productsService.get(`api/product${id}`)),
+  ));
+
+// Creates an emitter that receives used IDs and logs them through an effect
+const log = emitter<string>(e => e
+  // Runs an effect when data is received from the `currentId` emitter
+  .receive(currentId, id => `A new id ${id} was received`)
+  // Runs an effect when data is received from the `lastId` emitter
+  .receive(lastId, id => `the last id ${id} was received`)
+  // Performs an effect each time the emitter emits newly received logged data
+  .effect(
+    switchMap(log => logService.post(`api/log`, {log})),
+  ));
+
+// Creates an emitter that performs a tap callback each time data is selected
+const result1 = emitter<[number, number]>(e => e
+  // Runs a tap callback when all data is selected from the `currentId` and `lastId` emitters
+  .select(currentId$, lastId, (currentId, lastId) => [currentId, lastId])
+  // Performs a tap callback each time the emitter emits new data
+  .tap(range => {
+    console.log(range);
+  }));
+
+// Creates an emitter that performs a tap callback each time data is zipped
+const result2 = emitter<[number, number]>(e => e
+  // Runs a tap callback when all data is zipped from the `currentId` and `lastId` emitters
+  .zip(currentId$, lastId, (currentId, lastId) => [currentId, lastId])
+  // Performs a tap callback each time the emitter emits new data
+  .tap(range => {
+    console.log(range);
+  }));
+
+// Creates an emitter that emits the timestamp of the last received ID
+const lastIdTime = emitter<number>(e => e
+  // Waits for the first value from the `lastId` emitter, then completes the stream
+  .wait(lastId, lastId => new Date().getTime()));
+
+// Groups all emitters and states for mass initialization and completion
+const group = namedGroup({currentId, lastId, productReq, log, result1, result2});
+
+// Subscribe to the observable of the emitter
+currentId$
+  .pipe(take(1))
+  .subscribe(id => {
+    console.log(id);
+  });
+
+// Initializes the group and all items within the group
+group.initialize();
+
+// Emits data
+currentId.emit(1);
+currentId.emit(2);
+
+// Accesses the 'lastId' emitter through the group
+group.lastId.emit(3);
+
+// Completes the group and all items within the group
+group.complete();
+```

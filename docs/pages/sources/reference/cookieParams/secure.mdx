@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# secure <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Indicates whether the cookie should only be sent over secure protocols like HTTPS
+
+## API
+
+```ts copy
+secure?: boolean;
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const now = new Date();
+const token = cookiePart('token');
+
+token.set({
+  value: 'token-hash',
+  secure: true,
+});
+```

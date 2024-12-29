@@ -1,0 +1,50 @@
+import {Badge} from '../../../';
+
+# AsyncGroup <Badge type={'class'}>Class</Badge>
+
+Represents an asynchronous group that manages the lifecycle of an asynchronous action,
+providing emitters for launching actions, handling success, dealing with failures, and
+managing the state of these actions.
+
+The `AsyncGroup` class extends `AbstractAsyncGroup` and is designed to facilitate the management
+of asynchronous actions. This structure allows for organized and efficient management
+of complex asynchronous workflows
+
+`@template L {:ts}`  
+The type representing the data for the launch emitter
+
+`@template S {:ts}`  
+The type representing the data for the success emitter
+
+`@template F {:ts}`  
+The type representing the error data for the fail emitter
+
+## API
+
+```ts copy
+class AsyncGroup<L, S, F> extends AbstractAsyncGroup<L, S, F> {
+  readonly launch: Emitter<L>;
+  readonly success: Emitter<S>;
+  readonly fail: Emitter<F>;
+  readonly finish: Emitter<void>;
+  readonly state: StateType<AsyncData>;
+  initialize(): this;
+  complete(): void;
+  useCache(secOrFn: number | (() => boolean), cacheSize = 10): this;
+}
+```
+
+## Example
+
+```ts copy
+import {asyncGroup} from '@bitfiber/rx';
+
+// Creates an asynchronous group
+const group = asyncGroup<number, string[], Error>(({launch}) => {
+  // Sets an effect to be triggered on new launch emissions
+  launch.tap(v => console.log(v));
+});
+
+// Emits a new value to its own subscribers
+group.launch.emit(1);
+```

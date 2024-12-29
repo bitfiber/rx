@@ -1,0 +1,34 @@
+import {Badge} from '../../../../';
+
+# manage <Badge type={'method'}>Method</Badge>
+
+Defines management operators for all emitter streams.
+These operators are applied to the streams managed by this emitter,
+allowing you to modify or control their behavior, such as filtering,
+mapping, or handling errors, without altering the type of the emitted values
+
+`@param ...operators: OperatorFunction<T, T>[] {:ts}`   
+One or more RxJS operators to apply to the emitter streams
+
+`@returns this {:ts}`  
+The instance of the emitter, allowing for method chaining
+
+## API
+
+```ts copy
+manage(...operators: OperatorFunction<T, T>[]): this;
+```
+
+## Example
+
+```ts copy
+import {delay, filter} from 'rxjs';
+import {emitter} from '@bitfiber/rx';
+
+const launch = emitter<number>(e => e
+  // All streams created by this emitter will delay and filter the data
+  .manage(
+    filter(id => !!(id % 2)),
+    delay(100),
+  ));
+```

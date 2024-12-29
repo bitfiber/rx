@@ -1,0 +1,167 @@
+# What is Data Sources?
+
+Data sources act as facades for specific parts of data in external storages like local storage,
+session storage, cookies, and more. They implement a unified interface called [DataSource](/sources/reference/dataSource),
+which simplifies integration with various storage mechanisms. This interface also enables states to
+seamlessly connect to external storages, ensuring that state remains synchronized with them.
+
+Beyond providing access to a specific portion of the storage, data sources enable the ability to
+subscribe to data changes. This feature ensures reactive updates within your application, keeping
+your state aligned with external changes.
+
+## List of Data Sources
+
+1. **[Local Storage Part](/sources/reference/localStoragePartFn)**  
+Provides interaction with a specific key-value pair stored in the browser's local storage
+
+2. **[Session Storage Part](/sources/reference/sessionStoragePartFn)**  
+Provides interaction with a specific key-value pair stored in the browser's session storage
+
+3. **[Memory Storage Part](/sources/reference/memoryStoragePartFn)**  
+Provides interaction with a specific key-value pair stored in the memory storage
+
+4. **[Cookie Part](/sources/reference/cookiePartFn)**  
+Provides interaction with a specific key-value pair stored in the browser's cookie
+
+## How to Use Data Sources
+
+### Create a data source
+
+Let’s start by creating a data source that manages data in localStorage under the key `theme`:
+
+```ts copy
+import { localStoragePart } from '@bitfiber/rx';
+
+// Create a data source
+const themeSource = localStoragePart('theme');
+```
+
+### Modify data
+
+Use the data source to set or update the value:
+
+```ts copy
+themeSource.set('dark');
+```
+
+To remove the value, simply call:
+
+```ts copy
+themeSource.remove();
+```
+### Retrieve data
+
+Retrieve the current value:
+
+```ts copy
+const value = themeSource.get();
+```
+
+### Subscribe to data changes
+
+Data sources are reactive, meaning you can subscribe to data changes and respond accordingly:
+
+```ts copy
+themeSource.$.subscribe((theme) => {
+  if (theme === 'dark') {
+    // Perform logic for the dark theme
+    console.log('Dark theme activated!');
+  }
+});
+```
+
+## Any Data Types for Storages
+
+Data sources such as `localStoragePart`, `sessionStoragePart`, and `cookiePart` simplify
+the handling of data by allowing you to store and retrieve values of any type, including objects,
+arrays, and primitives. These sources automatically convert data into JSON strings when storing it
+and parse JSON strings back into their original types when retrieving.
+
+```ts copy
+import {localStoragePart} from '@bitfiber/rx';
+
+type Preferences = {theme: 'dark' | 'light'; notifications: boolean};
+
+// Create a data source
+const preferencesSource = localStoragePart<Preferences>('preferences');
+
+// Set a preferences object in local storage
+preferencesSource.set({theme: 'dark', notifications: true});
+
+// Retrieve the preferences object from local storage
+const preferences = preferencesSource.get();
+
+// Expected result: preferences is equal to {theme: 'dark', notifications: true}
+console.log(preferences);
+```
+
+## Using Data Sources with State
+
+The [DataSource](/sources/reference/dataSource) interface facilitates seamless connection of
+[reactive state](/store/reference/stateFn) to specific parts of external storages, ensuring that
+state data remains synchronized and up to date. This approach streamlines the management of data
+consistency and alignment across your application.
+
+### Key Benefits
+
+* **Seamless Synchronization:**  
+Automatically sync state updates to external storage and vice versa, ensuring consistent data
+across your application.
+
+* **Reactive Updates:**  
+Subscribe to changes in external storages and propagate those changes directly to your state,
+enabling real-time reactivity.
+
+* **Scoped Access:**  
+Focus on specific parts of storage, allowing precise and efficient management of data segments.
+
+### State Connection Example
+
+```ts copy
+import {state, localStoragePart} from '@bitfiber/rx';
+
+// Create a state
+const userPreferences = state({theme: 'dark', notifications: true}, s =>
+  // Connect the state to the user preferences source
+  s.connect(localStoragePart('userPreferences')));
+
+// Now, any updates to the state are saved in localStorage, and changes in
+// localStorage will automatically update the state
+```
+
+## Creating a Custom Data Source
+
+To create a custom data source, you need to implement the [DataSource](/sources/reference/dataSource)
+interface. This allows your custom data source to integrate seamlessly with [states](/store/reference/stateFn)
+
+### Custom Data Source Example
+
+```ts copy
+import {Subject} from 'rxjs';
+import {DataSource} from '@bitfiber/rx';
+
+class CustomDataSource<T = any> implements DataSource<T> {
+  private value: T;
+  private readonly subject = new Subject<T>();
+
+  // Observable stream for external subscribers
+  readonly $ = this.subject.asObservable();
+
+  // Retrieve the current value
+  get(): T {
+    return this.value;
+  }
+
+  // Update the value and notify subscribers
+  set(value: T): void {
+    this.value = value;
+    this.subject.next(this.value);
+  }
+
+  // Remove the value and notify subscribers
+  remove(): void {
+    delete this.value;
+    this.subject.next(undefined);
+  }
+}
+```

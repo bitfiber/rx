@@ -1,0 +1,30 @@
+import {Badge} from '../../../../';
+
+# complete <Badge type={'method'}>Method</Badge>
+
+Completes the store and all of its items, signaling that the store has finished
+its operations and is now in a completed state. Once the store is completed,
+no further changes or updates will be made to it or its items.
+This method is called automatically when the associated component or service is destroyed
+
+## API
+
+```ts copy
+complete(): void;
+```
+
+## Example
+
+```ts copy
+import {state, Store} from '@bitfiber/rx';
+
+class ProductsStore extends Store {
+  products = state<any[]>();
+  #ready = this.markAsReady();
+}
+
+const store = new ProductsStore().initialize();
+
+// Completes the store
+store.complete();
+```

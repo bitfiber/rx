@@ -1,0 +1,27 @@
+import {Badge} from '../../../';
+
+# memoryStorage <Badge type={'function'}>Function</Badge>
+
+Creates a singleton instance of `MemoryStorage`, ensuring that only one instance of the in-memory
+key-value storage exists
+
+`@template T = any {:ts}`  
+The type of data stored in the memory storage. Defaults to `any`
+
+`@returns MemoryStorage<T> {:ts}`
+
+See also: [MemoryStorage](/sources/reference/memoryStorage)
+
+## API
+
+```ts copy
+function memoryStorage<T = any>(): MemoryStorage<T>;
+```
+
+## Example
+
+```ts copy
+import {memoryStorage} from '@bitfiber/rx';
+
+const ms = memoryStorage();
+```

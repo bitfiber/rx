@@ -1,0 +1,23 @@
+import {Badge} from '../../../../';
+
+# $ <Badge type={'property'}>Property</Badge>
+
+An observable that allows subscribers to reactively observe changes or updates to the data
+
+## API
+
+```ts copy
+$: Observable<T>;
+```
+
+## Example
+
+```ts copy
+class ExampleSource<T = any> implements DataSource<T> {
+  private readonly subject = new Subject<T>();
+  
+  readonly $ = this.subject.asObservable();
+  
+  // ...
+}
+```

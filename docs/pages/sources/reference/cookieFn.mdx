@@ -1,0 +1,28 @@
+import {Badge} from '../../../';
+
+# cookie <Badge type={'function'}>Function</Badge>
+
+Creates and returns a singleton instance of the `Cookie` class and ensures that only one instance
+is created. If the instance already exists, it returns the existing one
+
+`@template T extends CookieData<any> = CookieData<string | undefined> {:ts}`  
+Represents an object that includes both the value and parameters for the cookie.  
+Defaults to `CookieData<string | undefined>`
+
+`@returns Cookie<T> {:ts}`
+
+See also: [Cookie](/sources/reference/cookie), [CookieData](/sources/reference/cookieData)
+
+## API
+
+```ts copy
+function cookie<T extends CookieData<any> = CookieData<string | undefined>>(): Cookie<T>;
+```
+
+## Example
+
+```ts copy
+import {cookie} from '@bitfiber/rx';
+
+const ck = cookie();
+```

@@ -1,0 +1,25 @@
+import {Badge} from '../../../../';
+
+# expires <Badge type={'property'}>Property</Badge> <Badge type={'modifier'}>Optional</Badge>
+
+Specifies the expiration date for the cookie. If not set, the cookie is considered a session cookie
+
+## API
+
+```ts copy
+expires?: Date;
+```
+
+## Example
+
+```ts copy
+import {cookiePart} from '@bitfiber/rx';
+
+const now = new Date();
+const token = cookiePart('token');
+
+token.set({
+  value: 'token-hash',
+  expires: new Date(now.getTime() + 1000*60*60*24),
+});
+```

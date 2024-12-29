@@ -1,5 +1,7 @@
 import nextra from 'nextra';
 
+export const isProd = process.env.NODE_ENV === 'production';
+
 const withNextra = nextra({
   theme: 'nextra-theme-docs',
   themeConfig: './theme.config.tsx',
@@ -10,7 +12,7 @@ export default withNextra({
   reactStrictMode: true,
   trailingSlash: true,
   distDir: 'dist',
-  basePath: '',
+  basePath: isProd ? '/rx' : '',
   output: 'export',
   images: {unoptimized: true},
 });

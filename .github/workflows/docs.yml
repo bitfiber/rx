@@ -28,13 +28,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20.15
-      - run: npm ci
-      - run: cd .\docs\
-      - run: next build
+          
+      - name: NPM install   
+        run: npm ci
+
+      - name: Docs build
+        working-directory: .\docs
+        run: next build
       
   # Deploy job
   deploy:

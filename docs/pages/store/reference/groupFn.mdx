@@ -2,12 +2,10 @@ import {Badge} from '../../../';
 
 # group <Badge type={'function'}>Function</Badge>
 
-Creates a new `Group` instance that collects all subsequently created group items such as
-emitters, states, and groups until `group.markAsReady()` is called
+Creates a new [Group](/store/reference/group) instance that collects all subsequently created group
+items such as emitters, states, and groups until `group.markAsReady()` is called
 
 `@returns Group {:ts}`
-
-See also: [Group](/store/reference/group)
 
 ## API
 
@@ -20,16 +18,15 @@ function group(): Group;
 ```ts copy
 import {state, emitter, group, asyncGroup} from '@bitfiber/rx';
 
-// Define a group that will collect all subsequently created emitters, states, and groups
+// Defines a group that will collect all subsequently created emitters, states, and groups
 const myGroup = group();
 
-// The emitter, state, and group will be added in 'myGroup'
+// Add group items here
 const someState = state<string>('');
 const someEmitter = emitter<number>();
 const req = asyncGroup<string, number, number>();
 
-// Marks the group as ready, indicating that all group items, such as emitters, states,
-// and groups, have been defined
+// Marks the group as ready, indicating that all group items have been defined
 myGroup.markAsReady();
 
 // Initializes the group and all items within the group

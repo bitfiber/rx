@@ -30,11 +30,11 @@ export function state<T>(initialValue: T, onInit?: (state: StateType<T>) => void
 }
 
 /**
- * Represents a concrete state in a reactive store, extending the functionality of `AbstractState`.
- * This class encapsulates the logic for updating, resetting and maintaining a state,
- * reacting to changes, and notifying subscribers whenever the state is updated.
- * It can also be connected to external data sources to synchronize its value with external data,
- * ensuring consistency across different parts of an application
+ * Represents a core data container in the reactive store, responsible for maintaining and
+ * broadcasting data updates to multiple subscribers. Like emitters, the state can create and manage
+ * reactive streams to broadcast changes efficiently. It is designed to simplify state
+ * propagation and synchronization across stores or features, ensuring consistency. The state can
+ * also integrate seamlessly with other reactive sources like emitters, states, and observables
  *
  * @template T - The type of data managed and emitted by the state
  */

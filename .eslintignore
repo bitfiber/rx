@@ -6,5 +6,4 @@ node_modules
 # next.js
 /docs/.next/
 /docs/dist/
-/docs/site/
 /docs/next-env.d.ts

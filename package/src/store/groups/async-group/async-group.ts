@@ -35,7 +35,7 @@ export function asyncGroup<L, S, F>(
  *
  * The `AsyncGroup` class extends `AbstractAsyncGroup` and is designed to facilitate the management
  * of asynchronous actions. This structure allows for organized and efficient management
- * of complex asynchronous workflows
+ * of complex asynchronous dataflow
  *
  * @template L - The type representing the data for the launch emitter
  * @template S - The type representing the data for the success emitter

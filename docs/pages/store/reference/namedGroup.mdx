@@ -25,7 +25,7 @@ class NamedGroup<I extends Index> extends AbstractGroup {
 import {switchMap} from 'rxjs';
 import {state, emitter, namedGroup, transmit} from '@bitfiber/rx';
 
-// Define a named group that contains emitters, states, or other groups
+// Defines a named group that contains emitters, states, or other groups
 const myGroup = namedGroup(
   {
     launch: emitter<void>(),
@@ -39,12 +39,12 @@ const myGroup = namedGroup(
   }
 );
 
-// Initialize the group and all items it contains
+// Initializes the group and all items it contains
 myGroup.initialize();
 
-// Emit to trigger the 'launch' emitter
+// Launches data loading
 myGroup.launch.emit();
 
-// Complete the group, finalizing all its items
+// Completes the group, finalizing all its items
 myGroup.complete();
 ```

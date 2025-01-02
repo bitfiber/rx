@@ -31,12 +31,12 @@ export default {
     title: 'Other Projects',
     type: 'menu',
     items: {
-      rxStore: {
-        title: 'Ng Store',
+      ng: {
+        title: 'Bitfiber Angular',
         href: ngHost,
       },
-      jsUtils: {
-        title: 'JS Utils',
+      utils: {
+        title: 'Bitfiber Utils',
         href: utilsHost,
       },
     },

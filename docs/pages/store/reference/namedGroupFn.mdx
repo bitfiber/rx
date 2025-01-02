@@ -2,8 +2,9 @@ import {Badge} from '../../../';
 
 # namedGroup <Badge type={'function'}>Function</Badge>
 
-Creates a new `NamedGroup` instance that extracts emitters, states, and groups from the provided
-object and adds them to the group. Each item is accessible by the key used in the object.
+Creates a new [NamedGroup](/store/reference/namedGroup) instance that extracts emitters, states,
+and groups from the provided object and adds them to the group. Each item is accessible by the key
+used in the object.
 
 This function also allows for an optional `onInit` callback, which can be used to perform
 additional setup or configuration just before the group initialization
@@ -18,8 +19,6 @@ An index that contains `StoreItem` instances and other data, each associated wit
 An optional callback function that is executed just before initialization
 
 `@returns NamedGroup<StoreIndex<I>> {:ts}`
-
-See also: [NamedGroup](/store/reference/namedGroup)
 
 ## API
 

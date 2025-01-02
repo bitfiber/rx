@@ -98,9 +98,9 @@ console.log(preferences);
 ## Using Data Sources with State
 
 The [DataSource](/sources/reference/dataSource) interface facilitates seamless connection of
-[reactive state](/store/reference/stateFn) to specific parts of external storages, ensuring that
-state data remains synchronized and up to date. This approach streamlines the management of data
-consistency and alignment across your application.
+[state](/store/states) to specific parts of external storages, ensuring that state data remains
+synchronized and up to date. This approach streamlines the management of data consistency and
+alignment across your application.
 
 ### Key Benefits
 
@@ -121,9 +121,9 @@ Focus on specific parts of storage, allowing precise and efficient management of
 import {state, localStoragePart} from '@bitfiber/rx';
 
 // Create a state
-const userPreferences = state({theme: 'dark', notifications: true}, s =>
+const userPreferences = state({theme: 'dark', notifications: true}, s => s
   // Connect the state to the user preferences source
-  s.connect(localStoragePart('userPreferences')));
+  .connect(localStoragePart('userPreferences')));
 
 // Now, any updates to the state are saved in localStorage, and changes in
 // localStorage will automatically update the state
@@ -132,7 +132,7 @@ const userPreferences = state({theme: 'dark', notifications: true}, s =>
 ## Creating a Custom Data Source
 
 To create a custom data source, you need to implement the [DataSource](/sources/reference/dataSource)
-interface. This allows your custom data source to integrate seamlessly with [states](/store/reference/stateFn)
+interface. This allows your custom data source to integrate seamlessly with [states](/store/states)
 
 ### Custom Data Source Example
 

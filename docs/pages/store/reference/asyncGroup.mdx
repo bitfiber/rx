@@ -8,7 +8,7 @@ managing the state of these actions.
 
 The `AsyncGroup` class extends `AbstractAsyncGroup` and is designed to facilitate the management
 of asynchronous actions. This structure allows for organized and efficient management
-of complex asynchronous workflows
+of complex asynchronous dataflow
 
 `@template L {:ts}`  
 The type representing the data for the launch emitter
@@ -28,6 +28,7 @@ class AsyncGroup<L, S, F> extends AbstractAsyncGroup<L, S, F> {
   readonly fail: Emitter<F>;
   readonly finish: Emitter<void>;
   readonly state: StateType<AsyncData>;
+  constructor(fallbackValue?: S);
   initialize(): this;
   complete(): void;
   useCache(secOrFn: number | (() => boolean), cacheSize = 10): this;

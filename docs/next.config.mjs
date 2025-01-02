@@ -1,6 +1,6 @@
 import nextra from 'nextra';
 
-export const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === 'production';
 
 const withNextra = nextra({
   theme: 'nextra-theme-docs',

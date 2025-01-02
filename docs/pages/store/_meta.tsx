@@ -7,5 +7,5 @@ export default {
   groups: 'Groups',
   installation: {title: 'Installation', href: '/installation'},
   reference: 'Reference',
-  ngStore: {title: 'Angular Extension', href: ngHost},
+  ngStore: {title: 'Angular Extension', href: `${ngHost}store`},
 };

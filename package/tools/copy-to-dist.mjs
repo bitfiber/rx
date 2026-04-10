@@ -1,4 +1,4 @@
-import {readdirSync, lstatSync, cpSync, rmdirSync, rmSync, existsSync} from 'fs';
+import {readdirSync, lstatSync, cpSync, rmSync, existsSync} from 'fs';
 
 const packageFolder = './package/';
 const packageSrcFolder = `${packageFolder}src/`;
@@ -8,13 +8,13 @@ const distSrcFolder = `${distFolder}src/`;
 const distDistFolder = `${distFolder}dist/`;
 
 if (existsSync(distFolder)) {
-  rmdirSync(distFolder, {recursive: true});
+  rmSync(distFolder, {recursive: true});
 }
 
 cpSync(packageSrcFolder, distSrcFolder, {recursive: true});
 
 cpSync(packageDistFolder, distDistFolder, {recursive: true});
-rmdirSync(packageDistFolder, {recursive: true});
+rmSync(packageDistFolder, {recursive: true});
 rmSync(`${distDistFolder}/esm/package.json`);
 rmSync(`${distDistFolder}/cjs/package.json`);
 rmSync(`${distDistFolder}/types/package.json`);

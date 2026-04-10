@@ -7,7 +7,7 @@
   "es2015": "./dist/esm/index.js",
   "types": "index.d.ts",
   "typesVersions": {
-    ">=4.8.2": {
+    ">=5.4.2": {
       "*": ["dist/types/*"]
     }
   },
@@ -63,7 +63,7 @@
   "bugs": {
     "url": "https://github.com/bitfiber/rx/issues"
   },
-  "homepage": "https://github.com/bitfiber/rx",
+  "homepage": "https://bitfiber.github.io/rx",
   "dependencies": {
     "tslib": "^2.3.0"
   },

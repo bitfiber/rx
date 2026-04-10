@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "../dist/out-tsc/spec",
     "types": ["jest", "node"],
-    "module": "es2020"
+    "module": "es2020",
+    "esModuleInterop": true
   },
   "include": ["jest.config.ts", "src/**/*.test.ts", "src/**/*.spec.ts"],
   "exclude": []

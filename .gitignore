@@ -45,3 +45,6 @@ Thumbs.db
 /docs/.next/
 /docs/dist/
 /docs/next-env.d.ts
+
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

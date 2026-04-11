@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../dist/out-tsc/types",
-    "module": "es2020",
+    "module": "es2022",
     "target": "es2020",
     "removeComments": false,
     "composite": true,

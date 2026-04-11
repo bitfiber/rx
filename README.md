@@ -49,4 +49,4 @@ expected to uphold this code.
 
 Code licensed under an [Apache 2.0 License](https://github.com/bitfiber/rx/blob/main/LICENSE.txt).  
 Documentation licensed under [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/).  
-Copyright © 2023-2025 Oleksandr Zmanovskyi. All rights reserved.
+Copyright © 2023-2026 Oleksandr Zmanovskyi. All rights reserved.

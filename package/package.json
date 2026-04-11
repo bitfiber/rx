@@ -1,10 +1,10 @@
 {
   "name": "@bitfiber/rx",
   "description": "Reactive State and Asynchronous Dataflow Management Library",
-  "version": "1.2.1",
+  "version": "1.3.1",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
-  "es2015": "./dist/esm/index.js",
+  "es2020": "./dist/esm/index.js",
   "types": "index.d.ts",
   "typesVersions": {
     ">=5.4.2": {
@@ -17,28 +17,28 @@
       "types": "./dist/types/index.d.ts",
       "node": "./dist/cjs/index.js",
       "require": "./dist/cjs/index.js",
-      "es2015": "./dist/esm/index.js",
+      "es2020": "./dist/esm/index.js",
       "default": "./dist/esm/index.js"
     },
     "./operators": {
       "types": "./dist/types/operators/index.d.ts",
       "node": "./dist/cjs/operators/index.js",
       "require": "./dist/cjs/operators/index.js",
-      "es2015": "./dist/esm/operators/index.js",
+      "es2020": "./dist/esm/operators/index.js",
       "default": "./dist/esm/operators/index.js"
     },
     "./source": {
       "types": "./dist/types/source/index.d.ts",
       "node": "./dist/cjs/source/index.js",
       "require": "./dist/cjs/source/index.js",
-      "es2015": "./dist/esm/source/index.js",
+      "es2020": "./dist/esm/source/index.js",
       "default": "./dist/esm/source/index.js"
     },
     "./store": {
       "types": "./dist/types/store/index.d.ts",
       "node": "./dist/cjs/store/index.js",
       "require": "./dist/cjs/store/index.js",
-      "es2015": "./dist/esm/store/index.js",
+      "es2020": "./dist/esm/store/index.js",
       "default": "./dist/esm/store/index.js"
     },
     "./package.json": "./package.json"
@@ -68,7 +68,7 @@
     "tslib": "^2.3.0"
   },
   "peerDependencies": {
-    "@bitfiber/utils": "^1.1.1",
+    "@bitfiber/utils": "^1.1.2",
     "rxjs": "^7.4.0"
   }
 }

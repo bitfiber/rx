@@ -8,11 +8,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "es2020",
+    "target": "es2020",
+    "module": "es2022",
     "moduleResolution": "node",
     "lib": [
-      "es2020",
+      "es2022",
       "dom"
     ],
     "skipLibCheck": true,

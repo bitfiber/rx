@@ -291,6 +291,7 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
         this.needSuccessState = true;
         return needSuccessState;
       })), (_, {successCounter, failCounter}) => ({
+        // eslint-disable-next-line no-useless-assignment
         successCounter: ++successCounter,
         failCounter,
         inProgress: false,
@@ -299,6 +300,7 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
       }))
       .receive(this.fail, (_, {successCounter, failCounter}) => ({
         successCounter,
+        // eslint-disable-next-line no-useless-assignment
         failCounter: ++failCounter,
         inProgress: false,
         successful: false,

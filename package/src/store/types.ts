@@ -19,7 +19,7 @@ export type EmitterOrSubject<T> = AbstractEmitter<T> | Subject<T>;
 export type EmitterOrObservable<T> = AbstractEmitter<T> | Observable<T>;
 
 /**
- * Represents a tuple of emitters, states or observables
+ * Represents a tuple of emitters, states, or observables
  */
 export type EmitterOrObservableTuple<T> = {[K in keyof T]: EmitterOrObservable<T[K]>};
 

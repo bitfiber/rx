@@ -45,6 +45,9 @@ Thumbs.db
 /docs/.next/
 /docs/dist/
 /docs/next-env.d.ts
+/docs/node_modules/
+
+/docs/superpowers/
 
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md

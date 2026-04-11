@@ -3,8 +3,7 @@ import nextra from 'nextra';
 const isProd = process.env.NODE_ENV === 'production';
 
 const withNextra = nextra({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.tsx',
+  defaultShowCopyCode: true,
   search: {codeblocks: false},
 });
 

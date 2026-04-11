@@ -46,6 +46,7 @@ Thumbs.db
 /docs/dist/
 /docs/next-env.d.ts
 /docs/node_modules/
+*.tsbuildinfo
 
 /docs/superpowers/
 

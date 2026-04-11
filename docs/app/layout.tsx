@@ -46,6 +46,10 @@ export default async function RootLayout({children}: {children: React.ReactNode}
             autoCollapse: false,
             toggleButton: true,
           }}
+          toc={{
+            title: 'On This Page',
+            backToTop: true,
+          }}
           feedback={{
             content: 'Feedback',
             labels: 'feedback',

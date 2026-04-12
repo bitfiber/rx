@@ -40,7 +40,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
             />
           }
           footer={<Footer><BfFooter /></Footer>}
-          docsRepositoryBase={`${gitHost}tree/main/projects/docs`}
+          docsRepositoryBase={`${gitHost}tree/main/docs`}
           sidebar={{
             defaultMenuCollapseLevel: 1,
             autoCollapse: false,

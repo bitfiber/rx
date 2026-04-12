@@ -1,7 +1,7 @@
-import {StateGetter} from '@bitfiber/rx';
 import {filter, take} from 'rxjs';
 import {BfError, copy, Index, isDefined, isNumber, toHash, toSortedString} from '@bitfiber/utils';
 
+import {StateGetter} from '../../types';
 import {emitter} from '../../emitters/emitter/emitter';
 import {AbstractState} from '../../states/abstract-state/abstract-state';
 import {AbstractGroup} from '../abstract-group/abstract-group';
@@ -291,8 +291,7 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
         this.needSuccessState = true;
         return needSuccessState;
       })), (_, {successCounter, failCounter}) => ({
-        // eslint-disable-next-line no-useless-assignment
-        successCounter: ++successCounter,
+        successCounter: successCounter + 1,
         failCounter,
         inProgress: false,
         successful: true,
@@ -300,8 +299,7 @@ export abstract class AbstractAsyncGroup<L, S, F> extends AbstractGroup {
       }))
       .receive(this.fail, (_, {successCounter, failCounter}) => ({
         successCounter,
-        // eslint-disable-next-line no-useless-assignment
-        failCounter: ++failCounter,
+        failCounter: failCounter + 1,
         inProgress: false,
         successful: false,
         failed: true,

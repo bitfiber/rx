@@ -17,21 +17,26 @@ export function completeWith<T>(
   withError?: boolean,
 ): OperatorFunction<T, T> {
   return operator<T, T>((source, subscriber) => {
-    const sub = trigger.subscribe({
+    const triggerSub = trigger.subscribe({
       complete: () => subscriber.complete(),
       error: () => withError && subscriber.complete(),
     });
 
-    return source.subscribe({
+    const sourceSub = source.subscribe({
       next: value => subscriber.next(value),
       error: error => {
-        sub.unsubscribe();
+        triggerSub.unsubscribe();
         subscriber.error(error);
       },
       complete: () => {
-        sub.unsubscribe();
+        triggerSub.unsubscribe();
         subscriber.complete();
       },
     });
+
+    return () => {
+      triggerSub.unsubscribe();
+      sourceSub.unsubscribe();
+    };
   });
 }

@@ -64,6 +64,8 @@ export type CookieData<T> = CookieParams & CookieValue<T>;
  */
 let source: Cookie | undefined;
 
+const ORIGINAL_COOKIE = Symbol('bfOriginalCookie');
+
 /**
  * Creates and returns a singleton instance of the `Cookie` class and ensures that only one
  * instance is created. If the instance already exists, it returns the existing one
@@ -107,6 +109,7 @@ implements KeyValueSource<T> {
   private readonly subject = new Subject<string>();
 
   private readonly channel!: BroadcastChannel;
+  private nativeCookieDescriptor?: PropertyDescriptor;
   private lastCookie = this.doc.cookie;
 
   /**
@@ -129,8 +132,8 @@ implements KeyValueSource<T> {
    * @param key - The specific key under which the cookie value is stored
    */
   get(key: string): T {
-    const cookie = this.doc.cookie.replace(/^\s+/g, '').split(';').find(row => row.startsWith(key));
-    const value = cookie?.split('=')[1];
+    const cookie = this.doc.cookie.split(';').map(c => c.trim()).find(row => row.startsWith(key + '='));
+    const value = cookie ? cookie.substring(key.length + 1) : undefined;
     return <T>{value: isString(value) ? parseJson<any>(decodeURIComponent(value)) : undefined};
   }
 
@@ -190,6 +193,14 @@ implements KeyValueSource<T> {
   destroy(): void {
     this.subject.complete();
     this.channel.close();
+
+    if (this.nativeCookieDescriptor) {
+      const docPrototype = typeof Document === 'function' ? Document.prototype : {};
+      Object.defineProperty(docPrototype, 'cookie', this.nativeCookieDescriptor);
+      delete (docPrototype as any)[ORIGINAL_COOKIE];
+      this.nativeCookieDescriptor = undefined;
+    }
+
     source = undefined;
   }
 
@@ -199,9 +210,8 @@ implements KeyValueSource<T> {
   private expandCookie(): void {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
-    const originalCookie = 'originalCookie';
     const docPrototype = typeof Document === 'function' ? Document.prototype : {};
-    const nativeCookieDescriptor = Object.getOwnPropertyDescriptor(docPrototype, 'cookie') || {};
+    this.nativeCookieDescriptor = Object.getOwnPropertyDescriptor(docPrototype, 'cookie') || {};
 
     // Listen cookieChange messages from other same-origin tabs/frames
     this.channel.onmessage = event => {
@@ -211,16 +221,16 @@ implements KeyValueSource<T> {
     };
 
     // Expand original document.cookie
-    Object.defineProperty(docPrototype, originalCookie, nativeCookieDescriptor);
+    Object.defineProperty(docPrototype, ORIGINAL_COOKIE, this.nativeCookieDescriptor);
     Object.defineProperty(docPrototype, 'cookie', {
       enumerable: true,
       configurable: true,
       get() {
-        return this[originalCookie];
+        return this[ORIGINAL_COOKIE];
       },
       set(fullCookie) {
-        this[originalCookie] = fullCookie;
-        const newCookie = this[originalCookie];
+        this[ORIGINAL_COOKIE] = fullCookie;
+        const newCookie = this[ORIGINAL_COOKIE];
         const key = self.getKey(fullCookie);
 
         if (key && newCookie !== self.lastCookie) {
@@ -242,9 +252,9 @@ implements KeyValueSource<T> {
    * @param fullCookie - The full cookie string from which to extract the key
    */
   private getKey(fullCookie: string): string | undefined {
-    const cookies = fullCookie.replace(/^\s+/g, '').split(';');
+    const cookies = fullCookie.split(';');
     for (let i = 0; i < cookies.length; i++) {
-      const key = cookies[i].split('=')[0];
+      const key = cookies[i].trim().split('=')[0];
       if (key && !['path', 'domain', 'expires', 'max-age', 'secure', 'samesite'].includes(key)) {
         return key;
       }

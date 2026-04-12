@@ -183,3 +183,18 @@ Example: `bf_rx_store_AbstractStore_initialize_1`.
 - Exported functions and classes have JSDoc with `@template`, `@param`, `@returns`.
 - Internal methods marked with `@internal` JSDoc tag and `eslint-disable-next-line
   @typescript-eslint/naming-convention` where prefixed with `_`.
+
+## Intentional Design Decisions (Do Not "Fix")
+
+- **`activeGroup` module-level variable** — safe because all store/group construction is
+  synchronous within a single call stack. Do not refactor into context objects or
+  `AsyncLocalStorage`.
+- **`MemoryStorage.destroy()` does not reset the singleton `source`** — unlike `LocalStorage`
+  and `SessionStorage`, `MemoryStorage` supports isolated instances via `new`. This is
+  intentional.
+- **`@ts-ignore` in `Store` for lifecycle hooks** — hooks (`beforeStoreInit`, etc.) are defined
+  by subclasses via `StoreHooks` interface. Declaring them in `Store` would force `override` in
+  every subclass. Do not replace with `@ts-expect-error` or class declarations.
+- **Generic parameter on singleton factories** (`memoryStorage<T>()`, `localStorage<T>()`) —
+  provides convenient type narrowing at the call site. The same runtime instance may be returned
+  with different type parameters; this is by design.

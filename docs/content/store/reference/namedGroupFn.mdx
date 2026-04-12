@@ -36,17 +36,17 @@ import {state, emitter, namedGroup} from '@bitfiber/rx';
 // Groups all emitters and states for mass initialization and completion
 const group = namedGroup({launch: emitter<void>(), data: state<number>(0)}, ({launch}) => {
   launch
-    // Performs an effect each time the launch emits new data
+    // Performs an effect each time launch fires (void payload)
     .effect(
-      switchMap(page => productsService.get(`api/products?page=${page}`)),
+      switchMap(() => productsService.get('api/products')),
     );
 });
 
 // Initializes the group and all items within the group
 group.initialize();
 
-// Accesses the 'launch' emitter through the group and emits a new data
-group.launch.emit(1);
+// Accesses the 'launch' emitter through the group and triggers loading
+group.launch.emit();
 
 // Completes the group and all items within the group
 group.complete();

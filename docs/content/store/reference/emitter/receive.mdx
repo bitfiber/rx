@@ -56,7 +56,7 @@ The instance of the emitter, allowing for method chaining
 ### API
 
 ```ts copy
-receive<I>(input: EmitterOrObservable<I>, reducer: (value: I, state: T) => T): this;
+receive<I>(input: EmitterOrObservable<I>, reducer: (value: I) => T): this;
 ```
 
 ### Example

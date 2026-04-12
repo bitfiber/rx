@@ -124,7 +124,7 @@ export abstract class AbstractEmitter<T> extends AbstractItem {
    * Completes the emitter, signaling to all subscribers that no more values will be emitted.
    *
    * Once the emitter is completed, it will not emit any further values, and any subsequent
-   * subscriptions will immediately receive an error.
+   * subscriptions will immediately receive a complete notification.
    *
    * In most cases, this method will be called automatically by a group or store managing
    * the emitter, so you generally don't need to call it manually unless you have a specific

@@ -26,7 +26,7 @@ import {switchMap, of} from 'rxjs';
 import {state} from '@bitfiber/rx';
 
 const openDialog = state<boolean>(false, s => s
-  // Performs an effect each time the emitter emits new value
+  // Performs an effect each time the state emits a new value
   .effect(
     switchMap(isOpened => !isOpened ? dialog.open() : of(false)),
   ));

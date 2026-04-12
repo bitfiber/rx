@@ -43,9 +43,9 @@ subject.pipe(startWithDefined(() => 5))
 subject.pipe(startWithDefined(() => null))
   .subscribe(v => console.log(v)); // expected result: null
 
-subject.pipe(startWithDefined(() => null), true)
-  .subscribe(v => console.log(v)); // expected result: null value won`t be emitted
+subject.pipe(startWithDefined(() => null, true))
+  .subscribe(v => console.log(v)); // expected result: null value won't be emitted
 
-subject.pipe(startWithDefined(() => undefined))
-  .subscribe(v => console.log(v)); // expected result: undefined value won`t be emitted
+subject.pipe(startWithDefined(() => undefined, true))
+  .subscribe(v => console.log(v)); // expected result: undefined value won't be emitted
 ```

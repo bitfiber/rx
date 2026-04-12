@@ -50,7 +50,7 @@ const productReq = emitter<number>(e => e
   .tap(id => {
     console.log(id);
   })
-  // Performs a effect each time the emitter emits new filtered data
+  // Performs an effect each time the emitter emits new filtered data
   .effect(
     switchMap(id => productsService.get(`api/product${id}`)),
   ));

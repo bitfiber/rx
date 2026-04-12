@@ -60,13 +60,13 @@ const productReq = state<number>(0, s => s
   .tap(id => {
     console.log(id);
   })
-  // Performs a effect each time the state emits new filtered data
+  // Performs an effect each time the state emits new filtered data
   .effect(
     switchMap(id => productsService.get(`api/product${id}`)),
   ));
 
 // Creates a state that receives used IDs and logs them through an effect
-const log = state<string>(0, s => s
+const log = state<string>('', s => s
   // Runs an effect when data is received from the `currentId` state
   .receive(currentId, id => `A new id ${id} was received`)
   // Runs an effect when data is received from the `lastId` state

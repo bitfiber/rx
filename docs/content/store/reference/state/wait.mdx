@@ -24,7 +24,7 @@ import {of} from 'rxjs';
 import {emitter, state} from '@bitfiber/rx';
 
 const launch = emitter<number>();
-const data = state<string>(1);
+const data = state<string>('');
 const count$ = of(1);
 
 const result = state<number>(0, s => s

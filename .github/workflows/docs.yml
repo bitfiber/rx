@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.15
+          node-version: 22.19
 
       - name: NPM install
         run: npm ci

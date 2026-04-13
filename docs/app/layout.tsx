@@ -1,20 +1,24 @@
+import {ReactNode} from 'react';
 import {Footer, Layout, Navbar} from 'nextra-theme-docs';
 import {Head} from 'nextra/components';
 import {getPageMap} from 'nextra/page-map';
 import 'nextra-theme-docs/style.css';
 import '../styles.css';
 
-import {Logo, Footer as BfFooter} from '../';
-import {gitHost} from '../config/constants';
-
-const isProd = process.env.NODE_ENV === 'production';
+import {Logo, Footer as BfFooter, gitHost, isProd, description} from '../';
 
 export const metadata = {
-  title: 'Bitfiber Rx Docs',
-  description: 'Bitfiber Rx Docs',
+  description,
+  openGraph: {
+    title: description,
+    description,
+  },
+  appleWebApp: {
+    title: description,
+  },
 };
 
-export default async function RootLayout({children}: {children: React.ReactNode}) {
+export default async function RootLayout({children}: {children: ReactNode}) {
   return (
     <html
       lang="en"
@@ -35,14 +39,13 @@ export default async function RootLayout({children}: {children: React.ReactNode}
       <body>
         <Layout
           pageMap={await getPageMap()}
+          docsRepositoryBase={`${gitHost}tree/main/docs`}
           navbar={
             <Navbar
               logo={<Logo/>}
               projectLink={gitHost}
             />
           }
-          footer={<Footer><BfFooter/></Footer>}
-          docsRepositoryBase={`${gitHost}tree/main/docs`}
           sidebar={{
             defaultMenuCollapseLevel: 1,
             autoCollapse: false,
@@ -55,7 +58,9 @@ export default async function RootLayout({children}: {children: React.ReactNode}
           feedback={{
             content: 'Feedback',
             labels: 'feedback',
+            link: `${gitHost}issues`,
           }}
+          footer={<Footer><BfFooter/></Footer>}
         >
           {children}
         </Layout>

@@ -1,13 +1,12 @@
+import {ComponentType} from 'react';
 import {useMDXComponents as getDocsMDXComponents} from 'nextra-theme-docs';
 import {Cards} from 'nextra/components';
 
-import {Badge} from './components/Badge';
-import {RefCards} from './components/RefCards';
-import {UtLink} from './components/UtLink';
+import {Badge, UtLink, RefCards} from './';
 
-const docsComponents = getDocsMDXComponents();
+const docsComponents = getDocsMDXComponents({});
 
-export function useMDXComponents(components?: Record<string, React.ComponentType>) {
+export function useMDXComponents(components?: Record<string, ComponentType>) {
   return {
     ...docsComponents,
     // eslint-disable-next-line @typescript-eslint/naming-convention

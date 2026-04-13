@@ -7,6 +7,8 @@ import '../styles.css';
 import {Logo, Footer as BfFooter} from '../';
 import {gitHost} from '../config/constants';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export const metadata = {
   title: 'Bitfiber Rx Docs',
   description: 'Bitfiber Rx Docs',
@@ -27,7 +29,7 @@ export default async function RootLayout({children}: {children: React.ReactNode}
         <link
           rel="icon"
           type="image/x-icon"
-          href="/assets/favicon.ico"
+          href={`${isProd ? '/rx' : ''}/assets/favicon.ico`}
         />
       </Head>
       <body>
@@ -35,11 +37,11 @@ export default async function RootLayout({children}: {children: React.ReactNode}
           pageMap={await getPageMap()}
           navbar={
             <Navbar
-              logo={<Logo />}
+              logo={<Logo/>}
               projectLink={gitHost}
             />
           }
-          footer={<Footer><BfFooter /></Footer>}
+          footer={<Footer><BfFooter/></Footer>}
           docsRepositoryBase={`${gitHost}tree/main/docs`}
           sidebar={{
             defaultMenuCollapseLevel: 1,

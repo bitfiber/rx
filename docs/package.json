@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "postbuild": "pagefind --site .next/server/app --output-path dist/_pagefind",
     "start:dev": "next",
     "start:prod": "cross-env NODE_ENV=local_prod npm run build & npx serve@latest .\\dist\\"
   },

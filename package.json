@@ -38,6 +38,7 @@
     "jest-util": "30.2.0",
     "jsonc-eslint-parser": "2.4.2",
     "nx": "22.6.4",
+    "pagefind": "1.5.2",
     "ts-jest": "29.4.8",
     "ts-node": "10.9.1",
     "typescript": "5.4.2",

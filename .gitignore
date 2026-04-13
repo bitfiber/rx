@@ -44,6 +44,7 @@ Thumbs.db
 # next.js
 /docs/.next/
 /docs/dist/
+/docs/_pagefind/
 /docs/next-env.d.ts
 /docs/node_modules/
 *.tsbuildinfo
